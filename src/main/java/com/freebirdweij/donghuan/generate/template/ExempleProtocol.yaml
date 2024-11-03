@@ -1,0 +1,33 @@
+**协议文档格式要求**
+```yaml
+# 需要用户提供标准格式的协议文档，例如：
+protocol:
+  name: "CustomProtocol"
+  version: "1.0"
+  format: "binary"  # 或 ascii, hex等
+  
+commands:
+  - name: "readTemperature"
+    code: "0x01"
+    request:
+      - field: "header"
+        value: "0xAA"
+        length: 1
+      - field: "command"
+        value: "0x01"
+        length: 1
+      - field: "address"
+        length: 2
+      - field: "checksum"
+        length: 2
+        algorithm: "CRC16"
+    
+    response:
+      - field: "header"
+        value: "0xAA"
+        length: 1
+      - field: "data"
+        length: 4
+        type: "float"
+        conversion: "value * 0.1"
+```

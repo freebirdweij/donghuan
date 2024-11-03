@@ -1,0 +1,1 @@
+-Dfile.encoding=GB18030
