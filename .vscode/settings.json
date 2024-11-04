@@ -1,5 +1,5 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.updateBuildConfiguration": "automatic",
-    "workbench.externalBrowser": "chrome"
+    "workbench.externalBrowser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 }
