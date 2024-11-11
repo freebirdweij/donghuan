@@ -7,8 +7,8 @@ public abstract class AirConditioner extends Device {
     private boolean isRunning;
 
     public AirConditioner(String deviceId, String deviceName, DeviceLocation location, String status, 
-                          double setTemperature, double currentTemperature, String mode, boolean isRunning) {
-        super(deviceId, deviceName, "Air Conditioner", location, status);
+                          double setTemperature, double currentTemperature, String mode, boolean isRunning, String deviceModel) {
+                                  super(deviceId, deviceName, "Air Conditioner", deviceModel, location, status);
         this.setTemperature = setTemperature;
         this.currentTemperature = currentTemperature;
         this.mode = mode;

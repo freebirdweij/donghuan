@@ -23,9 +23,10 @@ public class AccessControlSystem extends Device {
      * @param accessGranted 是否授予访问权限
      * @param lastAccessTime 上次访问时间
      * @param lastAccessPerson 上次访问人员
+     * @param deviceModel 
      */
-    public AccessControlSystem(String id, String name, DeviceLocation location, String status, boolean accessGranted, LocalDateTime lastAccessTime, String lastAccessPerson) {
-        super(id, name, "Access Control System", location, status);
+         public AccessControlSystem(String id, String name, DeviceLocation location, String status, boolean accessGranted, LocalDateTime lastAccessTime, String lastAccessPerson, String deviceModel) {
+             super(id, name, "Access Control System", deviceModel, location, status);
         this.accessGranted = accessGranted;
         this.lastAccessTime = lastAccessTime;
         this.lastAccessPerson = lastAccessPerson;

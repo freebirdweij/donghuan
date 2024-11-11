@@ -6,8 +6,8 @@ public abstract class Generator extends Device {
     private boolean isRunning;
 
     public Generator(String deviceId, String deviceName, DeviceLocation location, String status,
-                     double fuelLevel, double powerOutput, boolean isRunning) {
-        super(deviceId, deviceName, "Generator", location, status);
+                     double fuelLevel, double powerOutput, boolean isRunning, String deviceModel) {
+                             super(deviceId, deviceName, "Generator", deviceModel, location, status);
         this.fuelLevel = fuelLevel;
         this.powerOutput = powerOutput;
         this.isRunning = isRunning;

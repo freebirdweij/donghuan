@@ -7,8 +7,8 @@ public abstract class SwitchingPowerSupply extends Device {
     private double loadPercentage;
 
     public SwitchingPowerSupply(String deviceId, String deviceName, DeviceLocation location, String status,
-                                double inputVoltage, double outputVoltage, double outputCurrent, double loadPercentage) {
-        super(deviceId, deviceName, "Switching Power Supply", location, status);
+                                double inputVoltage, double outputVoltage, double outputCurrent, double loadPercentage, String deviceModel) {
+                                        super(deviceId, deviceName, "Switching Power Supply", deviceModel, location, status);
         this.inputVoltage = inputVoltage;
         this.outputVoltage = outputVoltage;
         this.outputCurrent = outputCurrent;

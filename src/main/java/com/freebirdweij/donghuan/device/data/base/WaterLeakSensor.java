@@ -3,8 +3,8 @@ package com.freebirdweij.donghuan.device.data.base;
 public abstract class WaterLeakSensor extends Device {
     private boolean isLeakDetected;
 
-    public WaterLeakSensor(String deviceId, String deviceName, DeviceLocation location, String status, boolean isLeakDetected) {
-        super(deviceId, deviceName, "Water Leak Sensor", location, status);
+    public WaterLeakSensor(String deviceId, String deviceName, DeviceLocation location, String status, boolean isLeakDetected, String deviceModel) {
+            super(deviceId, deviceName, "Water Leak Sensor", deviceModel, location, status);
         this.isLeakDetected = isLeakDetected;
     }
 

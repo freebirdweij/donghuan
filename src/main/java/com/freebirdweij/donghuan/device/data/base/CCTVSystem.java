@@ -22,9 +22,10 @@ public class CCTVSystem extends Device {
      * @param status 设备状态
      * @param recording 是否正在录制
      * @param lastRecordingTime 上次录制时间
+     * @param deviceModel 
      */
-    public CCTVSystem(String id, String name, DeviceLocation location, String status, boolean recording, String lastRecordingTime) {
-        super(id, name, "CCTV System", location, status);
+    public CCTVSystem(String id, String name, DeviceLocation location, String status, boolean recording, String lastRecordingTime, String deviceModel) {
+             super(id, name, "CCTV System", deviceModel, location, status);
         this.recording = recording;
         this.lastRecordingTime = LocalDateTime.parse(lastRecordingTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }

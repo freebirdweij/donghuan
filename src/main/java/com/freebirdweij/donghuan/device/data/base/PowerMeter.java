@@ -30,12 +30,13 @@ public abstract class PowerMeter extends Device {
      * @param apparentPower 视在功率
      * @param powerFactor 功率因数
      * @param energyConsumed 累计电能消耗
-     */
-    public PowerMeter(String deviceId, String deviceName, DeviceLocation location, String status,
-                      double inputVoltage, double outputVoltage, double inputCurrent, double outputCurrent,
-                      double activePower, double reactivePower, double apparentPower, double powerFactor,
-                      double energyConsumed) {
-        super(deviceId, deviceName, "Power Meter", location, status);
+          * @param deviceModel 
+          */
+         public PowerMeter(String deviceId, String deviceName, DeviceLocation location, String status,
+                           double inputVoltage, double outputVoltage, double inputCurrent, double outputCurrent,
+                           double activePower, double reactivePower, double apparentPower, double powerFactor,
+                           double energyConsumed, String deviceModel) {
+             super(deviceId, deviceName, "Power Meter", deviceModel, location, status);
         this.inputVoltage = inputVoltage;
         this.outputVoltage = outputVoltage;
         this.inputCurrent = inputCurrent;

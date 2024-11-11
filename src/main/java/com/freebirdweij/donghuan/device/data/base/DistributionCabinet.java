@@ -6,8 +6,8 @@ public abstract class DistributionCabinet extends Device {
     private boolean[] branchSwitchStates;
 
     public DistributionCabinet(String deviceId, String deviceName, DeviceLocation location, String status,
-                               double[] branchCurrents, double[] branchVoltages, boolean[] branchSwitchStates) {
-        super(deviceId, deviceName, "Distribution Cabinet", location, status);
+                               double[] branchCurrents, double[] branchVoltages, boolean[] branchSwitchStates, String deviceModel) {
+                                       super(deviceId, deviceName, "Distribution Cabinet", deviceModel, location, status);
         this.branchCurrents = branchCurrents;
         this.branchVoltages = branchVoltages;
         this.branchSwitchStates = branchSwitchStates;

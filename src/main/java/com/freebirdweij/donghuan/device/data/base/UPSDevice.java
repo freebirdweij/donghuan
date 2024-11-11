@@ -7,8 +7,8 @@ public abstract class UPSDevice extends Device {
     private double loadPercentage;
 
     public UPSDevice(String deviceId, String deviceName, DeviceLocation location, String status, 
-                     double inputVoltage, double outputVoltage, double batteryLevel, double loadPercentage) {
-        super(deviceId, deviceName, "UPS", location, status);
+                     double inputVoltage, double outputVoltage, double batteryLevel, double loadPercentage, String deviceModel) {
+                             super(deviceId, deviceName, "UPS", deviceModel, location, status);
         this.inputVoltage = inputVoltage;
         this.outputVoltage = outputVoltage;
         this.batteryLevel = batteryLevel;

@@ -5,8 +5,8 @@ public abstract class TemperatureHumiditySensor extends Device {
     private double humidity;
 
     public TemperatureHumiditySensor(String deviceId, String deviceName, DeviceLocation location, String status, 
-                                     double temperature, double humidity) {
-        super(deviceId, deviceName, "Temperature & Humidity Sensor", location, status);
+                                     double temperature, double humidity, String deviceModel) {
+                                             super(deviceId, deviceName, "Temperature & Humidity Sensor", deviceModel, location, status);
         this.temperature = temperature;
         this.humidity = humidity;
     }

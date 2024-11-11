@@ -15,9 +15,10 @@ public class SmokeDetector extends Device {
      * @param status 设备状态
      * @param smokeDetected 是否检测到烟雾
      * @param smokeLevel 烟雾浓度
-     */
-    public SmokeDetector(String deviceId, String deviceName, DeviceLocation location, String status, boolean smokeDetected, double smokeLevel) {
-        super(deviceId, deviceName, "Smoke Detector", location, status);
+          * @param deviceModel 
+          */
+         public SmokeDetector(String deviceId, String deviceName, DeviceLocation location, String status, boolean smokeDetected, double smokeLevel, String deviceModel) {
+             super(deviceId, deviceName, "Smoke Detector", deviceModel, location, status);
         this.smokeDetected = smokeDetected;
         this.smokeLevel = smokeLevel;
     }

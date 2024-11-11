@@ -14,10 +14,11 @@ public abstract class Device {
 
 
     // 构造方法
-    public Device(String deviceId, String deviceName, String deviceType, DeviceLocation location, String status) {
+    public Device(String deviceId, String deviceName, String deviceType, String deviceModel, DeviceLocation location, String status) {
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.deviceType = deviceType;
+        this.deviceModel = deviceModel;
         this.location = location;
         this.status = status;
     }
