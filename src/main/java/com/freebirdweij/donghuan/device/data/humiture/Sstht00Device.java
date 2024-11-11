@@ -4,9 +4,9 @@ import com.freebirdweij.donghuan.device.data.base.Device;
 import com.freebirdweij.donghuan.device.data.base.DeviceLocation;
 
 // 添加设备信息注解
-public class Sstht00 extends Device{
+public class Sstht00Device extends Device{
 
-    public Sstht00(String deviceId, String deviceName, String deviceType, String deviceModel,DeviceLocation location, String status) {
+    public Sstht00Device(String deviceId, String deviceName, String deviceType, String deviceModel,DeviceLocation location, String status) {
        super(deviceId, deviceName, deviceType, deviceModel, location, status);
     }
 
