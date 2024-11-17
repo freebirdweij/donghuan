@@ -1,0 +1,6594 @@
+中华人民共和国通信行业标准
+YD/'T 1363·3一2005
+代替YDN 023一1996
+
+　通信局（站）电源、空调及环境集中监控管理系统第3部分：前端智能设备协议
+Specification Of supervision system for power、air conditioner and environment
+Part 3：Intelligent equipment communication protocol
+2005一06一21发布	2005一11一01实施
+
+中华人民共和国信息产业部 发布
+．
+前
+1范围·一
+2规范性引用文件 3 术语和定义· “
+4监控对象及内容
+5通信接口和传输速率· “
+6通信方式· “
+7信息类型和信息结构
+8数据格式· “
+9编码分类一
+10通用命令· · · 附录A（规范性附录）附录B（规范性附录）
+B · 1 说明
+B.2高压配电系统通信协议一
+B.3低压配电系统通信协议· “
+B.4柴油发电机组供电系统通信协议
+B.5燃气发电机组供电系统通信协议
+B.6UPS供电系统通信协议
+B.7逆变器供电系统通信协议
+B.8开关电源供电系统通信协议
+B.9太阳能供电系统通信协议· · ·
+B · 10 直流一直流
+B · 1 1 风力发电设备通信协议
+B .12 蓄电池检测装置通信协议
+B · 13 分散空调通信协议一
+　B.14 集中空调通信协议“ · B．巧 环境部分通信协议· · · B · 16 通用采集器通信协议
+附录C（规范性附录）监测内容代码
+·3一2005
+　《通信局（站）电源、空调及环境集中监控管理系统》分为4个部分：一第1部分：系统技术要求一第2部分：互联协议
+一第3部分：前端智能设备协议一第4部分：测试方法。
+本部分为第3部分：前端智能设备协议。
+　　本部分纳人并调整了中国电信电网交卩999]625号文《通信局（站）电源、空调及环境集中监控系统前端智能设备通信协议》中适用的内容，与中国电信电网交[ 1 9]625号文相比主要变化如下：一充实了基本数据格式，更新了举例；
+　　一各部分自定义字段由原来的EOH扩展到80H，即自定义字段由EOH一EFH扩展为80H、EFH,但是参数设置命令中CO、ND TYPE字段原定义是从80H开始的，为尽可能保持原有定义不变，这部分的自定义不能由EOH扩展到80H。考虑到既可以兼容原协议，又能使自定义部分有一定余量，将这部分的自定义字段由EOH · EFH扩展为COH一EFHO
+一修改了各部分H、OOH、01H命令用法；
+一对整型数传送值与实际值的换算部分的说明修订。
+本部分的附录A、附录B、附录c为规范性附录。
+本部分由中国通信标准化协会提出并归口。
+本部分起草单位：中讯邮电咨询设计院艾默生网络能源有限公司中兴通讯股份有限公司中达电通股份有限公司北京动力源科技股份有限公司汇能电子（集团）有限公司
+北京通力环电气股份有限公司
+本部分主要起草人：冯鸣冉启坤林奕广蔡海涛 侯永涛 王建华
+Ill
+
+通信局（站）电源、空调及环境集中监控管理系统
+第3部分：前端智能设备协议
+　1范围
+　　本部分规定了通信局（站）内为实现集中监控而使用的电源设备在设计、制造中应導循的通信协议，同时规定了通信局（站）电源、空调及环境集中监控管理系统中监控模块和监控单元之间的通信协议。
+　　本部分适用于各类通信局（站）电源、空调及环境集中监控系统和在此基础上构成的不同规模的监控系统。
+　2规范性引用文件
+　　下列文件中的条款通过本部分的引用而成为本部分的条款。凡是注日期的引用文件，其随后所有的修改单（不包括勘误的内容）或修订版均不适用于本部分，然而，鼓励根据本部分达成协议的各方研究是否可使用这些文件的最新版本。凡是不注日期的引用文件，其最新版本适用于本部分。
+　(I)/T 1051一2000 YDIT 1363 · 1一2m5
+电网交[ 19 ] 625号文	通信局（站）电源系统总技术要求
+通信局（站）电源、空调及环中监控管理系统第1部分：系统技术要求通信局（站）电源、空调及玎疃集中．管理系统智能没备通信协议
+3术语和定义
+YD/T 1363．1一2m5确立的术语和定义适用于本部分。
+4监控对歡及内客
+YD/'T 1363 · 1一2m5确立的监控对象及内容适用于本部分。
+
+5通信接口和传输速率
+智能设备数据通信应提供异步串行通信方式。异步串行通信接口和传输速率有：
+—RS一232C：1 ·2kbi、2·4kb形s、4· 8 it's、9．6kbi或19．2kbi；
+　—RS一485：1.2kbit/s、2．4 bi、4· 8kb s、9.6kbit/s、19·2kbit/s或38．4kbi； —RS一422：1.2kbit/s、2·4kbi、4．8kbi、9.6kbit/s、19.2kbit/s或38，4kbi呔。
+通信传输格式为：起始位1位，数据位8位，停止位1位，无校验。
+6通倍方式
+　　监控系统为分布式结构，监控单元（SU）与监控模块（SM）的通信为主从方式，监控单元为上位机，监控模块为下位机。
+　　通信过程是这样的：SU呼叫SM并下发命令，SM收到命令后返回响应信息。在5佣内，SU接收不到SM响应信息或响应信息错误，则认为本次通信过程失败。
+　　监控模块通过MODEN拨号方式与监控中心相连，监控中心通过依次MODEM拨号轮巡各监控模块，发生紧急告警时，监控模块应有主动拨号上报功能。
+　1363
+　7信息类型和信息结构
+　7· 1信息类型
+在SU与SM之间传输的信息，根据传输方向，分为两种类型：一由SU发出到SM的命令信息，简称命佇
+一由SM返回到SU的响应信息，简称响应信息。
+　7 ·2信息结构
+　　为了保证信息能在SU与SM之间正确无误地传输，应事先约定，信息按照一定的结构组织起来，表1 给出了信息结构。信息是由许多字节组成的，一个或多个字节组成一个单元，有一个名称、表达确定的含义。表2是对表I的注解，表3对表2中的返回码RTN进一步注解。
+1倍惠结构
+序号	1	2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	CDI	CID2 	LENGTH	INFO	CHKSUM	EOI
+表2儐结构注解
+序号	符号	表示意义	备 注
+	SOI	起始位标志（START OFINFORMATION）	(7EH)
+	VER	通信协议版本号	（21 H)
+	ADR	设备地址描述（254有校，0、255保留）	
+	CIDI	设备标识码（设备类型描述）	
+	0D2	控制标识码（命令类型描述）返回码RTN（返回码见表3）	SU发出到SM
+SM返回到SU
+6	LENGTH	INFO字节长度（包括LEND和H），数据格式见7 ·3	
+7	INFO	　控制数据信息COMMAND INFO 应答数据信息DATAINFO	SU发出到SM
+SM返回到SU
+8	CHKSUM	校验和码，数据格式见7·3	
+9	EOI	结束码	CR（00H）
+表2中的COMMAND INFO由以下控制命令码组成：
+—COMMAND GROUP, 1字节：表示同一类型设备的不同组号；
+—CONMAND，1字节：表示同一类型设备相同组内的不同监控点·
+一℃0、伏ND TYPE, 1字节：表示不同的遥控命令或历史数据传输中的不同控制命令；一0、焦伏ND TIME 7字节：表示时间字段；
+　—COMMAND DATAI：含有整型数的命八佇手一℃OMMAND DATAF:含有浮点数的命名佇口急、0 表2中的DATA INFO由以下应答码组成：
+—DATAL含有整型数的应答信息；
+—DATAF:含有浮点数的应答信息：
+—RUNSTATE:设备的运行状态；
+—WARNSTATE:设备的告警状态；
+—DATAFLAG:标示字节；
+YD/T?1363 
+—DATATIME ：时间字段。
+表3 返回gRTN
+	RI'N值(HEX)	表示意义		备	注
+		正常	
+	01H	VER错	
+	02H	CHKSUM错	
+	03H	LCHKSUM错	
+	04H	CID2无效	
+	05H	命令格式错	
+	06H	无效数据	
+	80H · EFH	其他错误	用户自定义
+8数据格式
+8．1数据传输格式在7，2信息结构中的各个字节书写时都是以十六进制表示，两位数组成。传输时，SOI和EOI( SOI=7EH, EOI=ODH）各按一个字节传输，但其余各项每个字节都是拆成两个字节，每个字节用两个ASCII码表示，即高4位用一个ASCII码表示，低4位用一个ASCII码表示，传输时先发送高4位的ASCII码，后发送低4位的 ASCII码。
+　示例：CID2：4BH,的ASCII码是34H，B的ASCII码是42H，传送时顺序发送34H和42H两个字节。
+因此，实际传输的字节数应是表1以及下面各表中字节数乘以2。
+8．2 LENGTH数据格式表4给出了I-ENGI的数据格式。
+4 LENGTH皺据格式
+高字节	低字节		
+校验码I-CHKSUM	长度标示码LEND（表示NFC)的传送中ASCII码字节数）		
+D15 	D14 	D13 	D12 	D11 	D10 	D9 	D8 	D7 	D6 	D5 	D4 	D3 	D2 	DI 	DO
+	LENGTH共2个字节，由LEND和LCHKSUM组成，ND表示FO项的ASCII码字节数，当LEND=O 时，FO为空，即无该项。LENGTH拆分4个ASCII码传送，先高字节，后低字节。
+校验码的计算：DI IDIOD9D8 + D7D6D5D4 + D3D2DID0,求和后模16余数取反加1。
+　INFO项的ASCII码字节数为18，即LENID<)OOO 0001 0010B0
+　DIIDIOD9D8 + D7D6D5D4 + D3D2DID(H)OOOB+0001B+OOlOB=0011B，模16余数为0011B, 0011B取反加1就是
+1101B,即LCHKSUM为1101B0 可以得出：LENGTH为1101灬（)OOI 0010B,即D012H0
+　8．3 CHKSUM数据格式
+　　CH UM的计算是除SOI、EOI和CHKSUM外，其他字符按ASCII码值累加求和，所得结果模65536 余数取反加1。CHKSUM拆分4个ASCII码传送，先高字节，后低字节。
+　示例：
+1363
+　　收到或发送的字符序列是：“一20014043E00200FD3BCR"（“ "为SOI, "CR"为EOI），则最后5个字符"FD3BCR" 中的FD3B是CHKSUM,计算方法是：
+
+　32H + 30H + 30H + “．+ 45H + 30H + 30H + 32H + 30H + 30H · 02C5H
+　　其中字符· 2 '的ASCII码值32H，字符'的ASCII码值45H。02C5H模65536余数是02C5H，020H取反加1 就是FD3BH0
+8· 4 INFO数据格式
+8鯊1浮点格式
+　　浮点数长度32位，4个字节的浮点数据传侦序为先低字节后高字节，即传顶序为：先低字节m一 DO,接着D15一D8，然后m D巧，最后高字节D3 D24，最终拆分成8个ASCII码传送。表5给出了NFC) 的浮点数格式。
+5 INFO浮点据格式
+D31	D30一D23	D22、，
+浮点数符号位	阶码	尾数
+浮点数的数值（（-I ) （符位} ）× 1.尾数× 2 （阶码一127）
+　8 ·4 ·2整型数格式
+　整型数，INTEGER, 2个字节长度，分为2个类型：
+　一有符号整型数，表达的数据范围一32768一+32767；一无符号整型数，表达的数据范围0、65535。
+整型数拆分成4个ASCII码传送，先高字节，后低字节。
+8．4·3无符号字符型數格式
+无符号字符型数，CHAR, 1个字节长度，表达的数据范围0一255。
+　传输时，拆分成2个ASCII码，先高4位ASCII码，后低4位ASCII码。
+8 ·4· 4日期时间数据格式
+表6给出了日期时间数据格式。
+表6 日期时间数据格式
+	（仁9999）		（无符号整型数2字节长，十六进制）
+	o一12）		（字符型1字节长，十六进制）
+	o一31)	CHAR	（字符型1字节长，十六进制）
+	（0 · 23）	CHAR	（字符型1字节长，十六进制）
+	〈0 · 59）	CHAR	（字符型1字节长，十六进制）
+	（0一59）	CHAR	（字符型1字节长，十六进制）
+日期时间数据，按照年、月、日、时、分、秒的顺序发送，最终拆分成，4个ASC码传送。
+　8 ·4．5整型数传送值与实际值的换算
+采用整型数传送遥测数据时，传送值与实际值之间需要进行换算，换算应遵循以下原则： a）实际值=传送值/ 1m0，亻舌用于蓄电池单体电压。
+b）实际值=传送值/ 100，其他非蓄电池单体电压遥测量，适用于以下情况：
+
+1)采用无符号整型数表示，〔被测量实际值取绝对值后的最大值（包括告警上限）〕' 650；
+2采用有符号整型数表示，〔被测量实际值取绝对值后的最大值（包括告警上、下限）〕' 325。
+c）实际值：传送值/10，其他非蓄电池单体电压遥测量，适用于以下情况：
+D采用无符号整型数表示，65〔被测量实际值取绝对值后的最大值（包括告警上限）〕' 650； 2）采用有符号整型数表示，3 <〔被测量实际值取绝对值后的最大值（包括告警上、下限）〕' 325。
+d）实际值：传送值，其他非蓄电池单体电压遥测量，适用于以下情况：
+1采用无符号整型数表示，被测量实际值取绝对值后的最大值（包括告警上限）>65m；
+2采用有符号整型数表示，被测量实际值取绝对值后的最大值（包括告警上、下限）>3250。
+9编码分类
+　　7· 2信息结构中的CIDI项，是设备类型标识码。在命令信息中，CID2项是控制标识码；在响应信息中， CD2是返回码，见表3。
+表7给出了CIDI项的设备类型编码分类，表8给出了cm项在命令信息中的编码分类。
+裊7设类型分类{ CID褥
+	内容	CID 1	备注
+		20H	
+	出线柜（高压配电设备）	21H	
+		22H	
+		23H	
+		24H	
+		25H	
+		26H	
+		27H	
+		28H	
+		29H	
+		2AH	
+		2BH	
+		2CH．3FH	
+		40H	
+		41H	
+		42H	
+		43H	
+		44H	
+		45H	
+		46H	
+		47H一5FH	
+		60H	
+		61H	
+		62H	
+		63H	
+		64H一7FH	
+1  3
+表7 {缤，
+		内	容		
+	环境				
+	预留				
+	通用采集器				
+	预留				
+	用户自定义				
+
+		内	容		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			含开关量含开关量
+			
+			
+			
+			
+			
+			
+			
+		果具备此功能，应符合	本规定。
+注：加*号的命令表示是可选的，监控模块（SM）可以不具备此功能，如		
+10通用命令
+　　表9．表19列出了由SU发出到SM的通用命令信息，相应地同时也列出了由SM根据接收到的命令信息，应返回给SU的响应信息。在这些信息中，CDI是设备类型标识码，见表7。
+10．1获取时间
+表9获取时间命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	CID 1	4DH 	LENGTH		CHKSUM	EOI
+注：LENID · OOHO
+表10获取时旬嘛应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	CID 1	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：LEND OEH, DATAINFO由DATATIME组成，见表6。
+10·2设定时间
+表1 1 设定时间命令儐
+．字．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	Al)R	CID 1	4EH	LENGTH 	COMMAND INFO	CHKSUM	EOI
+　注：LEND：OEH, CONMAND INFO由COMMAND TIME组成，见表6。
+表12设定时间响应信
+序号		2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	CID 1	RTN	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+10 · 3获取协议版本号
+表13 获取协议本号命令惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	Al)R	CID 1	4H1	LENGTH		CHKSUM	EOI
+　注：LENID = OOH, VER为任意值。
+表14获取协议版本号响应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	CID 1	RIN	LENGTH		CHKSUM	EOI
+　注：LEND OOHO SM收到该命令后，不判断收到命令的VER,将协议的版本号填人到响应信息中的VER字段。
+　示例：当版本号为2.1时，则VER为21H；版本号为5．12时，VER为5CHO
+　10 ·4获取设备（SM，地址
+15获取设备地址命令伯惠
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENII)/2	2	1
+格式	SOI	VER	ADR	CID 1	50H	LENGTH		CHKSUM	EOI
+　注：LEND：OOH, VER与ADR可以为任意值。SM收到后不判断VER与ADR,对任意值的VER与ADR都响应。
+　此命令只能适用于点到点的通信方式。
+裹16获取设备地址应信惠
+．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	CID 1	RTN	LENGTH		CHKSUM	EOI
+　注：LEND = OOH, ADR为该SM的地址。
+　10 · 5获取设备{ SM，厂商信息
+表17 获取设备厂商倍惠命令倍慝
+序号		2	3	4	5	6	7	8	9
+字节数	1		1		1	2	LENID/2	2	
+格式	SOI	VER	ADR	CID 1	51H	LENGTH		CHKSUM	EOI
+　注：LENID =〔H。
+
+· 
+表18 获取设备厂商信息响应息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1			1	2	LEMD/2	2	1
+格式	SOI	VER	Al)R	CID 1	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：LENID = 40H， DATAINFO内容见表19。
+表19 DATAINFO内容
+序号	名称	
+1	采集器名称	
+2	厂商软件版本	2
+3	厂商名称	
+　注，采集器名称和厂商名称均为ASCII码字符；软件版本为2字节，每个字节均为整型数。
+　示例：生产厂商版本号为2.11，则厂商软件版本字段为020BH；版本号为2· 1时，厂商软件版本字段为0201H。
+
+附录A {规范性附录》监控设备命令编码表
+综合表7和表8，表A· 1一表A．14给出了各类监控设备命令信息编码表。
+　注：各表中加*号的命令表示是可选的，监控模块SM可以不具备此功能，如果具备此功能，应符合本规定。
+序号		内	容		CID 1		CID2	备 注
+1	获取模拟量量化后数据（浮点数）	24H		26H	41H	
+2	获取模拟量量化后数据（定点数）	24H		26H	42H	
+3	获取开关输人状态	24H	25H	26H	43H	
+4	获取告警状态	24H		26H		
+5	遥控	24H	25H		45H	
+6	获取系统参数（浮点数）	24H		26H	46H	
+7	获取系统参数（定点数）	24H		26H	47H	
+8	设定系统参数（浮点数）	24H		26H	48H	
+9	设定系统参数（定点数）	24H		26H	49H	
+10	获取系统历史数据（浮点数）*	24H	25H	26H	4AH	含开关量
+11	获取系统历史数据（定点数）*	24H	25H	26H	4BH	含开关
+12	获取历史告警*	24H		26H	4CH	
+13	获取监测模块时间專	24H	25H	26H	4DH	
+14	设定监测模块时间*	24H	25H	26H	4EH	
+巧	获取通信协议版本号	24H	25H	26H	4FH	
+16	获取设备地址	24H	25H	26H	50H	
+17	获取设备（监测模块）厂商信息	24H	25H	26H	51H	
+1 8	用户自定义	24H	25H	26H	80H一EFH	
+表A· 1 高压配电设备命令儐编码裹
+序号	内容		CID 1		Cll)2	备 注
+1	获取模拟量量化后数据（浮点数）	20H		23H	41H	
+2	获取模拟量量化后数据（定点数）	20H		23H	42H	
+3	获取开关输人状态	20H	21H	22H	23H	43H	
+4	获取告警状态	20H	21H	22H	23H		
+5	获取系统历史数据（浮点数）·	20H	21H	22H	23H	4AH	含开关量
+6	获取系统历史数据（定点数）·	20H	21H	22H	23H	4BH	含开关量
+7	获取历史告警	20H	21H	22H	23H	4CH	
+8	获取监测模块时间·	20H	21H	22H	23H	4DH	
+9	设定监测模块时间*	20H	21H	22H	23H	4EH	
+10	获取通信协议版本号	20H	21H	22H	23H		
+11	获取设备地址	20H	21H	22H	23H	50H	
+12	获取设备（监测模块）厂商信息	20H	21H	22H	23H		
+13	用户自定义	20H	21H	22H	23H	80H一EFH	
+A.2 低压配电设夤命令儐篥表
+．
+A.3 柴油发电机组 倌息编码表
+		内	容	CID 1	CID2	备 注
+1	获取模拟量量化后数据（浮点数）	28H	41H	
+2	获取模拟量量化后数据（定点数）	28H	42H	
+3	获取开关输人状态	28H	43H	
+4	获取告警状态	28H	4H	
+5	遥控	28H	45H	
+6	获取系统参数（浮点数）	28H	46H	
+7	获取系统参数（定点数）	28H	47H	
+8	设定系统参数（浮点数）	28H	48H	
+9	设定系统参数（定点数）	28H	49H	
+10	获取系统历史数据（浮点数）*	28H	4AH	含开关量
+11	获取系统历史数据（定点数）*	28H	4BH	含开关量
+，2	获取历史告警，	28H	4CH	
+13	获取监测模块时间*	28H	4DH	
+14	设定监测模块时间*	28H	4EH	
+巧	获取通信协议版本号	28H		
+16	获取设备地址	28H	50H	
+17	获取设备（监测模块）厂商信息	28H	51H	
+18	用户自定义	28H	80H一EFH	
+A.4 燃气发电机组命令惠编鴯表
+序号		内	容	CD 1	CID2	备 注
+1	获取模拟量量化后数据（浮点数）	29H	41H	
+2	获取模拟量量化后数据（定点数）	29H	42H	
+3	获取开关输人状态	29H	43H	
+4	获取告警状态	29H		
+5	遥控	29H	45H	
+6	获取系统参数（浮点数）	29H	46H	
+7	获取系统参数（定点数）	29H	47H	
+8	设定系统参数（浮点数）	29H	48H	
+9	设定系统参数（定点数）	29H	49H	
+10	获取系统历史数据（浮点数）*	29H		含开关量
+Il	获取系统历史数据（定点数）*	29H	4BH	含开关量
+12	获取历史告警	29H	4CH	
+13	获取监测模块时间，	29H	4DH	
+14	设定监测模块时间*	29H		
+巧	获取通信协议版本号	29H	4FH	
+16	获取设备地址	29H	50H	
+17	获取设备（监测模块）厂商信息	29H	51H	
+18	用户自定义	29H	80H一EFH	
+
+1 3 
+	表A.5 UPS供电系	儐码
+	内容		CID2	
+			41H	
+			42H	
+			43H	
+			44H	
+			46H	
+			47H	
+			48H	
+			49H	
+			4AH	含开关量
+			4BH	含开关量
+			4CH	
+			4DH	
+			4EH	
+				
+			50H	
+			51H	
+				80H · EFH	
+
+	内容			备注
+			41H	
+			42H	
+				
+			46H	
+			47H	
+			48H	
+			49H	
+				含开关量
+			4BH	含开关量
+			4CH	
+			4DH	
+			4EH	
+			4FH	
+			50H	
+			51H	
+			80H一EFH	
+· 
+	表A.7 开关电源系统	编表
+序号	内容		CID 1		CID2	备 注
+1	获取模拟量量化数据（浮点数）	40H	41H	42H	41H	
+2	获取模拟量化数据（定点数）	40H	41H	42H	42H	
+3	获取开关输人状态	40H	41H		43H	
+4	获取告警状态	40H	41H	42H		
+5	遥控		41H		45H	
+6	获取系统参数（浮点数）	40H		42H	46H	
+7	获取系统参数（定点数）	40H		42H	47H	
+8	设定系统参数（浮点数）	40H		42H	48H	
+9	设定系统参数（定点数）	40H		42H	49H	
+10	获取系统历史数据（浮点数）·	40H	41H	42H	4AH	含开关量
+11	获取系统历史数据（定点数）·	40H	41H	42H	4BH	含开关量
+12	获取历史告警	40H	41H	42H	4CH	
+13	获取监瀏模块时间·	40H	41H	42H	4DH	
+，4	设定监测模块时间·	40H	41H	42H	4EH	
+5	获取通信协议版本号	40H	41H	42H	4FH	
+16	获取设备地址	40H	41H	42H	50H	
+．17	获取设备（监测模块）厂商信息	40H	41H	42H	51H	
+18	用户自定义	40H	41H	42H	80H · BFH	
+　A.8 太阳能供电设夤命令償憊
+序号		内	容	CIDI	CID2	备 注
+1	获取模拟量量化后数据（浮点数）	43H	41H	
+2	获取模拟量量化后数据（定点数）	43H	42H	
+3	获取开关输人状态	43H	43H	
+4	获取告警状态	43H		
+5	遥控	43H	45H	
+6	获取系统参数（浮点数）	43H	46H	
+7	获取系统参数（定点数）	43H	47H	
+8	设定系统参数（浮点数）	43H	48H	
+9	设定系统参数（定点数）	43H	49H	
+10	获取系统历史数据（浮点数）	43H		
+11	获取系统历史数据（定点数）·	43H	4BH	
+12	获取历史告警*	43H		
+13	获取监测模块时间	43H	4DH	
+14	设定监测模块时间·	43H	4EH	
+巧	获取通信协议版本号	43H	4FH	
+16	获取设备地址	43H	50H	
+17	获取设备（监测模块）厂商信息	43H	51H	
+18	用户自定义	43H	80H一EFH	
+序号	内容	CIDI	CID2	备 注
+1	获取模拟量量化后数据（浮点数）	46H	41H	
+2	获取模拟量量化后数据（定点数）	46H	42H	
+3	获取告警状态	46H		
+4	获取系统参数（浮点数）	46H	46H	
+5	获取系统参数（定点数）	46H	47H	
+6	设定系统参数（浮点数）	46H	48H	
+7	设定系统参数（定点数）	46H	49H	
+8	获取系统历史数据（浮点数）*	46H		含开关量
+9	获取系统历史数据（定点数）*	46H	4BH	含开关量
+10	获取历史告警*一	46H	4CH	
+　表A.9 流一夜流变换器命令償惠鱸鴯
+序号		内	容	CID 1	CID2	备 注
+1	获取模拟量量化后数据（浮点数）		41H	
+2	获取模拟量量化后数据（定点数）		42H	
+3	获取告警状态		44H	
+4	获取系统参数（浮点数）	44H	46H	
+5	获取系统参数（定点数）	44H	47H	
+6	设定系统参数（浮点数）	44H	48H	
+7	设定系统参数（定点数）	44H	49H	
+8	获取系统历史数据（浮点数）*		4AH	
+9	获取系统历史数据（定点数	44H	4BH	
+10	获取历史告警*	44H	4CH	
+Il	获取监测模块时间*	44H	4DH	
+12	设定监测模块时间·		4EH	
+13	获取通信协议版本号	44H		
+14	获取设备地址	44H	50H	
+巧	获取设备（监测模块）厂商信息		51H	
+16	用户自定义		80H一EFH	
+A· 10 风力发电设夤命令儐篳
+	内容	CID 1	CID2	备 注
+1	获取模拟量量化后数据（浮点数）	45H	41H	
+2	获取模拟量量化后数据（定点数）	45H	42H	
+3	获取开关输人状态	45H	43H	
+4	遥控	45H	45H	
+5	获取系统历史数据（浮点数）·	45H		含开关量
+6	获取系统历史数据（定点数）*	45H	4BH	含开关量
+7	获取监测模块时间·	45H	4DH	
+8	设定监测模块时间*	45H	4EH	
+9	获取通信协议版本号	45H		
+10	获取设备地址	45H	50H	
+11	获取设备（监测模块）厂商信息	45H	51H	
+12	用户自定义	45H	80H一EFH	
+　表A．1 1 电池监裝命令儐惠码
+
+YD.'T 	· 
+　表A．11 续，
+序号		内	容	CID 1	CID2	备	注
+11	获取监测模块时间*	46H	4DH		
+12	设定监测模块时间*	46H	4EH		
+13	获取通信协议版本号	46H			
+14	获取设备地址	46H	50H		
+巧	获取设备（监测模块）厂商信息	46H	5，H		
+16	用户自定义	46H	80H一EFH		
+表A．12 空调系统命令信息编码表
+序号	内		CID 1		CID2	备 注
+1	获取模拟量量化后数据（浮点数）	60H	61H	62H	63H	41H	
+2	获取模拟量量化后数据（定点数）	60H	61H	62H	63H	42H	
+3	获取开关输入状态	60H	61H	62H		43H	
+4	获取告警状态	ff)H	61H	62H	63H		
+5	遥控	ff)H	61H	62H		45H	
+6	获取系统参数（浮点数）				63H	46H	
+7	获取系统参数（定点数）	60H			63H	47H	
+8	设定系统参数（浮点数）				63H	48H	
+9	设定系统参数（定点数）	ú)H			63H	49H	
+10	获取系统历史数据（浮点数）	，H	61H	62H	63H	4AH	含开关量
+11	获取系统历史数据（定点数）*	60H	61H	62H	63H	4BH	含开关量
+12	获取历史告警*	60H	61H	62H	63H	4CH	
+13	获取监测模块时间	6)H	61H	62H	63H	4DH	
+14	设定监测模块时间	60H	61H	62H	63H	4EH	
+巧	获取通信协议版本号	60H	61H	62H	63H		
+16	获取设备地址		61H	62H	63H	50H	
+17	获取设备（监测模块）厂商信息	f)H	61H	62H	63H	51H	
+18	用户自定义	K)H	61H	62H	63H	80H、EFH	
+豪A· 13 环境命令儐编码豪
+序号	内容	CIDI	CID2	备	注
+1	获取模拟量量化后数据（浮点数）	80H	41H		
+2	获取模拟量量化后数据（定点数）	80H	42H		
+3	获取告警状态	80H	44H		
+4	遥控	80H	45H		
+5	获取系统参数（浮点数）	80H	46H		
+6	获取系统参数（定点数）	80H	47H		
+7	设定系统参数（浮点数）	80H	48H		
+8	设定系统参数（定点数）	80H	49H		
+9	获取系统历史数据（浮点数）*	80H			
+10	获取系统历史数据（定点数）*	80H	4BH		
+11	获取历史告警率	80H	4CH		
+12	获取监测模块时间*	80H	4DH		
+13	设定监测模块时间·	80H	4EH		
+14	获取通信协议版本号	80H			
+巧	获取设备地址	80H	50H		
+16	获取设备（监测模块）厂商信息	80H	51H		
+17	用户自定义	80H	80H · EFH		
+· 
+　表A· 14通用采器命令倍编鴯表
+一		内	容			备注
+鼷		90H		
+		90H		
+		90H	43H	
+		90H	4H	
+		90H	45H	
+		90H	46H	
+		90H	47H	
+		90H	48H	
+		90H	49H	
+		90H		含开关量
+			4BH	含开关量
+		90H		
+		90H	4DH	
+		90H		
+				
+		90H	50H	
+			51H	
+		90H	80H · EFH	
+
+
+·
+附录B
+规范性附录》
+前端智能设备通信协议
+B.I说明
+　　a）电源设备工作采用三相电或单相电模式。在三相电工作模式下，信息字段顺序为“三相线电压 A.B/fi电压A（电流A），三相线电压BC湘电压B（电流B），三相线电压C相电压c（电流c）" 在单相电工作模式下，信息字段“三相线电压AB湘电压A（电流A）"以“单相电压（电流）"值替代，信息字段“三相线电压BC/相电压B（电流B）"和“三相线电压CA/相电压c（电流c）"则分别以十六进制数20H填充。
+　　b）模拟量数据的传送采用定点数或浮点数两种形式之一
+　　c）在收到“获取模拟量量化后数据（含浮点数，定点数）" “获取开关输人状态"，“获取告警状态"，“获取系统历史数据（含浮点数，定点数）" “获取历史告警"命令信息后，SM返回给SU 的响应信息中，DATANFO字段首先为一标示字节DATAFLAG,描述如下：
+	D6				D2		
+　　DO:告警标示位，有未上报告警量变化时为1,否则为0。在“获取告警状态"命令的响应信息中，此位无效。
+　　D4:开关标示位，有未上报开关量变化时为1，否则为0。在“获取开关输人状态"命令响应信息中，此位无效。
+其他位用户自定义。
+　　d）未监测可选项的相应字节传送十六进制数值20H。
+　　e）在通信协议中，如果用户自定义监测数量为0，则相应的“用户自定义遥测袱态/告警数量"字节为OOHO
+B2高压配电系统通信协议
+B．2 · 1数据类型
+采用定点数传送时，表B. l给出了相关数据类型。
+ B.l定点数时數据类型
+序号	遥测内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+	直流电压	无符号整型
+　B·2 ·2高压进线柜通信协议
+B．2．2．1获取系统模拟量鬚化数据（浮点数）
+表B．2是SU发给SM的命令信息，表B · 3是SM收到命令信息后，返回的响应信息。
+．
+表B.2 获取系统模拟鱟饢化数据{浮点数，命令儐息
+序号	1					6	7	8	
+字节数	1					2	LENID?	2	
+								CHKSUM	EOI
+注：LEND=OOH0
+表B.3 获取系统模拟鬚化据{浮点数》响应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LBNID/2	2	1
+格式	SOI	VER	ADR	20H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为高压进线柜遥测内容，见表BAO 
+B.4高压进柜羹内及传送序
+序号	内容
+1	高压进线柜数量M
+，	1#进线柜遥测内容
+1-	2#进线柜遥测内容
+	
+M+l	#进线柜遥测内容
+每一路高压进线柜的遥测内容见表B ·5。
+B.5一路高压进柜内響及传送序
+序号	内容	D字节	D字节
+	高压进线柜线湘电压ABIA		
+	高压进线柜线湘电压BC-IB		
+鼷	高压进线柜相电压(WC		
+	高压进线柜电流A		
+	高压进线柜电流B		
+	高压进线柜电流c		
+	用户自定义遥测数量p		
+	用户自定义字节		
+B．2 ·2．2获取、系统模拟饢量化数据《定点數）
+表B ·6是SU发给SM的命令信息，表B ·7是SM收到命令信息后，返回的响应信息。
+表8.6 获取系拟饢化数据{定点，命令
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	20H	42H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+裹B.7 获取系统模拟釁化数据{定点數，应償惠
+．宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	20H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAI组成，DATAI为高压进线柜遥测内容，见表BAO
+· 
+　B ·223获取开关输入状态
+表B．8是SU发给SM的命令信息，表B ·9是SM收到命令信息后，返回的响应信息。
+B.8 获取开关输入状态命令信戀
+						6	7	8	
+						2	LENID/2	2	
+								CHKSUM	EOI
+　注：LENID OOHO
+ 表8.9 获取开关输入状态响应憊
+序号	1	2		4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+							DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATE为高压进线柜状态，见表B．10。
+窦B.f 0压进线柜状态内響及传送序
+序号	内容
+1	高压进线柜数量M
+，	进线柜状态内容
+1
+一	2#进线柜状态内容
+	
++ 1	M#进线柜状态内容
+每一路高压进线柜的状态内容见表B. I I。
+　B.11一路高压綫柜状态内客及传送序
+序号	内容	
+	开关状态	1
+	用户自定义状态数量p	1
+	用户自定义字节	pxl
+开关状态字节描述：彐H：闭合；一I H：断开；
+　—80H-EFH:用户自定义。
+B ·2 ·2 ·4获取告警状态
+	表B · 12是SU发给SM的命令信息，表B · 13是SM收到命令信息后，返回的响应信息。	
+表& 12获取告警状态命令
+．字号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	20H	44H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+
+表B. 13 获取告警状态响应懸
+．序号	1	2	3	4		6	7	8	9
+字节数			1	1		2	LENIDP2	2	1
+格式	SOI	VER	ADR	20H 	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATA-INFO由DATAFLAG和WARNSTATE组成，WARNSTATE为高压进线柜告警状态。
+WARNSTATE信息见表B·14。
+　表B· 14高压进线柜告警内容及传送序
+序号	内容
+1	高压进线柜数量M
+，	进线柜告警内容
+3
+·	2#进线柜告警内容
+	
+M+l	#进线柜告警内容
+一路高压进线柜告警内容见表B ·巧。
+　表B· 15 一路离压进柜告警内及传送序
+序号	内容	
+	过流	1
+	速断	1
+		1
+	失压	1
+	用户自定义告警数量p	1
+	用户自定义字节	P)<l
+告警字节描述： —OOH：团合；一IH：跳闸告警；
+一80H一EFH:用户自定义。
+B．2 ·2 ·5获取历史数据{浮点斂）
+表B · 16是SU发给SM的命令信息，表B · 17是SM收到命令信息后，返回的响应信息。
+ B· 16获取历史数据浮点数，命令倍
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	20H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H，COMMAND r?{FO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+
+—COMMAND TYPE—OOH：一一℃OMMAND TYPE—O I H：
+　—COMMAND 'IYPE=02H:
+获取第一条历史数据命令；
+收到历史数据正确，要求上送下一条历史数据；
+
+接收历史数据错误，重发上一条历史数据。
+
+·
+表B．17获取历史皺据浮点数，应倌鬈
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	20H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据； —DATATYPE=OIH：发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（1b）、时（化e）、分（化）、秒（化）组成。
+DAT，信息见表B · 18。
+ 裹B．18高压进柜历史敵据及传送鱖序
+序号	内容
+	高压进线柜数量M
+	1 #进线柜历史数据内容
+	2#进线柜历史数据内容
+	
+M+l	M#进线柜历史数据内容
+一路高压进线柜历史数据见表B · 19。
+表B．19一路高压进线柜历史斂据内及传送序
+	内容	DATAF字节	DATAI*节
+	高压进线柜线/相电压AB/A		
+	高压进线柜纫相电压BC/B		
+	高压进线柜线湘电压CMC		
+	高压进线柜电流A		
+	高压进线柜电流B		
+	高压进线柜电流c		
+	用户自定义遥测数量		
+	用户自定义字节		
+	开关状态		
+	用户自定义状态数量		
+	用户自定义字节		
+B．2 ·2 ·6获取历史數据（定点数，
+表B · 20是SU发给SM的命令信息，表B ·21是SM收到命令信息后，返回的响应信息。
+B·20获取历史数据{定点数，命令
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	20H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND 02H，COMMAND INFO为1字节，由CONMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：
+　20
+
+　—COMMAND TYPE—OOH：
+　—COMMAND TYPE—01 H： —COMMAND TYPE=02H:
+获取第一条历史数据命令；
+收到历史数据正确，要求上送下一条历史数据；接收历史数据错误，重发上一条历史数据。
+　B．21获取历史數据定点數》响应倌惠
+
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	20H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATA组．成。
+根据DATATYPE取值不同，解释如下： —DATATYPE—OOH:正常发送一条历史数据；
+—DATATYPE=OIH：发送最后一条历史数据。
+DATATIME为历史数据发生的时间，由月（化）、日（1b）、时（1b）、分（1b）、秒
+（lbyte）组成。
+DATAI信息见表B · 18。
+B．227获取历史告警表B ·22是SU发给SM的命令信息，表B ·23是SM收到命令信息后，返回的响应信息。
+B·22获取历史告警命令倍
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR 	20H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：02H, COMMAND INFO为1字节，由CO、ND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+—COhMAND TYPE=OOH：获取第一条历史告警命令；
+—CONMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警； —CONMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+B·23获取历史告警购应慝
+．字号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDt2	2	1
+格式	SOI	VER 	Al)R	20H	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH,正常发送一条历史告警；
+—DATATYPE=OIH,发送最后一条历史告警。
+　　DATATIME为历史告警发生或结束的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B · 14。
+B ·2 ·3高压出线柜通信协议
+B．2 ·3．1获取开关输入状态
+．
+　表B · 24是SU发给SM的命令信息，表B · 25是SM收到命令信息后，返回的响应信息。
+表B．24 获取开关输入状态命令息
+						6	7	8	
+						2	LENID/2	2	
+						LENGTH		CHKSUM	EOI
+　注：I-ENID OOHO
+表B ·25 获取开关输入状态响应倍息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	21H	RTN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATE为高压出线柜状态。
+　RUNSTATE信息见表B ·26。
+表B．26高压出柜状态内及传送序
+	内容
+	高压出线柜数量M
+	1#出线柜运行状态内容
+	2#出线柜运行状态内容
+	
+M+l	M#出线柜运行状态内容
+一路高压出线柜运行状态内容见表B ·27。
+裊B．27一路压出战柜状态及传送豪序
+
+	内容	
+	开关状态	1
+	用户自定义状态数量p	1
+	用户自定义字节	pxl
+	
+开关状态字节描述：
+—OOH：团合； OIH:断开；
+　—80H-EFH:用户自定义。
+B·2．3．2获取告警状态
+表B．28是SU发给SM的命令信息，表B ·29是SM收到命令信息后，返回的响应信息。
+表B·28获取告警状态命令信惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LEN]D/2	2	1
+格式	SOI	VER	ADR	21H	44H	LENGTH		CHKSUM	EOI
+　注：I-ENID = OOHO
+
+363 
+表B．29获取告警状态应償
+序号	1	2	' 3	4	5	6	7	8．	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	21H	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为高压出线柜告警状态。
+WARNSTATE信息见表B·30。
+裹B·30高压出线柜告警内及传送豪序
+序号	内容
+1	高压配电出线柜数量M
+	出线柜告警内容
+3
+·	2#出线柜告警内容
+	
+M+l	M#出线柜告警内容
+一路高压出线柜告警内容见表B.31。
+B·31 一路高压出柜告警内复传送鱖序
+	内容	
+	过流	
+	速断	
+	接地	
+	失压	
+	变压器温度	
+	变压器瓦斯	
+	用户自定义告警数量	
+	用户自定义字节	
+告警字节描述：
+　—OOH：正常；
+一I H： 跳闸告警；一2H： 变压器高温告警；一3H：变压器过温告警；
+—04H:变压器轻瓦斯告警； —05H： 变压器重瓦斯告警；一80H-EFH:用户自定义；
+　—FOH:其他故障。
+B·2．3 ·3获取历史数据《浮点数》
+表B．32是SU发给SM的命令信息，表B · 33是SM收到命令信息后，返回的响应信息。
+表B·32获取历史數据（浮点数，命令僖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	21H	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND INFO为1字节，由COMMAND TYPE组成。
+．
+根据CO、焦覆AND TYPE取值不同，解释如下：
+—CONMAN) TYPE-OOH：获取第一条历史数据命令；
+—CONMAND TYPE=OIH：收到历史数据正确，要求上送下一条历史数据； —CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+表B.33获取历史数据{浮点数，响应息
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	Al)R	21H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE—OOH:正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+　DAT．信息见表B ·26。
+B．2．3·4获取历史数据{定点蠶
+表B ·34是SU发给SM的命令信息，表B ·35是SM收到命令信息后，返回的响应信息。
+B.34获取历史斂据{定点皺}命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR 	21H	4BH 	LENGIH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H，CONMAN) INFO为1字节，由CONMAND TYPE组成。
+根据COMMAND 'PE取值不同，解释如下：
+—CONMAND TYPE-OOH：获取第一条历史数据命令；
+—CONMAND TYPE=OIH：收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+表8.35获取历史数据定点数，响应倍惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	21H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATA]组成。
+根据DATA 'PE取值不同，解释如下：
+—DATATYPE—OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（化）、秒（化）组成。
+　DATAI信息见表B ·26。
+B．2 ·3·5获取历史告警
+　24
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　1363 · 表B · 36是SU发给SM的命令信息，表B ·37是SM收到命令信息后，返回的响应信息。
+8.36获取历史告警命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	21H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	BOI
+　注：LEND：02H，COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CO、伏ND TYPE取值不同，解释如下：
+一0、伏ND TYPE-OOH：获取第一条历史告警命令；
+一0、焦瓦D TYPE=OI H：收到历史告警正确，要求上送下一条历史告警；一0、岱D TYPE=02H：接收历史数据错误，重发上一条历史数据。
+ B，37获取历史告警响应
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	21H	RTN 	LENGTH	DATAINFO	CHKSUM	BOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史告警； —DATATYPE=OIH:发送最后一条历史告警。
+　　DATAI皿化为历史告警发生的时间，．由（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B·30。
+B·2 ·4高压母联柜通信协议 B．241获取开关输入状态
+表B ·38是SU发给SM的命令信息，表B．39是SM收到命令信息后，返回的响应信息。
+8.38 获取开关翰入状态命令儐慝
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	22H	43H	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+表B ·39 获取开关输入状态应
+序号	1	2	3	4	5	6	7	．8	9
+字节数	1	1	1	1	1	2	LENII)/2	2	1
+格式	SOI	VER	ADR	22H	RTN	LENGTH	DATAINFO	C!HKSUM	EOI
+　注：DATAINFO由DATAFLAG和RUNSTATB组成，RI-INSTATE为高压母联柜系统状态， RUNSTATE信息见表B．囀。
+
+B．40高压母联柜状态及传送顯序
+序号	内容	
+	开关状态	1
+	用户自定义状态数量p	1
+	用户自定义字节	× 1
+状态字节描述： —OOH：团合；一IH：断开；
+　一80H一E：用户自定义。
+B·2·4·2获取告警状态
+表B ·41是SU发给SM的命令信息，表B ·42是SM收到命令信息后，返回的响应信息。
+B．41获取告警状态命令倍
+序号	1	2	3	4	5	6	7	8	9
+字节数			1	1	1	2	LENID12	2	1
+格．式	SOI	VER	ADR	22H	44H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B·42获取告警状态应儐鏖
+序号		2	3	4	5	6	7	8	9
+字节数		1		1	1		I-ENDO	2	1
+格式	SOI	VER	ADR	22H 	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为高压母联柜告警状态； WARNSTATE信息见表B·43。
+　表B·43压毋联柜告警内客及传送序
+	内容	
+	过流	1
+	速断	1
+	用户自定义告警数量p	1
+	用户自定义字节	× 1
+告警字节描述： —OOH：正常；
+．IH：跳闸告警；一80H一用户自定义；
+　—FOH:其他故障。
+B．2．4．3获取历史数据浮点数，
+表B是SU发给SM的命令信息，表B ·45是SM收到命令信息后，返回的响应信息。
+　B.44获取历史数据{浮点，命令倍惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID12	2	1
+格式	SOI	VER	ADR	22H	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND=02H, COMMANDINFO为1字节，由COMMANDTYPE组成。
+	1 	3
+根据COMMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE—OOH： 获取第一历史数据命令；
+一．．℃OMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；一一．℃OMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+表B．45获取历史数据{浮点数，应惠
+　　　．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENII)/2	2	1
+格式	SOI	VER 	Al)R	22H 	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE—OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATIì?v化为历史数据发生的时间，由月（化）、日( )b）、时（1b）、分（lbyte）、秒( )b）组成。
+　DAT．信息见表B ·40。
+B ·244获取历史数据定点数）
+表B ·46是SU发给SM的命令信息，表B ·47是SM收到命令信息后，返回的响应信息。
+B．46：获取历史数据{定点，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	22H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND为1字节，由CONMAND TYPE组成。
+根据CO、ND TYPE取值不同，解释如下：
+一．一℃OMMAND TYPE—OOH： 获取第一条历史数据命令；
+一一．℃OMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；
+　—COMMAND TYPE—02H： 接收历史数据错误，重发上一条历史数据。
+表B．47获取历史据{定点数，应
+，宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI	VER 	ADR	22H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATn亻E为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（化）、秒（1b）组成。
+DATAI信息见表B·40。
+　2m5
+B．2 ·4·5获取历史告警
+表B．48是SU发给SM的命令信息，表B ·49是SM收到命令信息后，返回的响应信息。
+ B·48获取历史告警命令償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR 	02H	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE-OOH：获取第一条历史告警命令；
+—CONMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；
+—CONMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+豪B．49获取历史告警应儐鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1		1	2		2	1
+格式	SOI	VER 	ADR	22H	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATEI组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH：正常发送一条历史告警； —DATATYPE-OIH:发送最后一条历史告警。
+　　DATATIN为历史告警发生的时间，由月（化）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B ·43。
+B·2 ·5高压流操作电源柜通信协议
+B·2 ·5．1获取系统模拟饢鬚化数据（浮点数）
+表B ·50是SU发给SM的命令信息，表B ·51是SM收到命令信息后，返回的响应信息。
+B·50 获取系模拟化数据{浮点数，命令儐
+序号	1		3			6	7	8	
+字节数	1		1			2	LENID/2	2	
+格式	SOI 	VER	ADR	23H 	41H	LENGTH			
+注：LEND OOHO
+表B ·51 获取系模拟釁化数据{浮点数，嘛应儐惠
+序号	1	2	3	4	5	6	7	8	
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	23H 	RTN 	LENGTH	DATA-INFO		
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为高压直流操作柜遥测内容。
+DATAF信息见表B·52。
+
+YD丌
+表B·52高压流操作电柜内饗及传送顺序
+	内容	DATAF字节	DATA字节
+	贮能电压		
+	控制电压		0
+	用户自定义遥测数量		1
+	用户自定义字节	4	
+B ·2 ·5 ·2获取系模拟量量化据《定点数，表B ·53是SU发给SM的命令信息，表B ·54是SM收到命令信息后，返回的响应信息。
+表B·53 获取系毓横拟饢化数据定点数，命令慝
+		
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	23H	42H	LENGTH		CHKSUM	EOI
+
+注：LEND OOHO
+裊B．54 获取系统拟化数据定点数，应償
+．宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+	格式	SOI VER	ADR 23H RTN	LENGTH	CHKSUM EOI
+　注：DATANFO由DATAFLAG和DATAI组成，DATA为高压直流操作柜遥测内容。
+DATAI信息见表B ·52。
+B·2．5．3获取开关输入状态表B ·55是SU发给SM的命令信息，表B ·56是SM收到命令信息后，返回的响应信息。
+B．55 获取开关输入状命令儐
+	1	2	3	4	5	6	7		9
+字节数	1	1	1	1	1	2			1
+	格式	SOI VER	ADR 23H 43H LENGTH	0.
+　注：LENID = OOHO
+
+ B·56 获取开关入状态应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+	格式	SOI VER	ADR 23H RTN	LENGTH	CHKSUM EOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATE为高压直流操作拒遥测内容。
+　RUNSTATE见表B．57。
+表B．57高压流操作电柜状态及传送序
+	内容	
+	监测直流操作电源柜开关数量M	
+	开关1状态	
+		
++ 1	开关M状态	
++2	用户自定义状态数量p	
+M+3	用户自定义字节	×1
+运行状态字节描述：
+1 3 2 5
+　—OOH：团合；一IH：断开；
+　—80H-EFH:用户自定义。
+B ·2．5 ·4获取告警状态
+表B ·58是SU发给SM的命令信息，表B ·59是SM收到命令信息后，返回的响应信息。
+表B·58获取告警状态命令息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	23H	44H	LENGTH		CHKSUM	EOI
+　注：LENID=OOH0
+表B·59获取告警状态响应息
+		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	Al)R	23H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和WARNSTATE组成，WARNSTATE为高压直流操作柜遥测内容。
+WARNSTATE信息见表B.600
+　B．60高压配电賓流操作电源柜告警内容及传送顯序
+	内．容	
+	贮能电压	
+	控制电压	
+	直流操作柜充电机	
+	用户自定义告警数量p	
+	用户自定义字节	
+告警字节描述： —OOH：正常；一IH：低于下限； —02H:高于上限；一刁3H：充电机故障；
+　—80H-EFH：用户自定义；
+　—FOH:其他故障。
+B．2 ·5．5获取历史数据（浮点数）
+表B ·61是SU发给SM的命令信息，表B．62是SM收到命令信息后，返回的响应信息。
+表B·61获取历史数据{浮点數）命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	23H	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CONMAND取值不同，解释如下：
+—CONMAND TYPE-OOH：获取第一条历史数据命令；
+
+　—COMMAND TYPE=01 H：
+—COMMAND TYPE=02H：收到历史数据正确，要求上送下一条历史数据；接收历史数据错误，重发上一条历史数据。
+　B ·62获取历史蠶据浮点，应儐
+
+，宇．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER 	ADR	23H	RIN 	LENGTH		CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIMB和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。 
+　　DATATIME为历史数据发生的时间，由月（1b）、日（化）、时（1b）、分（lbyte)、秒（1b）组成。
+DATAF信息见表B·63。
+B·63压流操作电濠柜历史数据及传送序
+	内容		
+		DATAF		
+	贮能电压			
+	控制电压			
+	用户自定义遥测数量			
+	用户自定义字节	4		
+	直流操作电源柜开关数量M		1
+	开关1状态		1
+			
+M+5	开关糍状态		1
+	用户自定义状态数量		1
+M+7	用户自定义字节		
+B．2．5 · 6获取历史数据定点数》
+表B ·是SU发给SM的命令信息，表B ·65是SM收到命令信息后，返回的响应信息。
+B.64获取历史数据定点數，命令償憊
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-ENID,?2	2	1
+格式	SOI	VER	ADR	23H 	4BH	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND mFO为1字节，由COMMAND TYPE组成。
+根据COhMAND TYPE取值不同，解释如下：
+—COMMAND TYPE—OOH： 获取第一条历史数据命令；
+一．．℃OMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；
+—COMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+
+　． 2 5
+ B·65 获取历史數据定点数》应
+，．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER 	ADR	23H	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=OIH：发送最后一条历史数据。
+　　DAT皿化为历史数据发生的时间，由月（1b）、日（1b）、时（lbyte）、分（1b）、秒（1b）组成。
+　DATAI信息见表B ·63。
+B．2 ·5·7获取历史告警表B ·66是SU发给SM的命令信息，表B．67是SM收到命令信息后，返回的响应信息。
+B.66获取历史告警命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR 	23H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND=02H, COMMAND为1字节，由COMMANDTYPE组成。
+根据CONMAND TYPE取值不同，解释如下：一O、伏ND TYPE=OOH：获取第一条历史告警命令；一0、ND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；
+—￡0bMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+表B·67获取历史告警应
+，．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENII)/2	2	1
+格式	SOI	VER 	ADR	23H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH：正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIME为历史告警发生或结束的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（化e）组成。
+WARNSTATE信息见表B.600
+B.3低压配电系统通倍协议
+
+B·3 · 1数据类型
+采用定点数传送时，
+
+68给出了相关数据类型。
+B·68定点数时數据类型
+	遥测内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+	功率因数	无符号整型
+	频率	无符号整型
+B惠2进线柜通信议
+B．3．2 · 1获取系统模拟鬚量化数据浮点數，
+表B ·69是SU发给SM的命令信息，表B ·70是SM收到命令信息后，返回的响应信息。
+表B·69获取系统模拟鬚化蠶据浮点数，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	24H	41H	LENGTH	COMMAND INFO	CHKSUM	EOI'
+　注：LEND = 02H, COMMAND NFC)为1字节，由COMMAND GROUP组成。
+根据CO、ND GROUP取值不同，解释如下：
+　　一一．℃OMMAND GROUP：FFH:多个进线柜时，获取所有进线柜的遥测量数据；单个进线柜时，获取进线柜遥测量数据；
+　　—COMMAND GROUP 一OIH:多个进线柜时，获取第1个进线柜的遥测量数据；单个进线柜时，获取进线柜遥测量数据；
+—COMMAND GROUP一02H：多个进线柜时，获取第2个进线柜的遥测量数据；
+CONMAND GROUP = H：多个进线柜时，获取第”（十六进制）个进线柜的遥测量数据。
+表B70获取系统模拟鬚化数据浮点數}购应儈惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2		2	1
+格式	SOI 	VER	ADR	24H	RIN	LENGTH	DATANFO	CHKSUM	BOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为进线柜遥测量内容。
+根据COMMAND GROUP取值，DATAF返回信息：
+—COMMAND GROUP =艹：DATAF亻訁启、见表B ·71；
+一．℃OMMAND GROUP OlH—nnH: DATAF亻訁息见表B．72。
+豪B·71进柜邊瀏饢内容及传送顯序
+序号	内容
+	进线柜数量（1字节）
+	进线柜1遥测数据
+	进线柜2遥测数据
+	
++ 1	进线柜遥测数据
+单台进线柜遥测数据见 72。
+· 
+表B72单台进线柜遥测内容及传送顺序
+
+序号	内容	DATAF字节	DATAI字节
+1	交流输人线湘电压AB/A	4	
+0	交流输人线/相电压BC/B	4	
+^
+0	交流输人线/相电压CA/C	4	
+4
+．	交流输入电流A	4	
+5
+一	交流输人电流B	4	
+·
+6	交流输人电流c	4	
+7	功率因数	4	
+8	输人频率	4	
+9
+·	用户自定义遥测数量p	1	
+	用户自定义字节	×4	px2
+	
+B ·3·2．2获取系统模拟量化數据（定点数）
+表B ·73是SU发给SM的命令信息，表B．74是SM收到命令信息后，返回的响应信息。
+表B73获取系统模拟鬚化数据定点数，命令
+序号	1	2	3		5	6	7	8	9
+字节数	1	1	1		1	2	LEMD/2	2	1
+格式	SOI	VER	ADR 	24H 	42H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+　　0、ND GROUP：多个进线柜时，获取所有进线柜的遥测量数据；单个进线柜时，获取进线柜遥测量数据；
+　　—CONMAND GROUP：01H:多个进线柜时，获取第1个进线柜的遥测量数据；单个进线柜时，获取进线柜遥测量数据；
+—-CCWMAND GROUP：02H：多个进线柜时，获取第2个进线柜的遥测量数据；
+COMMAND GROUP nnH:多个进线柜时，获取第（十六进制）个进线柜的遥测量数据。
+表B·74获取系统模拟饢化數据（定点数响应惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	24H	RTN 	LENGTH	DATA-RNFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATA组成，DATAI为进线柜遥测内容。
+根据CONMAND GROUP取值，DATAI返回信息：
+　—COMMAND GROUP = H：DATAI信息见表B·71；
+—COMMAND GROUP = 01H一H：DATAI亻訁息见表B ·72。
+B·3 ·2 ·3获取开关输入状态
+75是SU发给SM的命令信息，表B．76是SM收到命令信息后，返回的响应信息。
+
+1 ·3 2m5
+表B75 获取开关翰入状态命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDt2	2	1
+格式	SOI	VER	ADR 	24H	43H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CO、伏ND GROUP取值不同，解释如下：
+　　—COMMAND GROUP一H：多个进线柜时，获取所有进线柜的运行状态；单个进线柜时，获取进线柜运行状态；
+　　—COMMAND GROUP = 01 H： 多个进线柜时，获取第1个进线柜的运行状态；单个进线柜时，获取进线柜运行状态；
+—COMMAND GROUP 02H： 多个进线柜时，获取第2个进线柜的运行状态；
+一一．℃OMMAND GROUP H ··多个进线柜时，获取第（十六进制）个进线柜的运行状态。
+豪B·76获取开关鑰入状态应償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+EOI
+格式	SOI	VER	ADR	24H 	RTN	LENGTH		CHKSUM	
+　注：DATAINFO由DATAFLAG和成，RUNSTA为进线框运行状态。
+根据CO、岱ND GROUP取值，RUNSTATB返回信息：
+—COMMAND GROUP：FFH: RUNSTATE亻訁，息见表B·77；
+—COMMAND GROUP = 01 H—nnH：RUNSTATE亻訁息见表B ·78。
+豪B·77进柜运行状态内及传送鱖序
+	内容
+	进线柜数量M（1字节）
+	进线柜1的运行状态数据
+	进线柜2的运行状态数据
+	
+M+l	进线柜M的运行状态数据
+单台进线柜的运行状态内容见表B ·78。
+裹B78单台进柜的运行状态内及传送序
+序号	内容	
+		1
+	．用户自定义运行状态	1
+	用户自定义字节	P><I
+运行状态字节描述：
+　—OOH：团合；一IH：打开；
+　—80H-EFH:用户自定义。
+B·3．2 ·4获取告警状态
+表B ·79是SU发给SM的命令信息，表B ·80是SM收到命令信息后，返回的响应信息。
+B79获取告警状态命令
+序号		2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LENID/2	2	
+．格式	SOI	VER	ADR	24H	44H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND 02H，COMMAND INFO为，字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+　　—CONMAND GROUP：：多个进线柜时，获取所有进线柜的告警状态；单个进线柜时，获取进线柜告警状态；
+　　—COMMAND GROUP = 01 H： 多个进线柜时，获取第1个进线柜的告警状态；单个进线柜时，获取进线柜告警状太珧韌、，·
+一一．℃0、覆、LAND GROUP = 02H： 多个进线柜时，获取第2个进线柜的告警状太·
+—COMMAND GROUP = H ··多个进线柜时，获取第（十六进制）个进线柜的告警状太、0
+表B．80获取告警状态应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	24H 	RIN	LENGTH		CHKSUM	EOI?
+
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为进线柜告警状态。
+根据CO、焦卫GROUP取值，WARNSTATE返回信息：一一．℃OMMAND GROUP：FFH：WARNSTATE信息见表B．81；
+—COMMAND GROUP一OIH一H：WARNSTATE信息见表B·82。
+表B．81进柜告警内客及传送序
+序号	内容
+1	进线柜数量M（1字节）
+0	进线柜1的告警内容
+1	进线柜2的告警内容
+	
+M+l	进线柜材的告警内容
+一个进线柜的告警内容见表B ·82。
+表B．82一个进线柜的告警内窨及传送顺序
+序号	内容	
+	交流输人线/相电压AB/A	1
+	交流输人线/相电压BC/B	1
+	交流输人线/相电压CA/C	1
+	用户自定义告警数量	
+	用户自定义字节	× 1
+告警字节描述：
+· 2m5
+　—OOH：正常； —-01H:低于下限；一2H： 高于上限；
+　—03H： 缺相；
+．一80H-EFH：用户自定义；
+　—FOH:其他故障。
+B．325遥控表B · 83是SU发给SM的命令信息，表B是SM收到命令信息后，返回的响应信息。
+表B ·83邊控命令倍惠
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR 	24H	45H	LENGTH	COMMAND RNFO	CHKSUM 	EOI
+　　注：LENID4)4H, COMMAND INFO由COMMAND GROUP和COMMAND TYPE组成， 为2个字节，按传送顺序为COMMAND GROUP, COMMAND TYPEo
+根据CO、伏ND GROUP取值不同，解释如下：
+—CONN-AND GROUP=01 H：多个进线柜时，对进线柜1遥控；单个进线柜时，对进线柜遥控；一吒0、岱ND GROUP=02H:多个进线柜时，对进线柜2遥控；
+　-￡01vMAND GROUP=nnH:多个进线柜时，对进线柜nn（十六进制）遥控。
+根据CO、仆ND TYPE取值不同，解释如下： --COb'MAND TYPE-I OH：遥控开关开；一吒0、AND TYPE=IFH:遥控开关关。
+表B.84 邊控购应儐
+序号	1	2	3	4	5	6	7	8	9．
+字节数	1	1		1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	24H	RIN	LENGTH		CHKSUM	EOI
+注；LEND = OOH,
+B·3．2 · 6获取参数（浮点数} 表B ·85是SU发给SM的命令信息，表B．86是SM收到命令信息后，返回的响应信息。
+B·85获取參数（浮点数，命令償
+序号	1	2	3			6	7	8	9
+字节数	1	1	1			2	LENID/2	2	1
+格式	SOI	VER	ADR 	24H 	46H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID = 02H, COMMAND INFO由COMMAND GROUP组成。
+根据CO、伏ND GROUP取值不同，解释如下：
+　　GROUP=FFH:多个进线柜时，获取所有进线柜的参数；单个进线柜时，获取进线柜参数；
+—￡ONMAND GROUP=OIH:多个进线柜时，获取进线柜1的参数；单个进线柜时，获取进线柜参数；
+
+一℃OMMAND GROUP4)2H
+　—COMMAND GROUP—nnH
+多个进线柜时，获取进线柜2的参数；
+多个进线柜时，获取进线柜（十六进制）的参数。
+　表B．86获取数《浮点数，嘛应儐惠
+
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LEND/2	2	1
+格式	SOI	VER	ADR	24H	RTN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAF组成，为进线柜参数。
+根据CONMAND GROUP取值，DAT返回信息：
+COMMAND GROUP=FFH: DATAF信息见表B · 87；
+COMMAND GROUP—OIH．獼H：DATA下亻訁息见表B · 88。
+B·87进柜蠶内客及传送序
+	内容
+	进线柜数量M
+	进线柜1的参数
+	进线柜2的参数
+	
++ 1	进线柜的参数
+单个进线柜的参数见表B ·88。
+B·88单个进线柜的蠶内客及传送序
+	内容	D字节	D字节
+	交流输入线湘电压ABIA上限	4	
+	交流输入线湘电压AB/A下限	4	
+	交流输入线湘电压BC/B上限	4	
+	交流输入线湘电压BC-IB下限	4	
+	交流鑰．人纫相电压CAIC上限	4	
+	交流输入相电压CA/C下限	4	
+	用户自定义参数数量p	1	
+	用户自定义字节	P)<4	
+B·3．27获取参斂{定点數，表B ·89是SU发给SM的命令信息，表B ·％是SM收到命令信息后，返回的响应信息。
+B·89获取参数定点数，命令儐惠
+序号		2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LEND/2	2	
+格式	SOI	VER	ADR 	24H 	47H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H, COMMAND NFC)为1字节；由CONMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：一℃O、ND GROUP=FFH:多个进线柜时，获取所有进线柜的参数；单个进线柜时，获取进线柜
+
+· 
+GROUP=OIH:多个进线柜时，获取进线柜1的参数；单个进线柜时，获取进线柜参数；
+—COMMAND GROUP=02H	多个进线柜时，获取进线柜2的参数；
+一一．℃0、焦AND GROUP=nnH	多个进线柜时，获取进线柜（十六进制）的参数。
+表B．90获取参定点》应惠
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	24H 	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA]组成，为进线柜参数。
+根据CO、伏ND GROUP取值，DATAI返回信息：
+一一．℃OMMAND GROUP=FFH：DATAI亻訁息见表B ·87；一一．℃OMMAND GROUP=OI H—nnH：DATAI信息见表B．88。
+B ·3 ·2．8设定参数浮点数）表B · 91是SU发给SM的命令信息，表B ·93是SM收到命令信息后，返回的响应信息。
+B．91设定数{浮点蠶，命令慝
+序号		2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	24H 	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID = {汇H，COMMAND INFO由COMMAND GROUP、COMMAND TYPE和COMMAND DATAF组成。
+根据CO、焦伏ND GROUP取值不同，解释如下：
+—-C0hMA.ND GROUP=OIH：多个进线柜时，设置进线柜1的参数；单个进线柜时，设置进线柜参数；
+—CONMAND GROUP=02H:多个进线柜时，设置进线柜2的参数；
+　—CONN.-AND GROUP=nnH多个进线柜时，设置进线柜（十六进制）的参数。
+一O、伏ND TYPE信息见表B．92。
+表B．92设定参类型表
+	内容	COMMAND TYPE
+	交流输入线/相电压AB/A上限	80H
+	交流输人线湘电压AB/A下限	81H
+	交流输人线/相电压BC/B上限	82H
+	交流输入线湘电压BC/B下限	83H
+	交流输人线湘电压CA/C上限	84H
+	交流输人线/相电压CMC下限	85H
+	用户自定义参数	COH一EFH
+　2m5
+
+B·3·2．9设定参数（定点》	
+表B ·94是SU发给SM的命令信息，表B ·95是SM收到命令信息后，返回的响应信息。
+表8.94设定參数{定点，命令伯
+序号	I	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR 	24H 	49H	LENGTH	CO、(A№ INFO	CHKSUM	EOI
+　注：LEND：08H，COMMAND INFO由COMMAND GROUP, COMMAND TYPE和DATA-I组成。
+根据CO、伏ND GROUP取值不同，解释如下：
+
+—CONMAND GROUP=OIH:多个进线柜时，设置进线柜1的参数；单个进线柜时，设置进线柜参数；
+—CONMAND GROUP=02H：多个进线柜时，设置进线柜2的参数；
+—COMMAND GROUP=nnH多个进线柜时，设置进线柜”（十六进制）的参数。
+　—COMMAND TYPE信息见表B ·92。
+B·95设定参数定点数，应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR．	24H	RIN	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B ·3·2．10获取历史數据{浮点》
+表B．％是SU发给SM的命令信息，表B ·97是SM收到命令信息后，返回的响应信息。
+豪B·96获取历史据{浮点数，命令
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	24H	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：04H, COMMAND R?dFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据CO、焦覆AND TYPE取值不同，解释如下：
+—COMMAND TYPE-OOH:获取第一条历史数据命令；
+0、ND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；
+—CONMAND 'PE 2H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+　　一．O、ND GROUP=FFH：多个进线柜时，获取所有进线柜的历史数据；单个进线柜时，获取进线柜的历史数据；
+　40
+
+　　—COMMAND GROUP—OI H：线柜的历史数据；
+一一．℃O、、覆AND GROUP=02H：
+　—COMMAND GROUP=nnH：
+·
+多个进线柜时，获取第1个进线柜的历史数据；单个进线柜时，获取进
+多个进线柜时，获取第2个进线柜的历史数据；
+多个进线柜时，获取第nn（十六进制）个进线柜的历史数据。
+
+表B．97获取历史数据浮点数，响应倍憊
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	Al)R	24H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据；
+　　DATATIN化为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+根据COMMAND GROUP取值，DAT，返回信息：
+一一．℃0、亻AND GROUP=FFH：DATAF亻訁息见表B ·98；一一．℃0、AND GROUP=OI H、” H：DATAF亻訁息见表B ·99。
+ B．98进柜历史皺据内容及传送序
+序号	内容
+	进线柜数量M（1字节）
+	进线柜1历史数据
+	进线柜2历史数据
+	
++ 1	进线柜M历史数据
+单台进线柜历史数据见表B．99。
+B．99单台进线柜邊瀏内客及传送序
+	内容	DATAF字节	DATAI字节
+	交流输入线湘电压AB/A		
+	交流输人线/相电压BC/B		
+	交流输入线/相电压CA/C		
+	交流输人电流A		
+	交流输人电流B		
+	交流输人电流C		
+	功率因数		
+	输人频率		
+	用户自定义遥测数量，		
+	用户自定义字节		
+			1
+	用户自定义运行状态		1
+	用户自定义字节		
+
+．
+B ·3·2 · 1 1获取历史数据（定点，表B.IOO是SU发给SM的命令信息，表B · 101是SM收到命令信息后，返回的响应信息。
+B.IOO获取历史皺据定点，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?	2	1
+格式	SOI	VER	ADR	24H	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：(MH, CObMAND NFC)为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据CO、焦伏ND TYPE取值不同，解释如下：
+—CONMAND TYPE=OOH：获取第一条历史数据命令；
+—COhMAND TYPE—01 H：收到历史数据正确，要求上送下一条历史数据；
+—C(:??WAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+　　—CONMAND GROUP=FFH:多个进线柜时，获取所有进线柜的历史数据；单个进线柜时，获取进线柜的历史数据；
+　　—CONMAND GROUP=OIH:多个进线柜时，获取第1个进线柜的历史数据；单个进线柜时，获取进线柜的历史数据；一O、岱ND GROUP=02H：多个进线柜时，获取第2个进线柜的历史数据；
+一吒0、伏ND GROUP=nnH：多个进线柜时，获取第（十六进制）个进线柜的历史数据。
+豪B.IOI获取历史蠶据定点斂，购应償
+	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER 	ADR	24H 	RTN 	LENGTH		CHKSUM	BOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH：正常发送一条历史数据；
+—DATATYPE-OIH:发送最后一条历史数据；
+　　DATATME为历史数据发生的时间，由月（1b）、日（化）、时（lbyte)、分（lbyte）、秒（1b）组成。
+根据CONMAND GROUP取值，DATAI返回信息：
+—COMMAND GROUP=FFH: DATAI亻訁、见表B ·98； —COMMAND GROUP=OIH一H：DATAI信息见表B·99。
+B·3．2 · 12获取历史告警表B 2是SU发给SM的命令信息，表B · 103是SM收到命令信息后，返回的响应信息。
+表B· 102获取历史告警命令僖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	24H	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：04H, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+· 
+根据CO、ND TYPE取值不同，解释如下：
+一吒0、伏ND TYPE=OOH：获取第一条历史告警命令；
+—CONMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；
+—CONMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+根据COMMAND GROUP取值不同，解释如下：
+　　一0、ND GROUP=FFH:多个进线柜时，获取所有进线柜的历史告警；单个进线柜时，获取进线柜的历史告警；
+　　—COMMAND GROUP=01 H： 多个进线柜时，获取第1个进线柜的历史告警；单个进线柜时，获取进线柜的历史告警；
+一一℃0、覆AND GROUP=02H： 多个进线柜时，获取第2个进线柜的历史告警；
+一一℃OMMAND GROUP=nnH ··多个进线柜时，获取第nn（十六进制）个进线柜的历史告警。
+表B· 103获取历史告警响应儐息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER 	ADR	24H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组．成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH:正常发送一条历史告警； —DATATYPE=OIH：发送最后一条历史告警；
+　　DATAT化为历史告警发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+根据CO、LAND GROUP取值，WARNSTATE返回信息：一℃O、ND GROUP=FFH: WARNSTATE信息见表B.81 ;
+一一．℃0、仆亻AND GROUP=01 H一H：WARNSTATE信息见表B ·82。
+B．3．3配电柜通信协议
+B．3．3· 1获取开关输入状态
+表B · 1是SU发给SM的命令信息，表B · 105是SM收到命令信息后，返回的响应信息。
+表B．104获取开关翰入状态命令儐息
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	ADR	25H	43H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H，COMMAND R?4FO为1字节，由COMMAND GROUP组成。
+根据CO、焦亻AND GROUP取值不同，解释如下：
+　　—COMMAND GROUP：H：多个配电柜时，获取所有配电柜的运行状态；单个配电柜时，获取配电柜运行状态；
+　　—COMMAND GROUP = OIH: 多个配电柜时，获取第1个配电柜的运行状态；单个配电柜时，获取配电柜运行状态；
+　1 3· 
+—COMMAND GROUP = 02H： 多个配电柜时，获取第2个配电柜的运行状态；
+—COMMAND GROUP一”H：多个配电柜时，获取第（十六进制）个配电柜的运行状态。
+表B · 105获取开关翰入状态嘛应償憊
+．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	
+格式	SOI	VER	ADR	25H 	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和RUNSTATE组成，RUNSTATE为低压配电柜的运行状态。
+根据CO、AND GROUP取值，RUNSTATE返回信息：一一．℃OMMAND GROUP FFH：RUNSTATE信息见表B．I；
+—CONMAND GROUP一01H一H：RUNSTATE亻訁息见表B.1070 B· 1电柜运行状态及传送序
+序号	内容
+	配电柜數量M 0字节）
+	第1台配电柜运行状态
+	第2台配电柜运行状态
+	
+M+l	第台配电柜运行状态
+单台配电柜状态内容见表B．107。
+表B· 107 台电柜的状态内及传送序
+	内容	
+	监测开关数量M	
+	开关1状态	
+	开关2状态	
+		
+材+ 1	开关M状态	
+M+2	用户自定义运行状态数量p	
+M+3	用户自定义字节	pxl
+运行状态字节描述：
+H：团合；一1 H:打开；一80H一E：用户自定义。
+B ·3．3·2控表B · 108是SU发给SM的命令信息，表B. [是SM收到命令信息后，返回的响应信息。
+表8· 108控命令儐
+．号	1	2	3	4	5	6	7	8	9
+字节数		1	1	I	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	25H	45H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+注：LENID=06H, COMMAND FO由COMMAND GROUP、CO、(AND ID和COMMAND TYPE组成。
+·
+根据COMMAND GROUP取值不同，解释如下：
+—COMMAND GROUP=OIH:多个配电柜时，对配电柜1遥控；单个配电柜时，对配电柜遥控；
+—COMMAND GROUP4)2H多个配电柜时，对进线柜2遥控；
+—COMMAND GROUP=nnH多个配电柜时，对配电柜”（十六进制）遥控。
+根据CO `ND 0取值不嵩，解释如下： —COMMAND D：OIH：遥控第1个开关；一吒O、ND D = 02H：遥控第2个开关；
+	—COMMAND ID 	H：遥控第灬（十六进制）个开关。
+根据COMMAND TYPE取值不同，解释如下： —CONMAND TYPE= IOH：遥控开关分闸；
+	—COMMAND TYPE=IFH：遥控开关合闸。	
+B.109 鱟控应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	25H	灬．	N		CHKSUM	EOI
+注：LEND = OOH?
+B．3．3·3获取历史数据浮点数，表B.IIO是SU发给SM的命令信息，表B.ll 1是SM收到命令信息后，返回的应信息。
+豪B.110获取历史蠶据{浮点蠶，命令儐鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2		2	1
+格式	SOI	VER	ADR	25H	4AH		COMMAND INFO	CHKSUM	EOI
+　注：LENID = 04H, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据CONMAND TYPE取值不同，解释如下：一O、ND TYPFA)OH:获取第一条历史数据命令；
+O、ND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：一一．℃OMMAND GROUP=FFH：多个配电柜时，获取所有配电柜的历史数据；单个配电柜时，获取配
+
+电柜的历史数据；
+　　—COMMAND GROUH)IH: 电柜的历史数据；
+—COMMAND GROUP4)2H：
+—COMMAND GROUP=nnH:
+多个配电柜时，获取第1个配电柜的历史数据；单个配电柜时，获取配
+多个配电柜时，获取第2个配电柜的历史数据；
+多个配电柜时，获取第（十六进制）个配电柜的历史数据。
+
+·
+表B. 1 1 1 获取历史据浮点数，应償
+序号	1	2	3	4	5	6	7	8	．9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	25H	RIN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATAT[ME和DATAF组成。
+根据DATA 'PE取值不同，解释如下：
+　—DATATYPE=OOH:正发送一条历史数据；
+—DATATYPE=O IH：发送最后一条历史数据；
+　　DATAT为历史数据发生的时间，由月（1b）、日（1b）、时（化）、分（1b）、秒（1b）组成。
+根据CO、ND GROUP取值，DAT，返回信息：一0、伏ND GROUP=FFH: DATAF信息见表B.106；
+—COMMAND GROUP=OIH．H：DATAF亻訁息见表B.1070
+B·3·3．4获取历史数据{定点数表B.112是SU发给SM的命令信息，表B.113是SM收到命令信息后，返回的响应信息。
+8.112获取历史数据定点数，命令儐
+．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	25H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=04H, CONMANDINFO为2字节，由COMMANDTYPE与CONN-ANDGROUP组成。根据CONMAND TYPE取值不同，解释如下：
+—COMMAND TYPE-OOH：获取第一条历史数据命令； 
+—COMMAND TYPE=01 H：收到历史数据正确，要求上送下一条历史数据；	—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+　　根据COMMAND GROUP取值不同，解释如下：一．O、伏ND GROUP-FFH;多个配电柜时，获取所有配电柜的历史数据；单个配电柜时，获取配电柜的历史数据；
+　　—CONMAND GROUP=OIH:多个配电柜时，获取第1个配电柜的历史数据；单个配电柜时，获取配电柜的历史数据；一O、ND GROUP=02H:多个配电柜时，获取第2个配电柜的历史数据；
+—CONMAND GROUP=nnH:多个配电柜时，获取第”（十六进制）个配电柜的历史数据。
+表B.113获取历史数据{定点數，购应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	25H 	RIN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组．成。
+根据DATA p鯫值不同，解释如下：
+　46
+·
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=OIH：发送最后一条历史数据。
+　　DATAT为历史数据发生的时间，由月（1b）、日（化）、时（1b）、分（1b）、秒（1b）组成。
+根据COMMAND GROUP取值，DATAI返回信息： —COMMAND GROUP=FFH: DATA亻訁息见表B · 1；一℃0、焦覆AND GROUP=OIH一H：DATA]亻訁息见表B · 107。
+B·3·4稳压器通信协议
+B·3·4．1获取系统模拟鬢饢化數据《浮点数》表B.114是SU发给SM的命令信息，表B.115是SM收到命令信息后，返回的响应信息。
+B.114获取系模拟饢釁化据浮点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2		2	1
+．格式	SOI	VER	ADR	26H	41H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由COMMANDGROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+　　—CONMAND GROUP：FFH:多台稳压器时，获取所有稳压器的数据；单台稳压器时，获取稳压器的数据；
+　　—COMMAND GROUP 一OIH:多台稳压器时，获取第1台稳压器的数据；单台稳压器时，获取稳压器的数据；一一℃OMMAND GROUP：02H：多台稳压器时，获取第2台稳压器的数据；
+	—COMMAND GROUP：H：多台稳压器时，获取第（十六进制）台稳压器的数据。	
+B.115获取系统摸拟釁化皺据{浮点数，应儐惠
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	26H 	RIN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为遥测内容。
+根据COMMAND GROUP取值，DATAF返回信息： —CONMAND GROUP=FFH: DATAF信息见表B.116; 一℃OMMAND GROUP=OIH一碰H：DAT F亻訁息见表B · 117。
+B.116稳压鱟内窨及传送序
+	内容
+	稳压器数量材（1字节）
+	第1台稳压器遥测数据
+	第2台稳压器遥测数据
+	
++1	第M台稳压器遥测数据
+．
+单台稳压器遥测内容见表B.117。
+表B.117单台稳压鬍瀏内及传送顯序
+	内容	D字节	DATAI字节
+	交流输人线湘电压AB/A	4	
+	交流输．入·相电压BC/B	4	
+	交流输入线湘电压CA/C	4	
+	交流输人电流A	4	
+	交流输人电流B	4	
+	交流输人电流C	4	
+	交流输出线/相电压ABIA	4	
+	交流输出线湘电压BC/B	4	
+	交流输出线/相电压CMC	4	
+	交流输出电流A	4	
+	交流输出电流B	4	
+	交流输出电流c	4	
+	用户自定义遥测数量，		
+	用户自定义字节	px4	×2
+B ·342获取系统模拟量化斂据（定点数）	
+表B.118是SU发给SM的命令信息，表B.119是SM收到命令信息后，返回的响应信息。
+表B.118获取系统模拟量化蠶据定点斂，命令儐息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD?	2	
+格式	SOI	VER	ADR	26H	42H 	LENGTH	COMMAND INFO	CHKSUM	BOI
+　注：LEND = 02H，COMMAND为1字节，由CONMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：
+　　—COMMAND GROUP：FFH:多台稳压器时，获取所有稳压器的数据；单台稳压器时，获取稳压器的数据；
+　　—COMMAND GROUP：OIH:多台稳压器时，获取第1台稳压器的数据；单台稳压器时，获取稳压器的数据；
+—CONMAND GROUP：02H：多台稳压器时，获取第2台稳压器的数据；
+—COMMAND GROUP=nnH:多台稳压器时，获取第nn（十六进制）台稳压器的数据。
+表B.119获取系统模拟饢饢化数据（定点蠶，应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1		1	2	LENID/2	2	1
+格式	SOI	VER	ADR	26H	RTN 	LENGTH		CHKSUM	EC)I
+　注：DATA-INFO由DATAFLAG和DATAI组成，DATAI为遥测内容。
+根据GROUP取值，DATA返回信息：
+—COMMAND GROUP=FFH：DATA信息见表B.116；
+．
+—COMMAND GROUP4)1H一nnH: DATAI亻訁．息、见表B.117。
+B·343获取开关输入状态表B · 120是SU发给SM的命令信息，表B.121是SM收到命令信息后，返回的响应信息。
+B. 120获取开关输入状态命令償鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-ENID,'2	2	1
+格式	SOI	VER	ADR	26H	43H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+．根据CONMAND GROUP取值不同，解释如下：
+　　—COMMAND GROUP一H：多台稳压器时，获取所有稳压器的状态信息；单台稳压器时，获取稳压器的状态信息；
+　　—COMMAND GROUP：OIH:多台稳压器时，获取第1台稳压器的状态信息；单台稳压器时，获取稳压器的状态信息；
+—COMMAND GROUP = 02H： 多台稳压器时，获取第2台稳压器的状态信息；
+一一．℃OMMANI) GROUP = H ··多台稳压器时，获取第nn（十六进制）台稳压器的状态信息。
+表B．121获开关输入状应儐
+．号	I	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2		2	1
+格式	SOI	VER 	ADR	26H 	RIN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATB为稳压器状态。
+根据CO、ND GROUP取值，RUNSTATE返回信息：一．℃OMMAND GROUP =：RUNSTATE亻訁、见表B·122；
+—COMMAND GROUP = OIH一H：RUNSTA ￡亻訁、见表B · 123。
+B. 1穩压鬍运行状内及传送序
+	内容
+	稳压器数量M
+	第1台稳压器工作状态
+	第2台稳压器工作状态
+	
++1	第M台稳压器工作状态
+单台稳压器的运行状态见表B · 123。
+窦B· 123摹台穩压鱟运行状态内客及传送序
+	内容	
+	稳压器运行状态	1
+	用户自定义运行状态数量	1
+	用户自定义字节	pxl
+运行状态字节描述：
+．
+—OOH：工作； —OIH:旁路；一2H：不工作；
+　—80H-EFH:用户自定义。
+B· 3 ·4．4获取告警状态表B · 124是SU发给SM的命令信息，表B. 125是SM收到命令信息后，返回的响应信息。 B. 124获取告警状态命令僖
+序号	1	2		4	5	6	7	8	9
+字节数		1			1	2	LENID12	2	1
+格式	SOI	VER	(l)R 	26H	44H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID 02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CO、ND GROUP取值不同，解释如下：
+　　—COMMAND GROUP= FFH：多台稳压器时，获取所有稳压器的告警数据；单台稳压器时，获取稳压器的告警数据；
+　　—COMMAND GROUP = OIH: 多台稳压器时，获取第1台稳压器的告警数据；单台稳压器时，获取稳压器的告警数据；
+—COMMAND GROUP = 02H： 多台稳压器时，获取第2台稳压器的告警数据；
+—COMMAND GROUP ” H：多台稳压器时，获取第（十六进制）台稳压器的告警数据。
+ B· 125获取告警状态嘛应儐扈
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	26H 	RTN	LENGTH		CHKSUM	?EOI
+　注：DATAINFO由DATA-FLAG和WARNSTATE组成，WARNSTATE为稳压器告警内容。
+根据CO、ND GROUP取值，WARNSTATE返回信息： —COMMAND GROUP：FFH: WARNSTATE亻訁息见表B·126；一℃OMMAND GROUP一OIH一H：WARNSTATE信息见表B·127。
+豪B.，26穩压告警内客及传送鱖序
+	内容
+	稳压器数量M 0字节）
+	第1台稳压器告警数据
+	第2台稳压器告警数据
+	
+M+l	第台稳压器告警数据
+单台稳压器告警内容如表B．127。
+·
+B．127单台穗压告警内容及传送鱖序
+	内容	
+	稳压器状态	
+	交流输人线/相电压AB/A	
+	交流输人相电压BC/B	
+	交流输人线相电压CMC	
+	交流输人电流A	
+	交流输人电流B	
+	交流输人电流c	
+	用户自定义告警数量p	
+	用户自定义字节．	
+告警字节描述：
+—OOH：正常；一吒1 H： 低于下限；一2H： 高于上限；
+—03H： 缺相；
+—04H：稳压器故障旁路；一一80H-EFH:用户自定义；
+(H)H:故障。
+B·345获取系参《浮点》
+表B · 128是SU发给SM的命令信息，表B．129是SM收到命令信息后，返回的响应信息。
+裊B· 128获取參数《浮点数》命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LEND/2	2	1
+格式	SOI	VER	ADR	26H	46H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H, CONMAND INFO为1字节，由COMMAND GROUP组成。
+根据CONMAN) GROUP取值不同，解释如下：
+　　—COMMAND GROUP：FFH:多台稳压器时，获取所有稳压器的参数；单台稳压器时，获取稳压器的参数；
+　　—COMMAND GROUP OIH:多台稳压器时，获取第1台稳压器的参数；单台稳压器时，获取稳压器的参数；
+—COMMAND GROUP= 02H：多台稳压器时，获取第2台稳压器的参数；
+一一．℃OMMAND GROUP一一H：多台稳压器时，获取第（十六进制）台稳压器的参数。
+B· 1获取豪参数浮点斂，应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER 	ADR	26H	RTN	LENGTH		CHKSUM	EOI
+　注：DATA-INFO由DATAF组成，为稳压器的参数。
+
+YD.?T 	·
+根据CONMAND GROUP取值，DATAF返回信息：
+—COMMAND GROUP=FFH：DATAF信息见表B · 130；
+一一．℃O、亻、覆AND GROUP=01 H一H：DATAF亻訁息见表B · 131。
+
+表B. 1穩压鱟參蠶及传送鱖序
+序号	内容
+1	稳压器数量材0字节）
+0	第1台稳压器參数
+3
+．	第2台稳压器参数
+	
+M+l	第M台稳压器参数
+单台稳压器参数内容如表B.131。
+豪B．131台穩压黌的參内及传送序
+序号	内容	D字节	D字节
+	交流输人线湘电压AB/A上限		
+	交流输人线相电压ABIA下限		
+	交流输人线相电压BC/B上限		
+	交流输人线/相电压BC/B下限		
+	交流输人相电压CA/C上限		
+	交流输入纫相电压CMC下限		
+	交流输人电流A上限		
+	交流输人电流B上限		
+	交流输人电流C上限		
+	用户自定义参数数量p		
+	用户自定义字节	4	
+B．3·4·6获取系统参数《定点数》
+表B．132是SU发给SM的命令信息，表B · 133是SM收到命令信息后，返回的响应信息。
+表B· 1获取系统参蠶定点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	26H	47H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H，COMMAND NFO为1字节，由COMMAND GROUP组成。
+根据CO、焦伏ND GROUP取值不同，解释如下：
+　　—CONMAND GROUP：H：多台稳压器时，获取所有稳压器的参数；单台稳压器时，获取稳压器的参数；
+　　—CONMAND GROUP：OIH:多台稳压器时，获取第1台稳压器的参数；单台稳压器时，获取稳压器的参数；
+—CONMAND GROUP：02H：多台稳压器时，获取第2台稳压器的参数；
+一℃ONMAND.GROUP：nnH:多台稳压器时，获取第（十六进制）台稳压器的参数。
+．
+表B· 1 获取系统参{定点，应
+序号		2	3	4	5	6	7	8	9
+字节数	1				1	2	LENID/2	2	
+格式	SOI	VER	ADR	26H	RTN	LENGTH	DATAINFO	CHKSUM	BOI
+　注：DATAINFO由DATA]组成，为稳压器的参数。
+根据CONMAND GROUP取值，DAT返回信息：
+—COMMAND GROUP=FFH：DATAI信息见表B · 130； —COMMAND GROUP=01 H一nnH：DATAI亻訁息见表B · 131。
+B · 3 ·4· 7设定参数{浮点数》表B.134是SU发给SM的命令信息，表B.136是SM收到命令信息后，返回的响应信息。
+表B．1设定参数{浮点}命令儐
+．．号	1	2	3	4	5	6	7	8	9
+字节数		1		1		2	LEND/2	2	
+格式	SOI	VER	ADR	26H	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = OCH, COMMAND INFO由COMMAND GROUP、COMMAND TYPE和COMMAND DATAF组成。
+根据CONMAND GROUP取值不同，解释如下：一℃O、ND GROUP：OIH:设置第1台稳压器的参数；
+-￡ONM.AND GROUP：02H：设置第2台稳压器的参数；
+
+-￡OMMAND GROUP：nnH:设置第”（十六进制）台稳压器的参数。
+COI"MAND TYPE为参数类型，见表B · 135。 
+豪B．1穩压器嗲斂獒型表
+	内容	COMMAND TYPE
+	设置交流输入线/相电压AB/A上限	80H
+	设置交流输入线湘电压AB/A下限	81H
+	设置交流输人线/相电压BC/B上限	82H
+	设置交流输入湘电压BC/B下限	83H
+	设置交流输人线湘电压CMC上限	84H
+	设置交流输人线湘电压CA/C下限	85H
+	设置交流输入电流A上限	86H
+	设置交流输人电流B上限	87H
+	设置交流输人电流c上限	88H
+	用户自定义参数	COH一EFH
+裹B· 1设定参数{浮点数，响应僖鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	26H	RTN	LENGTH		CHKSUM	EOI
+注：LEND = OOHa
+B，3·4．8设定参数（定点数，表B · 137是SU发给SM的命令信息，表B · 138是SM收到命令信息后，返回的响应信息。	
+．
+B．137 设定参數定点，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	I	1	1	1		2	LEND/2	2	1
+格式	SOI	VER	ADR	26H	49H	LENGTH	COMMAND INFO	CHKSUM 	BOI
+　注：LEND：08H，COMMAND INFO由COMMAND GROUP、COMMAND TYPE和COMMAND DATAI组成。
+根据CONMAND GROUP取值不同，解释如下：一0、岱ND GROUP：OIH:设置第1台稳压器的参数；一O、ND GROUP一02H：设置第2台稳压器的参数；
+0、伏ND GROUP：nnH：设置第（十六进制）台稳压器的参数。
+CONMAND T、IPE为参数类型，见表B · 135。
+B· 1设定参數{定点蠶，应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	26H	RIN	LENGTH		CHKSUM	EOI
+　注：LENID=OOH0
+B．3·4 ·9获取历史斂据（浮点数）表B · 139是SU发给SM的命令信息，表B · 140是SM收到令信息后，返回的响应信息。
+B· 139获取历史皺据{浮点，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	I-ENID/2	2	1
+格式	SOI	VER	ADR	26H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：04H, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据CONMAND TYPE取值不同，解释如下：一吒0、ND TYPE=OOH：获取第一条历史数据命令；
+—CONMAND 'PE IH：收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据CO、伏ND GROUP取值不同，解释如下：
+· 0、LAND GROUP=FFH：多台稳压器时，获取所有稳压器的历史数据；单台稳压器时，获取稳
+
+压器的历史数据；一℃OMMAND GROUP=OIH: 压器的历史数据； —COMMAND GROUP=02H：
+　一一．℃OMMAND GROUP=nnH：
+多台稳压器时，获取第1台稳压器的历史数据；单台稳压器时，获取稳
+多台稳压器时，获取第2台稳压器的历史数据；
+多台稳压器时，获取第（十六进制）台稳压器的历史数据。
+
+·
+B．140获取历史斂据浮点数》应儐鏖
+序号	1	2	3	4	5	6	7	8	．9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI 	VER 	ADR	26H 	RIN 	LENGTH	DATAINFO	CHKSUM 	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE-OIH:发送最后一条历史数据；
+　　DATAT化为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+根据CO、伏ND GROUP取值，DATAF返回信息：
+—COMMAND GROUP=FFH：DATAF亻訁息见表B · 141;
+—COMMAND GROUP=01 H一H：DATAF信息见表B · 142。
+表a141穩压器历史蠶据内窨及传送序
+序号	内容
+1	稳压器数量0字节）
+0	第1台稳压器历史数据
+	第2台稳压器历史数据
+	
+M+l	第M台稳压器历史数据
+单台稳压器历史数据内容见表B · 142。 
+B· 142单台穗压历史数据内客及传送序
+	内容	
+			
+	交流输人线湘电压AB/A		0
+	交流输入线相电压BC/B		0
+、
+	交流输人线湘电压CMC		
+	交流输人电流A		，
+	交流输人电流B		00
+	交流输人电流C		0 一
+	交流输出线/相电压AB/A		0 一
+	交流输出线湘电压BC.fB		，
+	交流输出线/相电压CMC		1
+	交流输出电流A		
+	交流输出电流B		，
+	交流输出电流C		
+	用户自定义遥测数量		1
+	用户自定义字节		
+	稳压器运行状态		
+	用户自定义运行状态数量		
+	用户自定义字节		
+
+　2m5
+B，3 ·4．10获取历史數据定点数》表B · 143是SU发给SM的命令信息，表B. 1是SM收到命令信息后，返回的响应信息。
+B· 143获取历史数据定点數，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1		2	LEMD/2	2	
+格式	SOI	VER	ADR	26H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = (NH, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据CO、伏ND TYPE取值不同，解释如下：
+—CONMAND TYPE=OOH：获取第一条历史数据命令；
+—CONMAN) TYPE=OIH：收到历史数据正确，要求上送下一条历史数据；一O、ND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+　根据CON'MAND GRO取值不同，解释如下：
+　　—CONMAND GROUP=FFH:多台稳压器时，获取所有稳压器的历史数据；单台稳压器时，获取稳压器的历史数据；
+　　—CONMAND GROUP=OIH：多台稳压器时，获取第1台稳压器的历史数据；单台稳压器时，获取稳压器的历史数据；
+—￡ONMAND GROUP=02H：多台稳压器时，获取第2台稳压器的历史数据；
+—COMMAND GROUP=nnH:多台稳压器时，获取第”（十六进制）台稳压器的历史数据。
+B· 144获取历史数据定点数，应儐
+序号		2	3	4	5	6	7	8	9
+字节数		1		1		2	LEMD/2	2	1
+格式	SOI	VER 	ADR2 	26H 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。
+根据DATA 'PE取值不同，解释如下：
+　—DATATYPE—OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATATth化为历史数据发生的时间，由（化）、日（1b）、时( )b）、分( )b）、秒( )b）组成根据CO、伏ND GROUP取值，DAT返回信息：
+—COMMAND GROUP=FFH：DATAI信息见表B · 141； —COMMAND GROUP=OIH一H：DATAI信息见表B · 142。
+B·3．4．1 1获取历史告警表B · 145是SU发给SM的命令信息，表B · 1是SM收到命令信息后，返回的响应信息。
+裹B．145获取历史告警命令償憊
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND12	2	1
+格式	SOI	VER	ADR	26H	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 04H, COMMAND NFC)为2字节，由CONMAND TYPE与COMMAND GROUP组成。
+		·	，
+根据CON-MAND TYPE取值不同，解释如下：
+-￡ONMAND TYPE-OOH：获取第一条历史告警；
+—CONMAND TYPE=OIH:收到历史数据正确，要求上送下一条历史告警；
+—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史告警。
+根据COMMAND GROUP取值不同，解释如下：
+　　—COMMAND GROUP=FFH ··多台稳压器时，获取所有稳压器的历史告警；单台稳压器时，获取稳压器的历史告警；
+　　—COMMAND GROUP=01 H： 多台稳压器时，获取第1台稳压器的历史告警；单台稳压器时，获取稳压器的历史告警；一一．℃OMMAND GROUP=02H： 多台稳压器时，获取第2台稳压器的历史告警；
+　—COMMAND GROUP=nnH： 多台稳压器时，获取第（十六进制）台稳压器的历史告警。
+B· 146获取历史告警应
+，字号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1		1
+RIN 	2	LENID/2	2	1
+	格式 SOI VER ADR 26H	LENGTH	CHKSUM EOI
+　　注：DATA-INFO由DATATYPE, DATA-FLAG, DATATIME和WARNSTATE组．成， WARNSTATE为稳压器历史告警内容。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH:正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIN化为历史告警发生的时间，由月（lbyte）、日（1b）、时（1b）、分（lbyte）、秒（化）组成。
+根据CO、伏ND GROUP取值，WARNSTATE返回信息：
+—COMMAND GROUP=FFH：WARNSTATE信息见表B·126；一．℃O、ND GROUP=OIH · nnH：WARNSTA ￡亻訁启、见表B · 127。
+8.4柴油发电机组供电系统通信协议
+　B41据类型
+柴油发电机组分为风冷与水冷两种形式。采用定点数传送时，表B · 147给出了相关数据类型。
+表B· 147定点数射数据类型
+	
+序号	遥测内容	数据类型
+1	交流电压	无符号整型
+0	交流电流	无符号整型
+	输出功率	无符号整型
+4	输出频率	无符号整型
+、	输出转速	无符号整型
+'
+0	水温	有符号整型
+、
+'	润滑油油压	无符号整型
+8	润滑油油温	有符号整型
+0
+"	启动电池电压	无符号整型
+
+2005
+B·4．2柴油发电机组通償协议
+B42 · 1获取系统模拟化数据浮点数
+表B．148是SU发给SM的命令信息，表B · 149是SM收到命令信息后，返回的响应信息。
+B· 1获取系统拟釁化数据{浮点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	Al)R	28H 	41H 	LENGTH	COMMAND INFO	CHKSUM 	EOI
+　注：I-ENID：02H，CON??4AND INFO为1字节，由CONMAND GROUP组成。 
+	根据CO、伏ND GROUP取值不同，解释如下：	
+一℃o、伏ND GROUP一01H：主备油机时，取油机1遥测数据；单台油机时，取油机的遥测数据；
+—CONMAND GROUP 2H：主备油机时，取油机2遥测数据。
+裊B· 149获取系统模拟鬚化蠶据浮点蠶，应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	ADR 	28H 	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为柴油发电机遥测内容。
+　DAT．信息见表B ·巧0。
+ 表B · 150柴油机邊瀏釁内客及传送序
+	内容	DATAF字节	DATA字节
+	输出线/相电压AB/A	4	
+	输出线/相电压BC/B		
+	输出线湘电压CA]C		
+	输出电流A		
+	输出电流B		
+	输出电流C		
+	输出率/转速		
+	水温（水冷）		
+	润滑油油温		
+	润滑油油压		
+	启动电池电压		
+鼷	输出功率		
+	用户自定义遥测内容数量p		
+	用户自定义字节		
+B．4．2 ·2获一取系统模拟量化數据（定点数》
+表B ·巧1是SU发给SM的命令信息，表B．152是SM收到命令信息后，返回的响应信息。
+豪B．151获取系統模拟化蠶据定点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI 	VER	ADR 	28H 	42H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　 注：LENID=02H, COMMANDINFO为1字节，由CONMAN)GROUP组成。
+
+1 · 3
+根据COMMAND GROUP取值不同，解释如下：
+一O、ND GROUP一OIH:主备油机时，取油机1遥测数据；单台油机时，取油机的遥测数据；一o、伏ND GROUP 2H：主备油机时，取油机2遥测数据。
+B．152获取系统拟鬚化蠶据定点蠶，应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	28H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和DATA组成，DATA为柴油发电机遥测内容。
+　DATAI信息见表B·巧0。
+B ·423获取柴油发电机组开关输入状态
+表B．153是SU发给SM的命令信息，表B · 154是SM收到命令信息后，返回的响应信息。
+表B· 153获取柴油发电机组开关翰入状态命令償憊
+．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	28H	43H	LENGTH	CO、1 ND INFO	CHKSUM	EOI
+　注：LEND：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：
+—￡(:?OLANI) GROUP：01H：主备油机时，取油机1运行状态；单台油机时，取油机的运行状态；
+—COMMAND GROUP 2H：主备油机时，取油机2运行状太、0
+裹B.154获取柴油发电机组开关翰入状态应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID,f2	2	1
+格式	SOI	VER	ADR	28H	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和RUNSTATE组成，RUNSTATE为柴油发电机组状态。
+RE STAT信息见表B ·巧5。
+褒B · 155柴油发电机运行状态及传送顺序
+	内容	
+	自动/手动状态	
+	停桫丿运行状态	
+	市电/油机ATS状态	
+	主备油机	
+	用户自定义状态数量p	
+	用户自定义字节	
+自动/手动状态描述：
+　—OOH：自动；一IH：手动。
+停运行状态描述：
+(k)H:停机；
+2 5
+．刁IH：运行。 ATS状态描述：
+a)油机控制屏为无市电、有2台油机时状态描述：
+ 1 ) OIH：油机1； 2）02H：油机2。
+b)油机控制屏有1路市电、1台油机时状态描述：
+1) 10H：市电雾 2）IIH:油机。
+c)油机控制屏有1路市电、2台油机时状态描述：
+120H：市电；
+　2）21H：油机
+3）22H：油机2。
+d)油机控制屏有2路市电、，台油机时状态描述：
+1) 30H：市电1； 
+231H：市电2； 3）32H：油机1。
+e)油机控制屏有2路市电、2台油机时状态描述：
+　D 40H：市电l ;
+　2厂41H：市电2；
+3）42H：油机1； 4）43H：油机2。
+主备机组描述：
+一刁IH:主机组；一2H：备机组；
+　—80H-EFH:用户自定义。
+B42 ·4获取柴油发电机组告警倍
+表B ·巧6是SU发给SM的命令信息，表B．巧7是SM收到命令信息后，返回的响应信息。
+豪B· 156获取油发电机组告警命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	28H	44H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由COMMANDGROUP组成。
+根据COb04AND GROUP取值不同，解释如下：
+—COP,M.AND GROUP OIH:主备油机时，取油机1告警信息；单台油机时，取油机的告警信息；
+—COMMAND GROUP 2H：主备油机时，取油机2告警信息。
+1 3．
+表B· 157获取柴油发电机组告警償购应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR	28H 	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATANFO由DATAFLAG和WARNSTATE组成，WARNSTATE为柴油发电机组告警状态。 WARNSTATE信息见表B·巧8。
+表B· 158柴发电机告警状态及传送序
+	内容	
+	交流线湘电压AB/A	
+	交流线湘电压BC/B	
+	交流线厢电压CMC	
+	交流电流A	
+	交流电流B	
+	交流电流c	
+	獗率速	
+	水温（水冷）彼带断裂（风冷）	
+	润滑油油渥	
+	润清油油压	
+	启动失败	
+		
+	启动电池电压	
+	紧急停车	
+	市电	
+	充电器	
+	用户自定义告警数量p	
+	用户自定义字节	
+告警字节描述：
+　—OOH：正常；
+—OIH:低于下限；
+02H：高于上限；
+　—80H-EFH：用户自定义； (H)H:故障。
+B．4．2．5邊控表B ·巧9是SU发给SM的命令信息，表B · 160是SM收到命令信息后，返回的响应信息。
+B．159控命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR 	28H 	45H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID4)2H, COMMAND INFO为1个字节，由COMMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：
+　2m5
+　—COMMAND TYPE—OOH： 遥控机组关机； —COMMAND TYPE=OFH：遥控机组开机； —COMMAND TYPE= 1 OH： 选择1#机组主用； —COMMAND TYPE= 1 FH：选择2#机组主用；
+—COMMAND TYPE=FFH：紧急停车。
+表B· 160 邊控应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDf2	2	1
+格式	SOI	VER	ADR	28H	RTN	LENGTH		CHKSUM	EOI
+注：LENID=OOH0
+B ·4 ·2·6获取参數浮点數表B · 161是SU发给SM的命令信息，表B · 162是SM收到命令信息后，返回的响应信息。
+B· 161获取參蠶{浮点皺命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	28H	46H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H, COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CO、岱ND GROUP取值不同，解释如下：
+—￡ONMAND GROUP IH：主备油机时，取油机1参数；单台油机时，取油机的参数；一O、ND GROUP 2H：主备油机时，取油机2参数。
+表B· 16获取參蠶{浮点蠶，购应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	28H	RIN 	1-nGTH		CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DATAF为柴油发电机参数。
+DATAF信息见表B · 163。
+ B.l柴发电机参内客及传送鱖序
+	内容	D字节	DATAI字节
+	交流纫相电压A-BIA上限	4	
+	交流线/相电压AB/A下限	4	
+	交流相电压BC-IB上限	4	
+	交流线相电压B()B下限	4	
+	交流相电压CMC上限	4	
+	交流相电压CA/C下限	4	
+	交流电流A上限	4	
+	交流电流B上限	4	
+	交流电流C上限	4	
+	頻率转速上限	4	
+	率/转速下限	4	
+		1363．
+163续，
+	内容	DATAF字节	DATAI字节
+	润滑油油压下限		
+	润滑油油温上限		
+	水温上限		
+	电池电压上限		
+	电池电压下限		
+	用户自定义参数数量p		
+	用户自定义字节	4	
+B ·4 ·2 · 7获取参数（定点数》表B. l是SU发给SM的命令信息，表B.165是SM收到命令信息后，返回的响应信息。
+表B· 1获取参数定点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数			1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	28H	47H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由CONMANDGROUP组成。
+根据CO、伏ND GROUP取值不同，解释如下：
+—CONMAND GROUP IH：主备油机时，取油机1参数；单台油机时，取油机的参数；
+—CONMAND GROUP 2H：主备油机时，取油机2参数。
+ B· 1豳获取参蠶定点皺》购应償
+序号	1	2	3	4		6	7	8	9
+字节数	1	1	1	1		2		2	1
+格式	SOI	VER	ADR	28H 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAI组成，DATAF为柴油发电机参数。
+DATAI信息见表B · 163。
+B．428设定参数浮点数表B · 1是SU发给SM的命令信息，表B · 168是SM收到命令信息后，返回的响应信息。
+ B· 1设定蠶浮点斂，命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	28H	48H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID OCH, COMMAND INFO由COMMAND GROUP, COMMAND TYPE和COMMAND DATAF组．成。
+CONMAND IPE信息见表B · 167。 
+B．167油发电机参内
+	内容	COMMAND TYPE
+	交流相电压AB/A上限	80H
+	交流线緗电压AB/A下限	81H
+	交流线/相电压BC/B上限	82H
+	交流线/相电压BC/B下限	83H
+
+表B· 167续，
+序号	内容	COMMAND TYPE
+	交流相电压CMC上限	84H
+	交流线/相电压CMC下限	85H
+	交流电流A上限	86H
+	交流电流B上限	87H
+	交流电c上限	88H
+0	频率速上限	89H
+1	频率转速下限	8AH
+0	润滑油油压下限	8BH
+1
+．	润滑油油温上限	8CH
+4	水温上限	8DH
+5“	电池电压上限	8EH
+·
+0	电池电压下限	8FH
+，
+，	用户自定义	COH—EFH
+ B．1设定参蠶浮点，应儐
+．
+，	号		2	3	4		6	7	8	9
+字节数		1		1		2	LBNID/2	2	1
+格式	SOI	VER	ADR	28H		LENGIB			EOI
+　注，LENID=00H0
+B ·4 ·2 ·9设定参数{定点数，表B · 169是SU发给SM的命令信息，表B．170是SM收到命令信息后，返回的响应信息。
+B· 169设定蠶{定点数，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I.nID/2	2	1
+格式	SOI	VER	ADR	28H	49H	LENGTH	COMMAND INFO	CHKSUM	BOI
+　注：LENID：佣H，COMMAND INFO由COMMAND GROUP, COMMAND TYPE和COMMAND DATAF组成。
+CO?MAND TYPE信息见表B .167。
+ B．170设定{定点数应儐惠
+序号		2	3	4	5	6	7	8	9
+字节数	1	1		1		2	LENID/2	2	1
+格式	SOI	VER	ADR	28H	RIN	I-ENGII-?I		CHKSUM	EOI
+　注：LENID = OOHO
+B ·4艺10获取历史數据{浮点，表B · 171是SU发给SM的命令信息，表B.172是SM收到命令信息后，返回的响应信息。
+B· 171获取历史据{浮点数，命令儐
+序号		2	3	4	5	6	7	8	9
+字节数	1		1		1	2	LENID/2	2	
+格式	SOI	VER	ADR	28H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：04H, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+1 3 
+根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE—OOH：获取第一条历史数据命令；
+—CONMAND TYPE=O IH：收到历史数据正确，要求上送下一条历史数据；一℃0、岱伏ND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据COMMAND GROUP取值不同，解释如下：
+一℃O、ND GROUP=OIH，主备油机时，取油机1历史数据；单台油机时，取油机的历史数据；一0、亻AND GROUP=02H:主备油机时，获取油机2历史数据。
+表B．172获取历史据浮点数》应伯惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+．格式	SOI 	VER 	ADR 	28H 	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAWFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATA 'PE取值不同，解释如下：
+—DATATYPE=OOH:正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+DATATTh化为历史数据发生的时间，由月（1b）、日（1b）、时( )b）、分（1b）、秒( )b）
+组成。
+DAT．信息见表B · 173。
+B．173历史蠶据内客及传送豪序
+	内．容	
+			
+	输出相电压'A		
+	输出纫相电压B(YB		
+	输出线相电压CA/C		
+	输出电流A		
+	输出电流B		
+	输出电流c		
+	输出频率转速		
+	水温（水冷）		
+	润滑油油温		
+	润滑油油压		
+	启动电池电压		
+	输出功率		
+	用户自定义遥测内容数量p		
+	用户自定义字节	4	
+	自动序动状态	
+	运行/停机状态	
+	市油机A状态	
+	主备油机	
+	用户自定义状态数量	
+	用户自定义字节	
+B ·4·2 · 1 1获取历史數据定点数）
+表B · 174是SU发给SM的命令信息，表B ·丷5是SM收到命令信息后，返回的响应信息。
+B．174获取历史蠶据{定点數，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数		1		1		2	LEND/2	2	1
+格式	SOI	VER	ADR	28H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：04H, COMMAND FO为2字节，由COMMAND TYPE与CO、伏ND GROUP组成。
+根据COMMAND TYPE取值不同，解释如下：
+—CONMAN) TYPE=OOH：获取第一条历史数据命令；
+—￡ON'MAND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+—COMMAND GROUP=OIH：主备油机时，取油机1历史数据；单台油机时，取油机的历史数据；
+—CONMAND GROUP-OH：主备油机时，获取油机2历史数据。
+B· 175获取历史据定点蠶，应倍
+序号		2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LENID?	2	1
+格式	SOI	VER 	ADR	28H 		LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。
+根据DATA PE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATAT化为历史数据发生的时间，由月（1b）、日( )b）、时（1b）、分（1b八秒（1b）组成。
+DATAI信息见表B · 173。
+B ·4．2．12获取历史告警
+表B ·丷6是SU发给SM的命令信息，表B、177是SM收到命令信息后，返回的响应信息。
+B§ 76获取历史告警命令
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	28H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEMD=04H, COMMANDINFO为2字节，由CONMANDTYPE与COMMANDGROUP组成。
+根据CO、岱伏ND TYPE取值不同，解释如下：
+一吒0、ND TYPE-OOH：获取第一条历史告警命令；
+—COMMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；一O、皿ND 'PE 2H：接收历史告警错误，重发上一条历史告警。
+根据CO、岱ND GROUP取值不同，解释如下：
+—CONN-AND GROUP-OIH:主备油机时，取油机1历史告警；单台油机时，取油机的历史告警；
+	1 	3
+—COMMAND GROUP=02H： 主备油机时，获取油机2历史告警。
+B．177获取历史告警应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	28H	RIN 	I-nGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIMB和WARNSTATE组成。
+根据DATA 'PE取值不同；解释如下：
+　—DATATYPE=OOH:正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATAITh化为历史告警发生的时间，由月（1b）、日( )b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B．巧8。
+B.5燃气发电机组阱电系通儈议
+B·5· 1数据类型采用定点数传送时，表B · 178给出了相关数据类型。
+ B· 178定点蠶时据类型
+	遥测内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+	输出功率	无符号整型
+	输出頻率	无符号整型
+	输出转速	无符号整型
+	润滑油油压	无符号整型
+	润滑油油温	有符号整型
+	进气温度	有符号整型
+	排气温度	有符号整型
+	控制电池电压	无符号整型
+	启动电池电压	无符号整型
+B · 5 ·2燃气发电机组通信协议
+B ·521获取系统模拟化斂据《浮点数》表B.179是SU发给SM的命令信息，表B · 180是SM收到命令信息后，返回的响应信息。
+B · 179获取系统拟鱟化数据浮点数，命令
+．宇号	1	2	3	4		6	7	8	9
+字节数	1		1	1		2		2	1
+格式	SOI	VER 	ADR	29H 	41H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由COMMANDGROUP组成。
+根据CO、伏ND GROUP取值不同，解释如下：
+
+　1 ．3
+　　—CONMAND GROUP：01H:主备燃气发电机时，取主燃气发电机遥测数据；单台燃气发电机时，取燃气发电机的遥测数据；
+一O、伏ND GROUP 2H：主备燃气发电机时，取备燃气发电机遥测数据。
+B．1获取系拟釁饢化数据浮点数，购应儈
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LEND/2	2	
+格式	SOI	VBR	ADR	29H	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为燃气发电机遥测数据。
+DATAF信息见表B · 181。
+表B· 181燃气发电机邊饢内及传送序
+	内容	D字节	DATAI字节
+	输出线湘电压AB/A	4	
+	输出线相电压BCfB	4	
+	输出线湘电压C c	4	
+	输出电流A	4	
+	输出电流B	4	
+	输出电流C	4	
+	输出頻率/转速	4	
+	进气温度	4	
+	排气温度	4	
+	润滑油温度	4	
+	润滑油油压	4	
+	启动电池电压	4	
+	控制电池电压	4	
+	输出功率	4	
+	用户自定义遥测数量	1	
+	用户自定义字节		
+B．5 ·2．2获取系统模拟量化數据定点數
+表B · 182是SU发给SM的命令信息，表B · 183是SM收到命令信息后，返回的响应信息。
+B· 182获取统拟饢化数据(定点数，命令倌
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	29H	42H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H, COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+　　—C(???AND GROUP：01H:主备燃气发电机时，取主燃气发电机遥测数据；单台燃气发电机时，取燃气发电机的遥测数据；
+—COPOLAND GROUP 2H：主备燃气发电机时，取备 发电机遥测数据。
+1363 2m5
+表B· 183 获取系统模拟釁化數据定点數}应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LEND/2	2	
+格式	SOI	VER 	ADR	29H 	RTN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DATAI为燃气发电机参数。
+DATA]信息见表B.1810
+&5．2 · 3获取开关输入状态
+表B · 184是SU发给SM的命令信息，表B · 185是SM收到命令信息后，返回的响应信息。
+表B．184获取开关输入状态命令
+．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	29H	43H	LENGTH	COMMAND INFO	?IKSUM	EOI
+　注：LEND 02H，COMMAND mFO为1字节，由CO、ND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：
+　　—CONMAND GROUP：01H:主备燃气发电机时，取主燃气发电机运行状态；单台燃气发电机时，取燃气发电机的运行状态；
+—CON'M.AND GROUP 2H：主备燃气发电机时，取备燃气发电机运行状太` 0
+表B. 1获取开关入状态应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	1.?ND/2	2	
+　格式	SOI VER	ADR 29H RTN	LENGTH	CHKSUM EOI 注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTAIE为燃气发电机组状态。
+　RUNSTATE信息见表B · 186。
+表B· 186燃气发电机运行状态及传送顬序
+	内容	
+	自动/手动状态	
+	运行/停机状态	
+	市燃气发电机ATS状态	
+	主备燃气发电机	
+	用户自定义状态数量	
+	用户自定义字节	
+自动/手动状态描述：
+　—OOH:自动；一IH：手动。
+停彬运行状态描述：
+—OOH：停机； —01 H：运行。
+ATS状态描述：
+勾燃气机控制屏为无市电有2台 机时状态描述：
+69
+	·	2 5
+1) OIH：燃气机l ; 2）02H：．燃气机2。
+b）燃气机控制屏有1路市电、1台燃气机时状态描述：
+1) 10H：市电；
+2IIH:燃气机。
+c）燃气机控制屏有1路市电、2台燃气机时状态描述：
+120H：市电；
+221H：燃气机珏 3）22H：燃气机2。
+d）燃气机控制屏有2路市电、1台燃气机时状态描述：
+I ) 30H：市电1 ;
+，）31H：市电2； 3）32H：燃气机。
+e）燃气机控制屏有2路市电、2台燃气机时状态描述：	
+1 ) H：市电麝
+　2）41H:市电2；
+　3）42H：燃气机1； 4）43H：燃气机2。
+主备机组描述：
+．宀）IH：主机组；一2H：备机组；
+	一80H一E：用户自定义。	
+B·5．2．4获取告警状态
+　表B · 187是SU发给SM的命令信息，表B · 188是SM收到命令信息后，返回的响应信息。
+B· 187获取告警状态命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1		2		2	1
+格式	s01	VER	ADR	29H	44H	LENGTH		CHKSUM	BOI
+注LEND = OOHO
+表B· 1获取告警状态应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+EOI
+格式 SOI VER ADR 29H RTN LENGTH CHKSUM 注，DATAINFO由DATAFLAG和WARNSTATE组成· WARNSTATE为 发电机组告警状态。
+WARNSTATE信息见表B· 189。
+
+　　　　　　　　　　　　　　　　　　　　　　　1 · 3 表B. 189燃气发电机告警状态及传送豪序
+	内容	
+	交流线湘电压ABIA	
+	交流线湘电压BC/B	
+	交流线/相电压CA/C	
+	交流电流A	
+	交流电流B	
+	交流电流c	
+	频率/转速	
+	排气温度	
+	润滑油温度	
+	润滑油油压	
+	燃油油位	
+	启动失败	
+	负载	
+	控制电池电压	
+	启动电池电压	
+	紧急停车	
+	充电器	
+	市电	
+	用户自定义告警数量	
+	用户自定义字节	
+告警字节描述： —OOH：正常；．IH：低于下限；一2H：高于上限；一80H一EFH：用户自定义； —FOH:故障。
+B· 5 ·2 ·5遥控表B．1兕是SU发给SM的命令信息，表B · 191是SM收到命令信息后，返回的响应信息。
+B· 1邊控命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?2	2	1
+格式	SOI 	VER 	ADR 	29H 	45H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, CO、伏ND INFO为1个字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下： —CONMAND TYPE=OOH:遥控机组关机；
+—COMMAND TYPE=OFH：遥控机组开机；
+—COIYMAND 'PE= 10H：选择1 #机组主用； —COMMAND TYPE= 1 FH：选择2#机组主用； —COMMAND TYPE=FFH：紧急停车。
+． 2005
+表B，191邊控响应僖息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR	29H 	RTN 	LENGTH		CHKSUM	EOI
+　注：LENID4)0H0
+B．5．2 ·6获取参数{浮点数}
+表B · 192是SU发给SM的命令信息，表B．193是SM收到命令信息后，返回的响应信息。
+表B．192获取参数{浮点，命令信息
+序号	1	2	3	4	5	6	7	8	9
+字节数				1	1	2	LENID12	2	
+格式	SOI 	VER 	ADR	29H 	46H 	LENGTH	COMMAND INFO	CH KSUM	EOI
+　注：LEND：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：
+　　—COhOfAND GROUP IH：主备机组时，取燃气发电机1参数；单台燃气发电机时，取燃气发电机的参数；
+—CONMAND GROUP 2H：主备机组时，取燃气发电机2参数。
+表B· 193获取多数{浮点数，应儐惠
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR 	29H，	RI'N 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATANFO由DATAF组成，DATAF为燃气发电机参数。
+　DAT信息见表B · 194。
+表B．194燃气发电机參数内響及传送序
+	内容	DATAF字节	DATA*节
+	交流线湘电压AB/A上限		
+	交流线相电压AB/A下限		
+	交流线电压BC'B上限		
+	交流线湘电压BC/B下限		
+	交流线湘电压CMC上限		
+	交流线/相电压CMC下限		
+	交流电流A上限		
+	交流电流B上限		
+	交流电流c上限		
+	频率/转速上限·		
+	频率/转速下限		
+	排气温度上限		
+	润滑油油压下限		
+	润滑油温度上限		
+	控制电池电压上限		
+	控制电池电压下限		
+	启动电池电压上限		
+	启动电池电压下限		
+	用户自定义参数数量		
+	用户自定义字节		
+· 
+B ·5．27获取参数定点数）表B.195是SU发给SM的命令信息，表B · 196是SM收到命令信息后，返回的响应信息。
+B．195获取參皺{定点数》命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	29H	47H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H, COMMAND INFO为1字节，由COMMAND GROUP组成。
+　　根据CO、仆伏ND GROUP取值不同，解释如下：一．0、ND GROUP IH：主备机组时，取燃气发电机1参数；单台燃气发电机时，取燃气发电机的参数；一O、伏ND GROUP 2H：主备机组时，取燃气发电机2参数。
+8.196获取參{定点}应憊
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID,Q	2	1
+格式	SOI	VER	ADR	29H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA组成，DATAI为燃气发电机参数。
+DATAI信息见表B.1940
+B · 5·2 · 8设定参数{浮点數，表B · 197是SU发给SM的命令信息，表B · 1是SM收到命令信息后，返回的响应信息。
+表B · 197设定参{浮点斂，命令儐惠
+．宇号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	29H	48H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+ 注：LEND = OCH, COMMAND INFO由COMMAND GROUP, COMMAND TYPE和COMMAND DATAF组成。 COMMAND TYPE信息见表B · 198。
+表B· 198燃气发电机参数类型
+	内容	COMMAND TYPE
+	交流线/相电压AB/A上限	80H
+	交流线/相电压AB/A下限	81H
+	交流线湘电压BC/B上限	82H
+	交流线湘电压BUB下限	83H
+	交流线/相电压CMC上限	84H
+	交流线湘电压CMC下限	85H
+	交流电流A上限	86H
+	交流电流B上限	87H
+	交流电流c上限	88H
+	频率/转速上限	89H
+	频率/转速下限	8AH
+	排气温度上限	8BH
+
+2005
+	表B．189续，	
+序号	内容		COMMAND TYPE
+1	润滑油油压下限		8CH
+4	润滑油温度上限		8DH
+5-	控制电池电压上限		8EH
+0'	控制电池电压下限		8FH
+1，	启动电池电压上限		90H
+8	启动电池电压下限		91H
+o．	用户自定义		COH一EFH
+表B．199设定参数浮点數，响应信息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	29H	RIN	LENGTH		CHKSUM	EC)I
+注: LEND OOHO
+B．5．2 ·9设定参{定点数》表B ·200是SU发给SM的命令信息，表B ·201是SM收到命令信息后，返回的响应信息。
+表8.200设定參蠶{定点数，命令儈
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENIDí2	2	
+格式	SOI	VER	ADR	29H	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：08H，COMMAND INFO由COMMAND GROUP, COMMAND TYPE和CO、(AND DATA]组成。
+CONMAND 'PE信息见表B · 198。
+裹B．201设定参定点数，购应瓤
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	29H		LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+B·5·2· 10获取历史斂据{浮点数} 表B ·202是SU发给SM的命令信息，表B ·203是SM收到命令信息后，返回的响应信息。
+B．202获取历史数据{浮点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	29H	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 04H, COMMAND FO为2字节，由COMMAND TYPE与CONMAND GROUP组成。
+　根ECONMANDTYPE取值不同，解释如下：
+—CONMAND TYPE-OOH：获取第一条历史数据；
+　—COMMAND TYPE-OIH:收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+·
+　　—-CONMA.ND GROUP=OIH:主备机组时，取燃气发电机1历史数据；单台机组时，取燃气发电机的历史数据；
+一吒0、伏ND GROUP=02H：主备机组时，获取燃气发电机2历史数据。
+表B·203获取历史数据{浮点蠶，应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR 	29H 	RTN 	LENGTH	DATAINFO	CHKSUM 	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（化）组成。
+　DATAF信息见表B ·2。
+表B．2一俎燃气机羹鬚内及传送序
+	内容		
+			
+	输出线湘电压AB/A		2
+	输出线湘电压BC/B		2
+	输出线湘电压c c		2
+	输出电流A		0
+一
+	输出电流B		，
+	输出电流C		2
+	输出频率速		2
+	进气温度		，
+	排气温度		2
+	润滑油温度		，
+	润滑油油压		2
+	启动电池电压		2
+	控制电池电压		2
+	输出功率		，
+	用户自定义遥测数量p		1
+	用户自定义字节	4	
+	自动/手动状态		
+	运行/停机状态	1	
+	市燃气发电机ATS状态	1	
+	主备燃气发电机	1	
+	用户自定义状态数量	1	
+	用户自定义字节		
+　2 5
+B ·52 1 1获取历史数据定点数）
+表B．205是SU发给SM的命令信息，表B ·2是SM收到命令信息后，返回的响应信息。
+B．205获取历史数据{定点数，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	
+格式	SOL	VER	ADR	29H 	OH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：(NH, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据COMMAND TYPE取值不同，解释如下：一℃0、岱伏ND TYPE-OOH：获取第一条历史数据；
+—CONMAND 'PE IH：收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+　　一℃ONMAND GROUP-OH:主备机组时，取燃气发电机1历史数据；单台机组时，取燃气发电机的历史数据；
+—CONMAND GROUP4)2H：主备机组时，获取燃气发电机2历史数据。
+8.206获取历史据《定点皺}嘛应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	29H 	RIN 	LENGTH		．CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATA IPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATAT为历史数据发生的时间，由月（化）、日（1b）、时（1b）、分( )b）、秒（1b）组成。
+　DATAI信息见表B ·2。
+B·5 ·2．12获取历史告警
+表B ·207是SU发给SM的命令信息，表B．208是SM收到命令信息后，返回的响应信息。
+豪B．207获取历史告警命令儐
+．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	29H 	4CH 	LENGTH	CO、A№ INFO	o器，	EOI
+　注：LEND 04H, COMMAND INFO为2字节，由COMMAND TYPE与COMMAND GROUP组成。
+根据CONMAND TYPE取值不同，解释如下：一O、伏ND TYPE=OOH：获取第一条历史告警；
+—CONMAND TYPE=OIH：收到历史告警正确，要求上送下一条历史告警；
+—CONMAND：接收历史告警错误，重发上一条历史告警。
+根据CONMAND GROUP取值不同，解释如下：
+
+
+　　一℃OMMAND GROUP=OIH：历史告警；
+一一℃OMMAND GROUP4)2H：
+． 2m5 主备机组时，取燃气发电机1历史告警；单台机组时，取燃气发电机的
+主备机组时，获取燃气发电机2历史告警。
+　豪B.208获取历史告警应儐
+
+序号	1	2	3		5	6	7	8	9
+字节数	1	1	1		1	2	LENIDf2	2	1
+格式	SOI	VER 	ADR	29H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATA 'PE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史告警；  发送最后一条历史告警。
+　　DATAT为历史告警发生的时间，由月（1b）、日（1b）、时( )b）、分（1b）、秒( )b）组成。
+WARNSTATE信息见表B.1890
+8.6 UPS供电系练儐议
+B·6．1数据类型
+采用定点数传送时，表B ·2给出了相关数据类型。
+豪B.209定点蠶对类
+	遥测内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+	直流电压	无符号整型
+	蓄电池单体电压	有符号整型
+	蓄电池度	有符号整型
+	獼率	无符号整型
+B．6．2 UPS通儈协议
+B．6 ·2．1获取系统拟鬚化数据浮点数，
+表B ·210是SU发给SM的命令信息，表B ·211是SM收到命令信息后，返回的响应信息。
+豪B·210获取拟鬚饢化皺据《浮点皺，命令償鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	2AH 	41H	LENGTH		CHKSUM	EOI
+　注：LENID=OOH0
+B·211 获取系拟化蠶据浮点蠶，购应償瓤
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	2AH 	RIN	汇NG {		CHKSUM	EOI
+	注：DATAINFO	和DATAF组成，DATAF为UPS遥数据。
+DATAF信息见表B．212。
+　表B．212 UPS供电系统邊饢内容及传送序
+	内容	DATAF字节	DATA字节
+	交流输人线湘电压AB/A		
+	交流输人线湘电压BC/B		
+	交流输入线/相电压CMC		
+	交流输出线/相电压ABIA		
+	交流输出线/相电压BC/B		
+	交流输出线湘电压CA/C		
+	交流输出电流A		
+	交流输出电流B		
+	交流输出电流c		
+	直流输人电压		
+	输出頻率		
+	标示电池数量		
+	1#标示电池电压		
+	2#标示电池电压		
+			
++ 12	标示电池电压		
+m+ 13	标示温度数量		2
+m+ 14	标示电池温度		2
++巧	2#标示电池温度		2
+			
+灧+獼+ 13	标示电池温度	4	2
+m+ + 14	用户自定义遥测内容数量p	1	1
+	用户自定义	p × 4	p × 2
+B．6 ·2．2获取模拟鬚量佬后數据（定点数》
+表B ·213是SU发给SM的命令信息，表B ·214是SM收到命令信息后，返回的响应信息。
+　裹B，213获取欌拟化后数据定点數}命令儐慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2AH 	42H	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+　B·214获取拟釁饢化后数据{定点斂，响应惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	2AH 	RTN	LENGTH		CHKSUM	EOI
+	注：DATAINFO	和DATAI组成，DATA为UPS遥测数据。
+	DAT	B．212	
+	1 	3
+B·6．2．3获取开关输入状态
+表B ·215是SU发给SM的命令信息，表B ·216是SM收到命令信息后，返回的响应信息。
+B 15 获取开关鑰入状态命令
+						6	7	8	
+						2	I-ENID/2	2	
+								CHKSUM	BOK
+注：LENID：OOHO
+表B·216 获取开关输入状态嘛应信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR 	2AH 	RIN	LENGTH		CHKSUM	BOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATE为UPS供电状态。
+　RUNSTATE亻訁息见表B·217。
+豪8.217 UPS工作状态及传送序
+	内容	
+	供电方式	1
+	用户自定义状态数量p	1
+	用户自定义字节	
+状态描述：
+　一1 H：UPS供电；一2H：旁路供电；
+　—80H-EFH:用户自定义。
+B·6·2 ·4获取UPS供电系统告警状态
+表B ·218是SU发给SM的命令信息，表B ·2四是SM收到命令信息后，返回的响应信息。
+豪B·218获取UPS供电系统告警状态命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI 	VER	ADR	2AH 	44H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND=OOH0
+裊B·219获取UPS供电系告警状蠡应償憊
+．宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	I	1	2		2	1
+格式	SOI	VER	ADR 	2AH 	RTN	LENGTH		CHKSUM	EOI
+注：DATAINFO	和WARNSTATE组成，WARNSTATE为UPS告警状态。
+WARNSTATE	B·220。
+
+B·220 UPS告警内及传送序
+	内容	
+	同步环同步状态	1
+	市电	1
+	整流器	1
+	逆变器	1
+	旁路	1
+	蓄电池总电压	1
+	标志电池数量	1
+	1#标志电池电压	1
+	2#标志电池电压	1
+		
+"1+7	”标志电池电压	
++8	用户自定义告警数量p	1
+"1+9	用户自定义字节	p × 1
+告警字节描述： —OOH:正常；
+—01 H： 低于下限；一2H： 高于上限；
+．一80H-EFH:用户自定义；
+(H)H:故障。
+B．6．2 ·5获取系統参数浮点數）
+表B ·221是SU发给SM的命令信息，表B ·222是SM收到命令信息后，返回的响应信息。
+
+　B·2 1 获取系参斂浮点}命令儐惠
+	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2AH	46H	LENGTH		CHKSUM	EOI
+　注：I-ENID = OOHO
+　B· 2 获取系參數浮点数，嘛应儐惠
+．序号．	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2AH	RTN	LENGTH		CHKSUM	EOI
+　注：DATAINFO DATAF组成，DATAF为UPS系统参数。
+	DATAF	B．223
+1 3 
+B· 3 UPS供电系统参蠶及传送序
+	内容	D字节	D字节
+	蓄电池总电压上限	4	2
+	蓄电池总电压下限	4	2
+	蓄电池单体电压上限	4	2
+	蓄电池单体电压下限	4	2
+	用户自定义参数数量，	1	1
+	用户自定义字节	p × 4	p × 2
+B．6．2．6获取系统参数定点数，表B ·224是SU发给SM的命令信息，表B ·225是SM收到命令信息后，返回的响应信息。
+B· 4 获取系鱸参蠶《定点，命令償
+			3			6	7	8	
+			1			2		2	
+									
+　注：LENID =OOHo
+豪B．5 获取系参数定点蠶，应儐
+序号	1	2	3	4	5	6	7	8	
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER 	ADR 	2AH	RIN 	LENGTH			
+　注：DATAINFO由DATAF组成，DATA为UPS系统参数。
+　DATAI信息见表B ·223。
+B．6．27设定系参数《浮斂》表B ·226是SU发给SM的命令信息，表B ·228是SM收到命令信息后，返回的响应信息。
+B· 6设定系參数（浮点蠶，命令償
+．宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	2AH 	48H 	LENGTH	COMMAND INFO	CHKSUM	“ EOI
+　注迅ND：OAH, COMMAND INFO为5字节，由COMMAND TYPE与COMMAND DATAF组成。
+COMMAND DATAF信息见表B．227。
+B· 7设定数类型
+	内容	COMMAND TYPE
+	设置蓄电池总电压上限	80H
+	设置蓄电池总电压下限	81H
+	设置蓄电池单体电压上限	82H
+	设置蓄电池单体电压下限	83H
+	用户自定义	COH、
+表B·228 设定系统參数浮点数，应倍慝
+序号		2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LEND/2	2	1
+格式	SOI	VER 	ADR	2AH	RIN	LENGTH		CHKSUM	EOI
+　注：LBMD OOHO
+8.6．2·8设定系统参数（定点数表B．229是SU发给SM的命令信息，表B ·230是SM收到命令信息后，返回的响应信息。
+表B·229设定系统参数（定点数，命令信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	
+格式	SOI	VER	ADR	2AH 	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：06H, COMMAND INFO为3字节，由COMMAND TYPE与COMMAND DATAI组成。
+CONMAND DATA]信息见表B ·227。
+ B．2设定系统參数定点数，应儐憊
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1		2	LENID/2	2	1
+格式	SOI	VER 	ADR	2AH	XIN	LENGTH		CHKSUM	EOI
+注：LEND = (JOHO
+B·6．2 ·9获取历史据浮点》	表B．231是SU发给SM的命令信息，表B ·232是SM收到命令信息后，返回的响应信息。
+B，231获取历史皺据{点斂，命令
+，．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2 H 	4AH	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEMD=02H, CO、ND FO为1字节，由CO、ND 'PE组成。
+根据CO、ND TYPE取值不同，解释如下：一℃OMMAND TYPE—OOH: 获取第一条历史数据；
+—COMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；一一．℃OMMAND TYPE.4)2H： 接收历史数据错误，重发上一条历史数据。
+ B·2获取历史据`浮点数，响应償惠
+序号		2	3	4	5	6	7	8	9
+字节数		1				2	LEND/2	2	
+格式	SOI	VER 	ADR	2AH 	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据； —DATATYPFA)IH：发送最后一条历史
+
+　　DATAm化为历史数据发生的时间，由月( )b）、日( )b）、时（化）、分（1b）、秒（化e）组成。
+　DATAF信息见表B ·233。
+B·2历史数据内客及传送豪序
+	内容	
+			
+	交流输人线/相电压AB/A		
+	交流输，人纫相电压BC/B		
+	交流输人相电压CMC		
+	交流输出线/相电压A-BIA		
+	交流输出线/相电压BC'B		
+	交流输出线相电压CMC		
+	交流输出电流A		
+	交流输出电流B		
+	交流输出电澶C		
+	直输人电压		
+	输出率		
+	标示电池数量m		
+	标示电池电压		
+			
+	标示电池电压		
+	标示温度數量		
+	1珩示电池温度		
+	2#标示电池温度		
+			
+	标示电池温度	4	
+	用户自定义遥瀰内容数量，	1	
+	用户自定义字节		
+	供电方式	1	
+	用户自定义状态数量	1	
+	用户自定义字节		
+B·6 ·2· 10获取历史數据定点数，
+表B ·234是SU发给SM的命令信息，表B ·235是SM收到命令信息后，返回的响应信息。
+裹B.234获取历史蠶据{定点蠶，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI 	VER 	ADR 	2AH 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　 注：LEND：02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CObMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE=OOH：获取第一条历史数据；
+—CONMAND TYPE=O IH：收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H：接收历史 错误，重发上一条历史数据。
+	．	2 5
+ B·2 获取历史数据定点数，购应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SO]	VER 	ADR 	2AH	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAFI组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATAT皿E为历史数据发生的时间，由月（化）、日（1b）、时（lbyte）、分( )b）、秒（1b）组成。
+　DATAI信息见表B ·233。
+B·6 ·2．1 1获取历史告警表B ·236是SU发给SM的命令信息，表B ·237是SM收到命令信息后，返回的响应信息。
+ B·2获取历史告警命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?	2	1
+格式	SOI	VER	ADR 	2AH 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CO、ND TYPE取值不同，解释如下：
+—CObMAND TYPE-OOH：获取第一条历史告警；
+—COMMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警； —CONMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+豪B．237获取历史告警应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-ENID/2	2	1
+格式	SOI	VER 	ADR 	2AH 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATAT为历史告警发生或结束的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B·220。
+8.7逆变器供电系统通倍协议
+B·7· 1數据类型采用定点数传送时，表B ·238给出了相关 类型。
+表B·2 定点时数据类型
+序号	遥测内容	数据类型
+1	交流电压	无符号整型
+	交流电流	无符号整型
+^
+0	频率	无符号整型
+　B工2逆变器通信协议
+　B.7 ·2 · 1获取系统模拟量饢化数据（浮点數，
+表B · 239是SU发给SM的命令信息，表B ·240是SM收到命令信息后，返回的响应信息。
+　表B．239 获取系统模拟化据{浮点数，命令儐
+序号				4		6	7	8	
+字节数	1			1		2	LENID/2	2	
+格式	SOI 	VER	ADR	2BH 	41H 	LENGTH		CHKSUM	EOI
+注：LEMD = OOHO
+　B·240 获取系统模拟饢饢化据{浮点數，应倌惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2BH	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATAFLAG和DATAF组成，DATAF为逆变器遥测数据。
+DAT信息见表B．241。
+　B ·241逆变器供电系统邊羹内客及传送序
+	内容	DATAF*节	DATA字节
+	交流输出线/相电压AB/A		
+	交流输出线/相电压BC/B		
+	交流输出线/相电压CA/C		
+	交流输出电流A		
+	交流输出电流B		
+	交流输出电流C		
+	输出频率		
+	用户自定义遥测内容数量p		
+	用户自定义字节	4	
+B工2 ·2获取模拟量量化后数据（定点数》
+表B ·242是SU发给SM的命令信息，表B ·243是SM收到命令信息后，返回的响应信息。
+　B．242获取模拟釁化后数据（定点皺，命令儐惠
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	2BH	42H	LENGTH		CHKSUM	EOI
+　注：LENID=00H0
+
+· 2005
+　裹B·243获取模拟饢化后數据{定点斂）应信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR 	2BH 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATA]组成，DATAI为逆变器遥测数据。
+DATAI信息见表B．241。
+8.7·2．3获取逆变器供电系统告警状态
+
+	表B ·2是SU发给SM的命令信息，表B · 245是SM收到命令信息后，返回的响应信息。	
+　表B·2获取逆变器供电系统告警状态命令信
+，亭号．	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR 	2BH 	44H 	LENGTH		CHKSUM	EOI
+注：LEND OOHO
+　豪8．245获逆变供电系统告警状态应儐鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENDT2	2	1
+格式	SOI	VER	ADR 	2BH 	RIN 	I-ENGIT?I	DAff)INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTAIE组成，WARNSTATE为逆变器告警状态。
+WARNSTATE信息见表B·246。
+B·2逆变告警内客
+	内容	
+	交流输出线/相电压AB/A	1
+	交流输出线湘电压BCD	
+	交流输出相电压CMC	
+	交流输出电流A	
+	交流输出电流B	
+	交流输出电流C	
+	输出频率	
+	用户自定义告警数量p	
+	用户自定义字节	
+告警字节描述：
+　—OOH：正常；
+　OIH:低于下限；一2H：高于上限；
+　—80H-EFH;用户自定义；
+　—FOH:故障。
+B.7·2 ·4获取系统参数浮点）
+表B ·247是SU发给SM的命令信息，表B ·248是SM收到命令信息后，返回的响应信息。
+表B·247 获取系统參皺{浮点数）命令儐惠
+．．号	1		3	4		6	7	8	
+字节数	1		1	1		2	LENID/"2	2	
+格式	SOI 	VER	ADR2 	2BH	46H 	LENGTH		CHKSUM	EOI
+　注：I?NTD = OOHO
+表B．248 获取系统参（浮点数应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2BH	RTN 	LENGTH		CHKSUM	BOI
+　注：DATAmFO由DATAF组成，DATAF为逆变器系统参数。
+　DATAF亻訁息见表B ·249。
+表B·249逆变黌供电系统參皺及传送顺序
+	内容	DATAF字节	DATAI字节
+	交流输出线/相电压上限		
+	交流输出线緗电压下限		
+	交流输出电流上限		
+	输出频率上限		
+	输出频率下限		
+	用户自定义参数数量		
+	用户自定义字节	p × 4	厣× 2
+B.7·2 ·5获取系统参数（定点數》
+表B · 250是SU发给SM的命令信息，表B ·251是SM收到命令信息后，返回的响应信息。
+豪B．250 获取系统参數定点，命令儐
+．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	2BH	47H 	LENGTH		CHKSUM	BOI
+注：LEND = OOHO
+表B·251 获取系统參定点数响应慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	2BH	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA组战，DATA为逆变器系统参数。
+　DATAI信息见表B · 249。
+B·7·2．6设定系统参数（浮点
+表B ·252是SU发给SM的命令信息，表B ·254是SM收到命令信息后，返回的响应信息。
+表B．252设定系统参數{浮点，命令儐
+序号		2	3	4	5	6	7	8	9
+字节数	1		1	1		2	LENIDT2	2	1
+格式	SOI	VER	ADR 	2BH	48H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：OAH, COMMAND NFC)为5字节，由COMMAND TYPE与COMMAND DATAFg成。
+　1 3． 2m5
+　CON'MAND TYPE信息见表B ·253。
+B．253设定參类型豪
+	内容	COMMAND T、'PE
+	设置交流输出线湘电压上限	80H
+	设置交流输出线/相电压下限	81H
+	设置交流输出电流上限	82H
+	设置输出频率上限	83H
+	设置输出频率下限	84H
+	用户自定义字节	COH一EFH
+表B·254设定系参数浮点数，应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER 	ADR	2BH	RIN	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B·7·27设定系统参數《定点，表B ·255是SU发给SM的命令信息，表B ·256是SM收到命令信息后，返回的响应信息。
+B·255设定系统参数定点数》命令償憊
+序号	1		3	4	5	6	7	8	9
+字节数	1		1	1	1	2		2	1
+格式	SOI 	VBR	ADR	2BH 	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 06H, COMMAND INFO为3字节，由COMMAND TYPE与CONMAN) DATA组成。
+COMMAND DATA信息见表B ·253。
+豪B·2设定系统參蠶《定点数，应償鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1		2		2	1
+格式	SOI	VER	ADR	2BH	RIN	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B工2 ·8获取历史斂据（浮点数，表B．257是SU发给SM的命令信息，表B·258是SM收到命令信息后，返回的响应信息。
+B 57获取历史斂据浮点数，命令償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	2BH 	4AH	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由COMMANDTYPE组成。
+根据CO、ND TYPE取值不同，解释如下：
+　—CONMAND TYPFA)OH：获取第一条历史数据；一O伏ND TYPE=0iH：收到历史数据正确，要求上送下一条历史数据； —CONMAND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+
+．
+B ·258 获取历史数据浮点數，应儐惠
+序号		2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2		2	1
+格式	SOI	VER 	ADR	2BH	RTN		DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATA-FLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE—OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（化）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+DATAF信息见表B ·241。
+B·7·2 ·9获取历史数据定点數》表B ·259是SU发给SM的命令信息，表B ·260是SM收到命令信息后，返回的响应信息。
+ B·259获取历史皺据定点蠶，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	2BH 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注，LEND = 02H，COMMAND FO为1字节，由CONMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：一℃OMMAND 'TYPE=OOH： 获取第一条历史数据；一一℃OMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；
+—COMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+B.260获取历史蠶据{定点斂，应儐
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER 	ADR	2BH 	RIN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATA-FLAG, DATATIME和DATAI组．成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE—OOH:、正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+DATATME为历史数据发生的时间，由月( )b）、日（化）、时( )b）、分（化）、秒
+　（1b）组成。
+DATA信息见表B ·241。
+B.7．2 · 10获取历史告警表B · 261是SU发给SM的命令信息，表B ·262是SM收到命令信息后，返回的响应信息。
+YD丌	·
+ B 61 获取历史告警命令償
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOX	VER	ADR 	2BH 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H，CONMAND NFC)为1字节，由CO、伏ND TYPE组成。
+根据CObMAND TYPE取值不同，解释如下：一ON仆D TYPE-OOH:获取第一条历史告警；
+一0、ND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；一吒O、仆ND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI		ADR 	2BH	XIN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATME和根据DATATYPE取值不同，解釋如下：
+—DATATYPE-OOH:正常发送一条历史告警； —DATATYPE-OIH:发送最后一条历史告警。
+　　DATAT化为历史告警发生或结束的时间，由月（化）、日（lbyte）、时（1b）、分（1b）、秒（lbyte）组成。
+WARNSTATE信息见表B·246。
+8.8开关电源供电系统通儐协议
+B．8．1据类型
+采用定点数传送时，表B ·263给出了相关数据类型。
+裊B、263定点數时数据类型
+	遥瀏内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+	直流电压	无符号整型
+	直流电流	无符号整型
+	蓄电池充、放电电流	有符号整型（充电为正）
+	频率	无符号整型
+　B·8·2交流配电系统通信协议
+B．8．2· 1获取系统拟饢鱟化數据（浮点数，
+表B ·2是SU发给SM的命令信息，表B ·265是SM收到命令信息后，返回的响应信息。
+B·2获取系统拟釁饢化皺据浮点数，命令鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1			2	LENID/2	2	1
+格式	SOI	VER 	ADR	40H	41H	LENGTH	COMMAND INFO	CHKSUM	BOI
+　注：LEND：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+—CONMAND GROUP =FFH：多个交流屏时，获取所有交流屏的数据；
+—CONMAND GROU p IH：多个交流屏时，获取第1个屏的数据；单个交流屏时，获取交流屏数据；
+—CONMAND GROUP 2H：多个交流屏时，获取第2个屏的数据；
+—CONMAND GROUP一H：多个交流屏时，获取第”（十六进制）个屏的数据。
+　表B．265获取系统拟饢饢化数据（浮点数响应償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR 	40H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATA-FLAG和DATAF组成，DATAF为遥测数据。
+根据CO、ND GROUP取值，DATAF返回信息：一一．℃O、、ND GROUP=FFH：DATAF信息见表B．2
+—COMMAND GROUP=OIH一獼獼H：DATAF亻訁息见表B ·267。
+B交濠电系统内及传送豪序
+序号	内容
+	交流屏数量M（1字节）
+	第1屏交流配电系统遥测数据
+	第2屏交流配电系统遥测数据
+	
+M+l	第M屏交流配电系统遥测数据
+单屏交流配电系统遥测量数据见表B ·267。
+豪B·267单屏交配电系鰷瀛饢内薯及传送赢序
+	内容
+1	本屏交流配电系统数量M
+2	第1路交流配电系统遥测数据
+	
++ 1	第路交流配电系统遥测数据
+M+2	交流屏输出电流A
++3	交流屏输出电流B
+	交流屏输出电流C
+一路交流配电系统遥测内容及传送顺序见表B ·268。
+表B·268一路交流配电系统邊内客及传送顯序
+	内容	DATAF字节	DATAI字节
+	输人线湘电压AB/A		
+	输人线湘电压BC-IB		0
+	输人线/相电压CMC		0
+	输人频率		0
+	用户自定义遥测数量		1
+	用户自定义字节	4	px2
+
+．
+B．8 ·2 ·2获取系统模拟饢饢化数据《定点數》表B．269是SU发给SM的命令信息，表B ·270是SM收到命令信息后，返回的响应信息。
+B·269获取练槿拟釁化蠶据定点蠶，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER 	ADR	40H	42H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID：02H, CON-MAND INFO为1字节，由CONMAND GROUP组成。 
+根据CONMAND GROUP取值不同，解释如下：
+—CONMAND GROUP =FFH：多个交流屏时，获取所有交流屏的数据；
+—CONMAND GROU p IH：多个交流屏时，获取第1个屏的数据；单个交流屏时，获取交流屏数据；
+—CONMAND GROUP 2H：多个交流屏时，获取第2个屏的数据；
+—COMMAND GROUP =nnH:多个交流屏时，获取第nn（十六进制）个屏的数据。 B，70获取蒹欌拟釁化攪定点蠶，醺儐鏖
+．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER 	ADR 	40H 		LBNGIH		CHKSUM	EOI
+　注：DATAR?OO由DATAFLAG和DATAI组成，DAT为遥测数据。
+根据CONMAND GROUP取值，DATA返回信息：
+—CONMAN) GROUP=FFH: DATA信息见表B ·2。 —COMMAND GROUP4)1H一H：DATAI信息见表B ·267。
+B·8 ·2．3获取豪统开关输入状态表B ·27，是SU发给SM的命令信息，表B ·272是SM收到命令信息后，返回的响应信息。
+B·271获取系开关鑰入状态命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR 	40H 	43H	LENGTH	COMMAND INFO	(NKSUM	EOI
+　注邃NID =02H, COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CONN-AND GROUP取值不同，解释如下：一℃OMMAND GROUP =FFH ：多个交流屏时，获取所有交流屏的运行状态；
+
+　　一℃OMMAND GROU P IH： ·屏运行状态；
+　—COMMAND GROUP 2H：
+　一一℃ONMA.ND GROUP H：
+多个交流屏时，获取第1个屏的运行状态；单个交流屏时，获取交流
+多个交流屏时，获取第2个屏的运行状态；
+多个交流屏时，获取第nn（十六进制）个屏的运行状态。
+
+，363 
+B．272 获取系统开关翰入状态应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	40H	RIN	LENGTH			EOI
+　注：DATAINFO由DATAFLAG和RUNSTATBI组成，RI-INSTATE为交流屏状态。
+根据CONMAND GROUP取值，RUNSTATE返回信息： —COMMAND GROUP=FFH: RUNSTATE信息见表B ·273。
+一．℃O、覆、、ND GROUP=OIH一H：RUNSTATE信息见表B · 274。
+表B．273交流配电系统状态及传送顯序
+	内容
+	交流屏数量0字节）
+	第1屏交流配电系统状态
+	第2屏交流配电系统状态
+	
++1	第M屏交流配电系统状态
+单屏交流配电系统的运行状态见表B ·274。
+ B·274摹屏交流配电系的状态及传送鱖序
+	内．容	
+	检测的输出开关数量	1
+	输出开关1状态	1
+		
++ 1	输出开关m状态	1
+	用户自定义状态数量p	1
+灧+3	用户自定义字节	×1
+　状态字节描述： —OOH：团合；一IH：断开；一80H一用户自定义。
+B·8．2 ·4获取告警状态表B ·275是SU发给SM的命令信息，表B ·276是SM收到命令信息后，返回的响应信息。
+B．275获取告警状态命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	40H	44H	LENGTH	COMMANDINFO	CHKSUM	EOI
+　注：LENID=02H, CONMANDINFO为1字节，由COMMANDGROUP组成。
+根据CONMAND GROUP取值不同，解释如下：
+—OONMAND GROUP =FFH:多个交流屏时，获取所有交流屏的告警数据；
+　　一℃ON?MAND GROU P=OIH:多个交流屏时，获取第1个屏的告警数据；单个交流屏时，获取交流屏告警数据；
+
+—COMMAND GROUP 2H：
+—COMMAND GROUP H：多个交流屏时，获取第2个屏的告警数据
+多个交流屏时，获取第”（十六进制）个屏的告警数据。
+　表B 76获取告警状态应儐
+
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND,'2	2	1
+格式	SOI	VER	ADR	40H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为告警状态。
+根据COMMAND GROUP取值，WARNSTATE返回信息： —COMMAND GROUP—FFH: WARNSTATE信息见表B ·277；
+—COMMAND GROUP=01 H—nnH：WARNSTATE信息见表B · 278。 B·277．交流配电系统内響及传送序
+	内容
+	交流屏数量M 0字节）
+	1 #交流屏告警数据
+	2#交流屏告警数据
+	
+M+l	M#交流屏告警数据
+单屏交流配电系统告警数据内容见表B ·278。
+表B·278单屏交流配电系统告警内客及传送鱖序
+	内容
+1	本屏交流配电系统数量M
+2	第1路交流配电系统告警内容
+	
+M+l	第M路交流配电系统告警内容
+M+2	输出电流A
+M+3	输出电流B
+	输出电流C
+一路交流配电系统告警内容见表B · 279。
+B．279一路交流配电系统告警内客及传送序
+	内容	
+	输入线/相电压AB/A	
+	输人线厢电压BC/B	
+	输人线湘电压CMC	
+	频率	
+	检测熔丝/开关数量	
+	1 #熔丝研关	
+		
+	熔丝研关	
+	用户自定义告警数量p	
+	用户自定义字节	
+　94
+
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　YD丌1 3 告警字节描述： —OOH：正常；
+01H： 低于下限；高于上限；
+一3H： 缺相；
+　—-04H：熔丝断；
+　.5H： 开关断开；
+一80H、EFH：用户自定义；
+　—FOH:其他故障。
+B ·8 ·2 ·5获取参斂{浮点》
+表B ·280是SU发给SM的命令信息，表B．281是SM收到命令信息后，返回的响应信息。
+B·280 获取參数浮点斂，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	40H	46H 	LENGTH		CHKSUM	EOI
+　注：LEND OOHa
+豪B·281 获取参蠶{浮点皺应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	40H	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DATAF为交流屏參数。
+　DATAF信息见表B·282。
+B·282交濠屏參蠶及传送鱖序
+	内容		
+	交流输入线/相电压上限		
+	交流输入线/相电压下限		
+	交流输出电流上限		
+	频率上限		
+	頻率下限		
+	用户自定义参数数量p		
+	用户自定义字节		
+B ·8·2 · 6获取參数{定点数，
+表B ·283是SU发给SM的命令信息，表B ·2是SM收到命令信息后，返回的响应信息。
+B获取参数定点數，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	40H	47H	LENGTH		CHKSUM	EOI
+　注：LEND OOHO
+1m3
+B获取參數定点蠶，应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	40H	RIN	LENGTH		CHKSUM	BOI
+　注：DATAINFO由DATAF组成，DATA为交流屏参数。
+DATAI信息见表B ·282。
+B·8．27设定参数《浮点數，表B ·285是SU发给SM的命令信息，表B · 287是SM收到命令信息后，返回的响应信息。
+表B．285设定参数{浮点数，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	40H	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：OAH, COMMAND INFO由COMMAND TYPE与CONMAND DATAF组成。
+COMMAND IPE信息见表B ·286。
+B·286交流屏参斂类型
+序号	内容	COMMAND TYPE
+	交流输人线/相电压上限	80H
+	交流输人线/相电压下限	81H
+	交流输出电流上限	82H
+	频率上限	83H
+	频率下限	84H
+	用户自定义	COH一EFH
+B·287设定参浮点数，应償
+序号	1	2	3	4	5	6	7	8	．9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	40H	RIN	LENGTH		CHKSUM	BOI
+　注：I-ENID = OOHO
+B·8 8设定參數定点数》表B ·288是SU发给SM的命令信息，表B ·289是SM收到命令信息后，返回的响应信息。
+表B．2设定参数{定点数，命令償慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	40H	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：OAH, COMMAND INFO由COMMAND TYPE与COMMAND DATA-I组成。
+CONMAND TYPE信息见表B · 286。
+豪B．289设定參数定点数，购应償慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	I	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	40H	RIN	LENGTH		CHKSUM	EOI
+　注：LENID=OOHQ
+	1 	3 2 5
+B·8 9获取历史数据浮点数》表B ·2兕是SU发给SM的命令信息，表B．291是SM收到命令信息后，返回的响应信息。
+B· 0获取历史数据浮点蠶，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR 	40H 	4AH 	LENGTH	COMMAND INFO	CHKSUM,	EOI
+　注：LEMD=04H, CONMANDINFO为2字节，由COMMANDTYPE和CONMANDGROUP组成。
+根据CONMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE-OOH：获取第一条历史数据；
+TYPE=O IH：收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：一一℃OMMAND GROUP ：多个交流屏时，获取所有交流屏的历史数据；
+　　—COMMAND GROU P=01 H： 多个交流屏时，获取第1个屏的历史数据；单个交流屏时，获取交流屏历史数据；一℃OMMAND GROUP 2H： 多个交流屏时，获取第2个屏的历史数据；
+—COMMAND GROUP H： 多个交流屏时，获取第”（十六进制）个屏的历史数据。
+表B·四1获取历史斂据浮点数，应償鏖
+．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	40H 	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+
+—DATATYPE=OIH:发送最后一条历史数据。
+DATATME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒
+　（1b）组成。
+根据CONMAN) GROUP取值，DATAF返回信息：一℃OMMAND GROUP=FFH：DATAF信息见表B ·292；
+—COMMAND GROUP4)1H—nnH: DATAF亻訁启、见表B · 293。
+表B．292交配电系统历史蠶据内響及传送顯序
+	内容
+	交流屏数量0字节）
+	第1屏交流配电系统历史数据
+	第2屏交流配电系统历史数据
+	
++ 1	第屏交流配电系统历史数据
+单屏交流配电系统历史数据见表B ·293。
+97
+1 3
+　表B，293摹屏交配电系统历史数据内響及传送序
+	内容	DATAF	
+1	本屏交流配电系统数量		
+2	第1路交流配电系统数据		
+			
+M+l	第胳交流配电系统数据		
+M+2	输出电流A	4字节	2字节
+材+3	输出电流B	4字节	2字节
+	输出电流C	4字节	2字节
++5	检测的输出开关数量	1字节
+材+6	输出开关1状态	1字节
+		
+M+ +5	输出开关状态	1字节
++6	用户自定义状态数量p	1字节
+材+ +7	用户自定义字节	pxl字节
+一路交流配电系统遥测内容及传送顺序见表B．2。
+　B·2一路交流配电系统邊羹内客及传送顬序
+	内容	DATAF字节	DATAI字节
+	交流输入线相电压AB/A		
+	交流输人线相电压BC/B		
+	交流输入线/相电压CMC		
+	输人频率		
+	用户自定义遥测数量p		
+	用户自定义字节	4	
+B·8·2．10获取历史數据（定点數
+表B · 295是SU发给SM的命令信息，表B．296是SM收到命令信息后，返回的响应信息。
+B·四5获取历史数据{定点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LEND,'2	2	1
+格式	SOI	VER	ADR	40H 	4BH 	LENGTH	COMMAND INFO	0{KS{囔	EOI
+　注：LEND= 04H, COMMAND INFO为2字节，COMMAND TYPE和COMMAND GROUP组成。
+根据CONMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE=OOH:获取第一条历史数据；
+-—C0bMAND 'PE IH：收到历史数据正确，要求上送下一条历史数据；
+—COMMAND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+—COMMAND GROUP =艹 ：多个交流屏时，获取所有交流屏的历史数据；
+
+　　—COMMAND GROU P H：屏历史数据；
+　—COMMAND GROUP }2H：
+多个交流屏时，获取第1个屏的历史数据；单个交流屏时，获取交流
+多个交流屏时，获取第2个屏的历史数据；
+
+1363 2m5
+—CObMA.ND GROUP =nnH:多个交流屏时，获取第nn（十六进制）个屏的历史数据。
+B获取历史皺据{定点蠶，应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LBNID/2	2	1
+格式	SOI		ADR	40H	灬	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATATYPE取值不同，解释如下： —DATATYPE=OOH：正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATATD,?为历史数据发生的时间，由片( )b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+根据CONMAND GROUP取值，DATAI返回信息：
+　—COMMAND GROUP—FFH: DATA亻訁、见表B ·292； COMMAND GROUP=OIH一H：DATAI亻急见表B．293。
+B．8·2 · 1 1获取历史告警表B·297是SU发给SM的命令信息，表B ·298是SM收到命令信息后，返回的响应信息。
+
+豪B．297获取历史告警命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI 	VER	ADR	40H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+注：LEND=04H, CO NDINFO为2字节，COMMANDTYPE和根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE—OOH:获取第一条历史告警；
+—COMMAND IPE IH：收到历史告警正确，要求上送下一条历史告警；
+—COMMAND TYPE—02H:接收历史告警错误，重发上一条历史告警。
+根据CONMAND GROUP取值不同，解释如下：
+　　—COMMAND GROUP艹：多个交流屏时，获取所有交流屏的历史告警；一：℃O、D GROU P IH： 多个交流屏时，获取第1个屏的历史告警；单个交流屏时，获取交流屏历史告警；
+—COMMAND GROUP 2H： 多个交流屏时，获取第2个屏的历史告警；
+—COMMAND GROUP H： 多个交流屏时，获取第（十六进制）个屏的历史告警。
+B获取历史告警购应償鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	．1
+格式	SOI	VER 	ADR	40H	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+　1363 2凹5
+—DATATYPE—OOH：正常发送一条历史告警； —DATATYPE-OIH:发送最后一条历史告警。
+　　DATATME为历史数据发生的时间，由月（化）、日（化）、时（1b）、分（lbyte)、秒  ( )b）组成。
+根据CObMAND GROUP取值，WARNSTATE返回信息：
+—COMMAND GROUP=FFH：WARNSTATE信息见表B．277；
+—COMMAND GROUP=OIH一nnH: WARNSTATE信息见表B．278。
+B ·8．3整流配电系统通信协议
+B· 8 ·3· 1获取系统模拟饢量化数据{浮点数}
+表B · 299是SU发给SM的命令信息，表B．3是SM收到命令信息后，返回的响应信息。
+B．299 获取系统模拟鬚化数据{浮点数，命令惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	41H	41H	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+裊B ·3 获取系统摸拟鬚佬数据浮点蠶，嘛应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?	2	1
+格式	SOI	VER	ADR	41H 	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为整流配电系统遥测数据。
+DATAF信息见表B · 301。
+表B.301流配电系内窨及传送序
+序号	内容
+	整流器输出电压（4字节）
+	监控的模块数量（1字节）
+	模块1遥测内容
+	
+材+2	模块M遥测内容
+一个模块遥测内容见表B · 302。
+8.302整流模块羹内客及传送序
+序号	内容	DATAF字节	DATAI字节
+	模块输出电流	4	2
+	用户自定义遥测数量	1	1
+	用户自定义字节	px4	P>Q
+B ·8·3．2获取系统模拟化数据{定点数，
+表B ·303是SU发给SM的命令信息，表B · 3是SM收到命令信息后，返回的响应信息。
+	1 3	2 5
+豪B· 3 获取系統拟饢化蠶据定点蠶，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	4，H	42H	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+表B· 3 获取系统拟釁化斂据定点数》应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1		1	2	LENID/2	2	1
+格式	SOI	VER	Al)R	41H 	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAI组成，DATAI为整流配电系统遥测数据。
+　DATAI信息见表B.301。
+B．8 ·3 · 3获取系统开关输入状态
+表B ·305是SU发给SM的命令信息，表B ·3是SM收到命令信息后，返回的响应信息。
+表B·305 获取系统开关输入状态命令儐
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	41H	43H	LENGTH		CHKSUM	EOI
+　注：LENID：OOHO
+表B·306 获取系统开关输入状态嘛应儈
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1
+VER	1
+Al)R	1	1	2	I-ENID?	2	1
+格式	SOI			41H	RIN	LENGTH		CHKSUM	BOI
+　注：DATAINFO由RUNSTATE组成，RUNSTATE为整流模块状态。
+
+　RI飛STATE信息见表B ·307。
+表8.307流电系统摸块运行状态及传送序
+序号	内容
+	监测整流模块数量M
+	模块1运行状态内容
+	模块2运行状态内容
+	
++ 1	模块M运行状态内容
+一个整流模块运行状态见表B ·308。
+表B· 8 薑流模块运行状态内客及传送序
+	内容	
+	开鬱关机	
+	限流/不限流	
+	浮彪均彪测试	
+	用户自定义运行状态数量	1
+	用户自定义字节	又1
+　1 3 2005 状态字节描述：
+a)开关机
+—OOH：开机； —OIH:关机。
+b）限灏不限流
+　—OOH：限流；
+　-—01H:不限流。
+c)浮彪均彪测试
+　—OOH：浮充； 1 H：均充； 02H：测试；
+一80H．E：用户自定义。
+B．8·3·4获取告警状态
+表B．3是SU发给SM的命令信息，表B.310是SM收到命令信息后，返回的响应信息。
+裹8.309获取告警状态命令
+			3		5	6	7	8	
+			1		1	2	LENID/2	2	
+									
+　注：LENID=OOH0
+裹B.310获取告警状蠡应償鏖
+．，号	1	2	3	4	5	6	7	8	
+字节数	1	1	1	1		2		2
+	
+格式	SOI	VER	ADR	41H 	RTN 	LENGTH			
+　注：DATAJNFO由WARNSTATE组成，WARNSTATB为告警状态。
+WARNSTATE信息见表B.3110
+　B·311薑电系告警内客及传送鱖序
+	内容
+	监测整流模块数量M
+	模块1告警内容
+	模块2告警内容
+	
+M+l	模块材告警内容
+一组整流模块告警内容见表B.312。
+ B·312鼙濠块告警内客及传送鱖序
+	内容	
+	整流模块故障	1
+	用户自定义运行状态数量p	1
+	用户自定义字节	× 1
+　102
+
+	YD丌1 	3 2m5
+一告警字节描述：
+　—OOH：正常；
+—OIH:故障；
+一80H一用户自定义。
+B．8 · 3．5遥控
+表B.313是SU发给SM的命令信息，表B.314是SM收到命令信息后，返回的响应信息。
+表B·313邊控命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	41H	45H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND (NH, COMMAND INFO由COMMAND TYPE与COMMAND ID组成。
+根据CONMAND TYPE取值不同，解释如下：
+—COMMAND TYPE= 1 OH： 整流器均充，CONMAND D无效； —COMMAND TYPE= 1 FH ··整流器浮充，CONMAND ID无效；
+—COMMAND TYPE=IIH： 整流器测试，CONMAND D无效；
+—COMMAND TYPE=20H： 开整流器模块，CObMAND ID有效；
+—COMMAND TYPE=2FH ：关整流器模块，CONMAND ID有效。
+CONMAND D为整流模块编号，有效值01H -FEH, OOH与FFI{保留。
+B..314籩控应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	41H	RIN	LENGTH		CHKSUM	EOI
+　注：LEND4)OHo
+8.8．3·6获取历史据`浮点数，表B ·3巧是SU发给SM的命令信息，表B ·316是SM收到命令信息后，返回的响应信息。
+B·315获取历史蠶据{浮点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	41H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+—COMMAND TYPE=OOH: 获取第一条历史数据；一一．℃OMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；
+—COMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+B．316获取历史蠶据{浮点，应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	．2	1
+格式	SOI	VER 	ADR	41H 	RIN 	LENGTH		CHKSUM	BOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIMB和DATAF组成。
+　103
+1363． 2005
+	根据DATATYPE取值不同，解释如下：	
+
+—DATATYPE=OOH?.正常发送一条历史数据； —DATATYPE=OIH：发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（lbyte）、时（lbyte）、分（1b）、秒（1b）组成。
+DATAF信息见表B ·317。
+表B·317 整流配电系统历史数据及传送顺序
+	内容
+1	整流器输出电压（4字节）
+	监控的模块数量M 0字节）
+	模块1历史数据内容
+	
+M+2	模块M历史数据内容
+一组模块历史数据内容见表B.318。
+B ·318薑穫块内薯及传送鱖序
+	内容		
+				
+	模块输电流			
+	用户自定义遥测数量			
+	用户自定义字节	4		
+	开关机		1
+	限不限流		1
+	浮均彪测试		1
+	用户自定义运行状态数量		1
+	用户自定义字节		
+B·8．37获取历史数据（定点数》
+表B ·319是SU发给SM的命令信息，表B．320是SM收到命令信息后，返回的响应信息。
+ B·319获取历史数据定点数，命令儐惠
+序号	1		3	4	5	6	7	8	9
+字节数	1		1	I	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR	41H	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：02H，COMMAND mFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE-OOH:获取第一条历史数据；
+—CONMAND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；
+—00bO?fAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+1
+1363
+B.320 获取历史据定点蠶》嘛应儐
+序号		2	3	4	5	6	7	8	．9
+字节数	1	1	1	1	1	2		2	1
+	格式	SOI VER ADR	41H	RTN LENGTH	CHKSUM EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATAT[ME和DATA组成。
+根据DATATYPE取值不同，解释如下： —DATATYPE=OOH：正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒
+　（化）组成。
+DATAI信息见表B · 317。
+B ·8 · 3．8获取历史告表B ·321是SU发给SM的命令信息，表B ·322是SM收到命令信息后，返回的响应信息。
+裊B．32，获取历史告警命令儐
+．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID12	2	1
+格式	SO[	VER	ADR	41H	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：02H，COMMAND n?dFO为1字节，由COMMAND TYPE组成。
+　．
+根据CONMAN!) TYPE取值不同 ，解释如下：
+　—COMMAND TYPE—OOH：获取第一条历史告警；
+—COMMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；一O、岱ND TYPE=02H:接收历史告警错误，重发上一条历史告警。	
+B．3获取历史告謦相应憊
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1		1	2	LENIDt2	2	1
+格式	SOI	VER 	ADR	41H	RTN 	I?NGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。根据DATATYPE取值不同，解释如下： —DATATYPE-OOH:正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIME为历史数据发生的时间，由月( )b）、日（1b）、时（1b）、分( )b）、秒（1b）组成。
+WARNSTATE信息见表B.31 1。
+B．8．4直流配电系统通償协议
+B．8．4· 1获取系统摸拟化数据《浮点数）表B．323是SU发给SM的命令信息，表B ·324是SM收到命令信息后，返回的响应信息。  B· 3获取系拟化数掘{浮点，命令惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1			2	LENIDD	2	1
+格式	SOI	VER	ADR	42H	41H	LENGTH		CHKSUM	BOI
+　注：LEND：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+　1仍
+
+　1363 2 5 根据CONMAND GROUP取值不同，解释如下：
+　　—CONMAND GROUP =FFH：多个直流屏时，获取所有直流屏的数据；一℃ONMAND GROU p IH：多个直流屏时，获取第1个屏的数据；单个直流屏时，获取直流屏数据；
+—CONMAND GROUP 2H：多个直流屏时，获取第2个屏的数据；
+—CONMAND GROUP：H：多个直流屏时，获取第（十六进制）个屏的数据。
+表B．324获取系统模拟鬚化蠶据浮点数，嘛应儐
+序号	1		3			6	7	8	9
+字节数	1		1			2	LENID/2	2	1
+格式	SOI 	VER 	ADR 	42H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为遥测数据。根据CONMAND GROUP取值，DATAF返回信息：
+—COMMAND GROUP=FFH: DATAF信息见表B ·325；
+　—COMMAND GROUP=OIH．獼H：DATAF信息见表B．326。
+B．5童电系谜内客及传送序
+	内容
+1	直流屏数量M（1字节）
+2	第1屏直流配电系统遥测数据
+	
+M+l	第M屏直流配电系统遥测数据
+单直流配电系统遥测内容见表B ·326。
+B· 6配电豪内及传送序
+	内容	DATAF字节	DATAI字节
+	直流输出电压		
+	总负载电流		
+	监测蓄电池电流路数		
+	第一路蓄电池组充、放电电流		
+			
+褫+2	第路蓄电池组充放电电流		1
+M+3	监测直流分路数量		1
+	分路1电流		
++5	分路2电流		0
+			
+	分路电流	4	2
+	用户自定义遥测数量p	1	1
+	用户自定义字节	×4	
+　1
+	1 	·3
+B．8·4·2获取系模拟鬚鬚化數据定点数，表B ·327是SU发给SM的命令信息，表B ·328是SM收到命令信息后，返回的响应信息。
+B．7获取系鱸熨拟化數据{定点数，命令償
+，．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	42H	42H	LENGTH		CHKSUM	EOI
+　注：LEND：02H，COMMAND为1字节，由COb?'fAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+　　—COMMAND GROUP =FFH ：多个直流屏时，获取所有直流屏的数据；一一．℃OMMAND GROU P=01 H： 多个直流屏时，获取第1个屏的数据；单个直流屏时，获取直流屏数据；
+—COMMAND GROUP 2H： 多个直流屏时，获取第2个屏的数据；
+一℃OMMAND GROUP H： 多个直流屏时，获取第（十六进制）个屏的数据。
+表B．328获取系鰷拟饢饢化皺据定点數》应償惠
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	ADR	42H．	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATA为遥测数据。
+根据CO、伏ND GROUP取值，DATAF返回信息：
+—COMMAND GROUP=FFH：DATAI信息见表B ·325。
+　一℃OMMAND GROUP=01H—nnH: DATA亻訁．见表B ·326。
+B·8 ·4·3获取告警状态表B · 329是SU发给SM的命令信息，表B ·330是SM收到命令信息后，返回的响应信息。
+表B· 9获取告警状态命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?	2	1
+格式	SOI	VER	ADR	42H	44H	LENGTH		CHKSUM．	BOI
+　注：LENID = 02H，COMMAND R?4FO为1字节，由COMMAND GROUP组成。
+　　根据CONMAND GROUP取值不同，解释如下：一一℃OMMAND GROUP =FFH ：多个直流屏时，获取所有直流屏的告警数据；一一℃OMMAND GROU P=OI H： 多个直流屏时，获取第1个屏的告警数据；单个直流屏时，获取直流屏告警数据；
+—COMMAND GROUP 2H： 多个直流屏时，获取第2个屏的告警数据；
+	—COMMAND GROUP = H： 多个直流屏时，获取第nn（十六进制）个屏的告警数据。	
+YD丌11363 
+褒B.330获取告警状态响应惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	42H 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFI.AG和WARNSTATE组成，WARNSTATE为告警数据。
+根据CONMAND GROUP取值，WARNSTATE返回信息： —COMMAND GROUP=FFH: WARNSTATE信息见表B · 331；一℃OMMAND GROUP=OIH一獼H：、WARNSTATE信息见表B ·332。
+　衮B您31直流配电系统告警内客及传送顺序
+	内容
+	直流屏数量M（1字节）
+	第1屏直流配电系统告警内容
+	
+M+I	第M屏直流配电系统告警内容
+单直流配电系统告警内容见B ·331。
+B· 2流屏告警内及传送序
+	内容	
+	直流电压	
+	监测直流熔丝/开关数量	
+	直流熔丝开关1	
+	直流熔丝/开关2	
+		
+獼+ 1	直流熔丝/开关m	
++2	用户自定义告警数量p	
+灧+3	用户自定义字节	
+告警字节描述：
+　—OOH:正常；
+OIH: 低于下限；一2H： 高于上限；一3H： 熔丝断；
+　—-04H：开关打开；
+．一80H-EFM:用户自定义； —FOH:其他故障。
+B·8 ·4·4获取参数浮点数，表B ·333是SU发给SM的命令信息，表B · 334是SM收到命令信息后，返回的响应信息。
+B．3获取参数浮点數，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDf2	2	1
+格式	SOI	VER	ADR	42H	46H	LENGTH		CHKSUM	EOI
+　注：LEND · 000
+　，08
+
+·
+表B．3 获取参斂浮点敵，应慝
+．字号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	42H	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA]NFO由DATAF组成，DATAF为参数数据。
+　DATAF信息见表B · 335。
+B．3流配电系统参数及传送顺序
+	内容	DATAF字节	DATAI字节
+	直流电压上限	4	0
+	直流电压下限	4	
+	用户自定义參数数量，	1	1
+	用户自定义字节	px4	px2
+B ·8 ·4．5获取参數{定点数，表B · 336是SU发给SM的命令信息，表B · 337是SM收到命令信息后，返回的响应信息。
+B·3 获取參數定点數，命令償
+．字号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	42H	47H	LENGTH	COMMAND INFO	CHKSUM	EOI
+注：LEND = OOHO
+B．337 获取參数{定点数，嘛应
+．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VBR	ADR	42H	RIN	LENGTH		CHKSUM	EOL
+　注：DATAINFO由DATAI组成，DATA为参数数据。
+DATA信息见表B ·335。
+B．8．4·6设定參斂浮点数》表B ·338是SU发给SM的命令信息，表B ·340是SM收到命令信息后，返回的响应信息。
+B·3设定蠶浮点數，命令儐
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-ENID/2	2	1
+格式	SOI	VER	ADR	42H	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = OAH, COMMAND INFO由COMMAND TYPE与COMMAND DATAF组成。
+COMMAND TYPE信息见表B ·339。
+B· 9流电系统參数类型
+	内容	COMMAND TYPE
+	直流电压上限	80H
+	直流电压下限	81H
+	用户自定义	COH · EFH
+　1363 
+B．0 设定参數{浮点数，购应償
+序号				4	5	6	7	8	9
+字节数				1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	42H	RTN	LENGTH		CHKSUM	EOI
+　注：I-ENID = OOH。
+B·8 ·47设定参數{定点数》表B ·341是SU发给SM的命令信息，表B · 342是SM收到命令信息后，返回的响应信息。
+表B．1设定参数定点命令儐惠
+序号	1	2	3	4		6	7	8	9
+字节数	1	1	1	1		2	LENTD/2	2	1
+格式	SOI	VER	ADR	42H 	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：OAH, COMMAND INFO由COMMAND TYPE与DATAI组成。
+CONMAND TYPE信息见表B ·339。
+表B · 2设定参数{定点数，响应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数			1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	42H	RTN	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B· 848获取历史数据《浮点数》表B · 343是SU发给SM的命令信息，表B ·3是SM收到命令信息后，返回的响应信息。
+表B· 3获取历史蠶据浮点数，命令儐
+序号	1	2			5	6	7	8	9
+字节数	1	1			1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	42H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID：02H，COMMAND NFC)为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE=OOH：获取第一条历史数据；一o、伏ND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；
+—CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+表B．4获取历史数据{浮点，响应
+序号	1	2	3		5	6	7	8	9
+字节数	1		1		1	2	LENID/2	2	1
+格式	SOI	VER 	ADR 	42H 	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH：正常发送一条历史数据； —DATATYPE=OIH：发送最后一条历史数据。
+　110
+．
+　DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（化）、分( )b）、秒（1b）组成。
+　DATAF信息见表B．325。
+　B.8.4.9获取历史數据定点数）
+表B · 345是SU发给SM的命令信息，表B · 346是SM收到命令信息后，返回的响应信息。
+表B· 5获取历史数据{定点數，命令僖息
+，字．号	1			4	5	6	7	8．	9
+字节数	1．			1	1	2	LENID/2	2	1
+格式	SOI 	VER 	(l)R 	42H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND=02H, COMMANDINFO为1字节，由COMMANDTYPE组成。
+根据CO?vMAND TYPE取值不同，解释如下：
+　—-COPvMAN1) TYPE=OOH：获取第一条历史数据；
+—CON-MAND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；
+—-CO?MAND TYPE=02H：接收历史数据错误，意发上一条历史数据。
+表B．6获取历史数据定点蠶，嘛应儐惠
+序号	1		3		5	6	7	8	9
+字节数	1		1		1	2	LENID/"2	2	1
+格式	SOI 	VER 	ADR 	42H 	RTN 	LENGTH		CHKSUM	BOI
+　注：DATAINF()由DATATYPE, DATA-FLAG, DATATIME和DATA组．成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（化）、秒（lbyte）组成。
+DATA信息见表B ·3乃。
+B·8·4· 10获取历史告警
+表B．7是SU发给SM的命令信息，表B ·348是SM收到命令信息后，返回的响应信息。
+B· 7获取历史告警命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	42H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+一O、伏ND TYPE-OOH:获取第一条历史告警；
+O、伏ND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；	一吒O、ND TYPE=02H:接收历史告警错误，重发上一条历史告警。
+
+· 
+表B· 8 获取历史告警应慝
+序号		2	3	4	5	6	7	8	9
+字节数	1		1		1	2	LEMD/2	2	1
+格式	SOI	VER 	ADR	42H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH：正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（1b）、时( )b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B · 331。
+B.9太阳能供电系统通信协议
+B．9 · 1数据类型
+采用定点数传送时，表B · 249给出了相关数据类型。
+表B·249定点数时据类型
+序号	遥测内容	数据类型
+1	输出电压	无符号整型
+2	输出电流	无符号整型
+B · 9．2太阳能供电设备通信协议
+B· 9．2．1获取系统模拟量量化据（浮点数，
+表B ·350是SU发给SM的命令信息，表B · 351是SM收到命令信息后，返回的响应信息。
+表B· 0 获取系统拟鬚化皺据{浮点数，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	41H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+表B·351 获取系统拟化斂据{浮点数，应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为遥测数据。
+　DATAF亻訁息见表B · 352。
+表B．2太阳能供电系统邊瀏内客及传送顺序
+序号	内容	备注
+1	方阵数量M	1字节
+2	方阵1遥测数据	
+		
+M+l	方阵M遥测数据	
+· 单组太阳能方阵遥测数据见表B ·353。
+B· 3单组方阵邊瀏内客及传送序
+序号	内容	DATAF字节	DATAI字节
+	方阵输出电压	4	2
+	方阵输出电流	4	2
+	用户自定义遥测数量p	1	1
+	用户自定义字节	px4	×2
+B · 922获取系统模拟鬚化数据{定点数）
+表B · 354是SU发给SM的命令信息，表B · 355是SM收到命令信息后，返回的响应信息。 
+表B．4 获取系统模拟鬚鱟化据{定点斂，命令信息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LBNID/2	2	1
+格式	SOI	VER	ADR	43H	42H	LENGTH		CHKSUM	EOI
+注：LEMD = OOHO
+表B · 5 获取系统模拟化數据定点數》应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+　格式	SOI	VER	ADR 43H RTN	LENGTH	CHKSUM EOI 注：DATAINFO由DATAFLAG和DATAI组成，DATAI为遥测数据。
+DATA信息见表B ·352。
+B·9·2 · 3获取太能供电系统开关输入状态
+表B · 356是SU发给SM的命令信息，表B ·357是SM收到命令信息后，返回的响应信息。
+B· 6获取太阳能供电系开关翰入状态命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	43H	43H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B．7获取太阳能供电系练开关鑰入状态嘛应鬈
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H 	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATE为方阵状态。
+RUNSTATE信息见表B·358。
+B．8方阵运行状态及传送序
+序号	内容	备注
+	方阵数量材	1字节
+	方阵1状态内容	
+	方阵2状态内容	
+		
+M+l	方阵M状态内容	
+	单个方阵的状态内容	B ·359
+．
+　表B· 9 单个太阳方阵状态内容及传送顺序
+序号	内容	
+1	太阳方阵运行状态	1
+	用户自定义运行状态数量	1
+	用户自定义字节	
+方阵运行状态描述： —OOH：方阵撤出；一1 H：方阵投入；
+一80H一EFH：用户自定义。
+B · 9 ·2 ·4获取告警状态
+表B · 360是SU发给SM的命令信息，表B ·361是SM收到命令信息后，返回的响应信息。
+B．0获取告警状态命令倍
+			3			6	7	8	
+			1			2	LENID/2	2	
+								CHKSUM	EOI
+注：LEND = OOHO
+B· 1获取告警状态购应倍
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI 	VER	ADR	43H 	RIN	LENGTH		￡CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和WARNSTATE组成，WARNSTATE为方阵告警内容。
+WARNSTATE信息见表B·362。
+B．2方阵告警内客及传送顺序
+	内容	备注
+	太阳方阵数量M	1字节一
+	方阵1告警内容	
+		
+材+1	方阵M告警内容	
+单组方阵告警内容见表B ·363。
+表B．3单组方阵告警内客及传送顺序
+序号	内容	
+	电压	1
+	电流	1
+	用户自定义告警数量	1
+	用户自定义字节	
+方阵告警字节描述：一司OH：正常；
+一1 H： 低于下限；一℃2H： 高于上限；
+
+	YDIT 	· 
+　．一80H一EFH?·用户自定义；
+　—FOH:故障。
+　B．9 ·2 ·5邊控
+表B · 3是SU发给SM的命令信息，表B ·365是SM收到命令信息后，返回的响应信息。
+B．3遥控命令僖惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LBNID/"2	2	1
+格式	SOI	VER	ADR	43H	45H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　　注：LENID=04H, COMMAND INFO为2个字节，由CONMAND GROUP和COMMAND TYPE组成，传送顺序为COMMAND GROUP, CO、D TYPEO 根据CON-MAND GROUP取值不同，解释如下：一0、伏ND GROUP =OIH:多个方阵时，遥控方阵1；单个方阵时，遥控方阵；
+-￡ONMAND GROUP 2H：多个方阵时，遥控方阵2；
+CONMAND GROUP = H：多个方阵时，遥控方阵”（十六进制）。
+根据CONMAND TYPE取值不同，解释如下： —CONN-AND TYPE= 1 OH：遥控方阵投人；一吒0、焦覆AND TYPE-I FH：遥控方阵撤出。
+	B，5	控嘛应儐息
+．序号	1		3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID?	2	1
+格式	SOI 	VER	ADR	43H	RTN	LENGTH		CHKSUM	EOI
+　注：LEND = OOHO
+B．9·2 ·6获取参数浮点数》表B．3是SU发给SM的命令信息，表B ·367是SM收到命令信息后，返回的响应信息。
+豪B· 6 获取參皺{浮点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	43H	46H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B·367 获取参数{浮点數，应償息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DATAF为参数。
+　DAT，信息 B ·368
+．
+表B·368太阳能供电系统参数及传送顯序
+	内容	DATAF字节	DATA字节
+	电压上限		1
+	电流上限		0
+	用户自定义参数数量，		1
+	用户自定义参数	4	×2
+B · 927获取参数定点，表B．369是SU发给SM的命令信息，表B．370是SM收到命令信息后，返回的响应信息。
+B·369 获取参数[点數命令價
+．序．号		2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	47H	LENGTH		CHKSUM	EOI
+　注：LEND =00Ho
+B．370 获取参数{定点斂，响应償
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	ADR	43H	RTN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAI组成，DATAI为参数。
+　DATAI信息见表B ·368。
+B·9 ·2 ·8设定参数浮点数）表B · 371是SU发给SM的命令信息，表B · 373是SM收到命令信息后，返回的响应信息。
+表B·371设定参数浮点数命令儐
+序号	1	2	3		5	6	7	8	9
+字节数		1	1		1	2	LEND/2	2	
+格式	SOI	VER	ADR	43H 	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：OAH, COMMAND INFO由COMMAND TYPE与．COMMAND DATAF组成。
+COMMAND TYPE信息见表B ·372。
+表B．372太能供电系统参数类型
+	内容	COMMAND TYPE
+1	电压上限	80H
+0	电流上限	81H
+^0	用户自定义	COH—EFH
+表B·373设定参数浮点，购应
+序号	1		3	4	5	6	7	8	9
+字节数			1	1		2	LENID/2	2	1
+格式	SOL 	VER	ADR	43H	RIN	LENGTH		CHKSUM	EOI
+　注：LEMD=OOH0
+	YD,?T 	·
+B · 9 ·2 ·9设定参数（定点数》表B ·374是SU发给SM的命令信息，表B．3，5是SM收到命令信息后，返回的响应信息。
+裹B·374设定数定点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEMD：06H, COMMAND INFO由COMMAND TYPE与COMMAND DATAI组成。
+COMMAND TYPE信息见表B ·372。
+表B．375设定参数定点数，应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	RTN	LENGTH		CHKSUM	EOI
+　注：I-ENID = OOH,
+B· 9．2 · 10获取历史数据{浮点斂》表B · 376是SU发给SM的命令信息，表B．377是SM收到命令信息后，返回的响应信息。
+B．376获取历史据浮点数}命令償
+序号	1		3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID?	2	1
+格式	SOI 	VER	ADR	43H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H, CONMAND ffdFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+	—COMMAND TYPE=OOH： 获取第一条历史数据；	
+—COMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；一一℃OMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+B·377获取历史据{浮点數》购应
+，宇．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND?'*2	2	1
+格式	SOI	VER 	ADR	43H 	RTN 	I?NGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATAF组．成。
+　根据DATATYPE取值不同，解释如下： —DATATYPE=OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（化）、秒
+
+（化）组成。
+DATAF信息 B．378
+·
+表B．378太能供电系统历史数据内客及传送顺序
+	内容	备注
+	方阵数量M	1字节
+	方阵1历史数据	
+		
+材+ 1	方阵M历史数据	
+单组方阵历史数据见表B．379。
+表B·379单组方阵历史斂据内容及传送顺序
+	内容		
+		DATAF字节		DATA字节
+	方阵输出电压	4		0
+	方阵输出电流	4		
+	用户自定义遥测数量p	1		1
+	用户自定义字节	P><4		
+	太阳方阵运行状态		1
+	用户自定义运行状态数量		1
+	用户自定义字节		
+B．9·2．1 1获取历史数据《定点数》
+表B · 380是SU发给SM的命令信息，表B ·381是SM收到命令信息后，返回的响应信息。
+B．0获取历史数据{定点》命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由COMMANDTYPE组成。
+根据CONMAND TYPE取值不同，解释如下：一0、ND TYPE—OOH：获取第一条历史数据；
+—CONMAND IPE IH：收到历史数据正确，要求上送下一条历史数据；
+—CONMAND IPE 2H：接收历史数据错误，重发上一条历史数据。
+裹B· 1获取历史数据定点蠶，响应儐
+序号	1	2	3		5	6	7	8	9
+字节数	1	1	1		1	2	LENIDT2	2	1
+格式	SOI	VER 	ADR 	43H 	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　　DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+　DATAI信息见表B ·378。
+
+· B．9．2．12获取历史告警
+表B · 382是SU发给SM的命令信息，表B · 383是SM收到命令信息后，返回的响应信息。
+表B．382获取历史告警命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	43H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H，COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：
+—COMMAND TYPE=OOH： 获取第一条历史告警；
+一一．℃OMMAND TYPE—01 H： 收到历史告警正确，要求上送下一条历史告警；一．．．℃OMMAND TYPE=02H： 接收历史告警错误，重发上一条历史告警。
+表B．3获取历史告警应儈
+序．号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER 	ADR	43H	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE—OOH:正常发送一条历史告警；
+—DATATYPE=OIH：发送最后一条历史数告警。
+　　DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b八分（化）、秒（1b）组成。
+WARNSTATE信息见表B．362。
+B.10直流一直流变换器DC—DC，系统通信协议
+B· 10· 1数据类型
+采用定点数传送时，表B．3给出了相关数据类型。
+表B ·384定点数时数据类型
+序号	遥测内容	数据类型
+1	直流电压	无符号整型
+2	直流电流	无符号整型
+B.10 ·2直流一直流（DC—DC）变换器通信协议 B · 1021获取系统模拟饢化数据{浮点数）
+
+表B · 385是SU发给SM的命令信息，表B · 386是SM收到命令信息后，返回的响应信息。
+B．5获取系统模拟饢化數据{浮点数，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	44H	41H	LENGTH		CHKSUM	EOI
+　注：LENID=00H0
+· 
+　表B．386获取系统拟饢化数据浮点数响应信息
+序号		2	3	4	5	6	7	、8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	44H 	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+	注：	O由DATAFLAG和DATAF组成，DATAF为遥测内容。
+　DATAF亻訁息见表B ·387。
+　表B．7 DC—DC变换器遥瀏内容及传送顺序
+序号	内容	备注
+1	DC—DC模块数量	1字节
+	I#DC—DC模块遥测数据	
+·	2#DC—DC模块遥测数据	
+		
++1	M#DC—DC模块遥测数据	
+单台DC一DC模块遥测数据如表B ·388。
+　表B· 8单台DC DC模块瀏内客及传送序
+序号	内容	DATAF字节	DATAI字节
+	输出电压	4	2
+	输出电流	4	2
+	用户自定义遥测数量p	1	1
+	用户自定义字节	× 4	p × 2
+B.10 ·2 ·2获取模拟量化后数据定点數，
+表B．389是SU发给SM的命令信息，表B · 3％是SM收到命令信息后，返回的响应信息。
+　表B· 9获取模拟鬚饢化后据{定点数，命令儐
+．序号	1	2	3	4		6	7	8	9
+字节数	1	1	1	1		2	I-ENID/2	2	1
+格式	SOI	VER						CHKSUM	EOI
+注：LEND：OOHO
+　B ·390获取拟饢饢化后数据{定点数，嘛应儐
+，宇．号	1	2	3	4	5	6	7		8	9
+字节数	1	1	1	1	1	2	LENID/2		2	1
+格式	SOI	VER 	ADR	44H	RTN 	LENGTH	DATAINFO	O		0
+　注：DATAINFOO由DATAFLAG和DATAI组成，DATA为遥测内容。
+　DATAI信息见表B．38，。
+B · 10 ·2 · 3获取系统告警状态
+表B · 391是SU发给SM的命令信息，表B ·392是SM收到命令信息后，返回的响应信息。
+B·391获取系告警状态命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	44H	44H	LENGTH		CHKSUM	EOI
+注：LEND OOHO
+　120
+ B．392 获取系统告警状态响应儐息
+．序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	44H 	R、	LENGTH	DATAINFO	℃HKSUM	EOI
+	注：	0由DATAFLAG和、MARNSTATE组成，WARNSTATE一．模块告警状态。
+WARNSTATE信息见表B·393。
+　表B．393直流一直流变换器告警内客及传送鱖序
+序号	内容	备注
+1	监测DC—DC模块数量材	1字节
+，	I#DC—DC模块告警内容	
+3-	2#DC—DC模块告警内容	
+		
+M+l	M#DC—DC模块告警内容	
+单台DC一DC模块的告警内容见表B · 394。
+　 B．394单台DC DC摸块的告警内客及传送顯序
+序号	内容	
+	输出电压	1
+	输出电流	1
+	用户自定义告警数量，	1
+	用户自定义	p × 1
+告警字节描述： —OOH：正常；
+—01 H： 低于下限；一2H： 高于上限；
+．一80H-EFH:用户自定义；
+(H)H:故障。
+B．1024获取系统参斂《浮点数，
+表B · 395是SU发给SM的命令信息，表B · 396是SM收到命令信息后，返回的响应信息。
+　表B·395获取系参数{浮点数》命令倌息
+，宇．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	44H 	46H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：02H，COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+一℃OMMAND GROUP =FFH ：获取所有DC—DC模块参数；
+
+—COMMAND GROUP =01 H：一一．℃OMMAND GROUP 02H：
+—COMMAND GROUP = H：获取第1个DC—DC模块参数；获取第2个DC—DC模块参数；
+获取第（十六进制）个DC—DC模块参数。
+　121
+
+　．
+B．396 获取系统参{浮 数 响应信
+序号	1	2	3	4	5	6	．7	8	9
+字节数		1	1	1		2	LENID/2	2	
+格式	SOI	VER 	ADR 	44H	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+	注：	由DATAF组成，DATAF为直流一直流变换器的参数。
+根据℃ON伏ND GROUP取值，DATAF返回信息：
+　—COMMAND GROUP=FFH：DATAF信息见表B ·397；
+　—COMMAND GROUP=01H—nnH: DATAF信息见表B，398。
+　表B．397直流一流变换参数及传送顬序
+	内容
+1	DC—DC模块数量M（1字节）
+	第1个一模块参数
+^
+0	第2个一一模块参数
+	
+M+l	第M个一模块参数
+单台一DC模块参数内容见表B．398。
+　 B·398单台DC—DC块參数内容及传送顺序
+	内容	D字节	DATAI字节
+	输出电压上限	4	
+	输出电压下限	4	2
+	输出电流上限	4	2
+	用户自定义参数数量	1	1
+	用户自定义字节	p × 4	p × 2
+B· 10 ·2 ·5获取系统參数（定点数）表B ·399是SU发给SM的命令信息，表B·400是SM收到命令信息后，返回的响应信息。
+表B·399获取系统参{定点数，命令
+．序．号	1			4	5	6	7	8	9
+字节数	1			1		2	LENID/2	2	1
+格式	SOI 	VER	(l)R 	44H	47H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = 02H, COMMAND INFO为1字节，由COMMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：一一℃OMMAND GROUP F刊 ：获取所有DC—DC模块参数；
+
+一一．℃0、亻AND GROUP 1 H：
+　—COMMAND GROUP 2H：
+　—COMMAND GROUP = H：
+　22
+获取第1个DC—DC模块参数；获取第2个一模块参数；
+获取第”（十六进制）个DC—DC模块参数。
+
+B ·400 获取系统參数《定 数 响应倌
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	AL)R	44H	R、	LENGTH	DATAINFO	CHKSUM	EOI
+	注：	由DATA]组成，DATAI为直流一直流变换器的参数。
+根据CONMAND GROUP取值，DATA返回信息：
+—COMMAND GROUP=FFH：DATAI信息见表B · 397； —COMMAND GROUP=OIH一H：DATAI信息见表B · 398。
+B · 10 ·2 ·6设定系统参数（浮点数，表B．401是SU发给SM的命令信息，表B ·403是SM收到命令信息后，返回的响应信息。
+表8.401设定系练参浮点数》命令信息
+序号	1		3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	44H 	48H	LENGTH	COMMAND INFO	。CHKSUM	EOI
+　　注：LEMD：OCH, COMMAND INFO为6字节，由COMMAND GROUP, COMMAND TYPE与COMMAND DATAF 组成。
+根据CONMAND GROUP取值不同，解释如下：
+—CONMAND GROUP IH：设定第1个DC—DC模块参数；一吒O、焦ND GROUP 2H：设定第2个DC—DC模块参数；
+—CONMAND GROUP一”H：设定第nn（十六进制）个DC—DC模块参数。
+CONMAND TYPE信息见表B ·402。
+表B ·402參数类型表
+	内容	COMMAND TYPE
+	设置输出电压上限	80H
+	设置输出电压下限	81H
+	设置输出电流上限	82H
+	用户自定义字节	COH、EFH
+表B·403设定系统参数（浮点数）购应倌息
+，宇号	1			4	5	6	7	8	9
+字节数	1			1	1	2	LENID/2	2	1
+格式	SOI 	VER 	Al)R	44H	RIN	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B· 10·27设定系统参数定点數》表B．4是SU发给SM的命令信息，表B ·405是SM收到命令信息后，返回的响应信息。
+123
+· 
+B．404 设定系统参数{定 數 命令信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	44H	49H	LENGTH	COMMAND INFO	CHKSUM 	EOI
+　　注：LEND = 08H，COMMAND INFO为4字节，由COMMAND GROUP, COMMAND TYPE与COMMAND DATAI 组成。
+根据CONMAND GROUP取值不同，解释如下：
+—CONMAND GROUP -01 H：设定第1个DC—DC模块参数；
+—CONMAND GROUP 2H：设定第2个DC—DC模块参数；
+—CONMAND GROUP =nnH：设定第（十六进制）个DC—DC模块参数。
+COMMAND TYPE信息见表B．402。
+豪B．405设定系参蠶定点数}应儐
+．宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER 	ADR	44H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+8.10 ·2 ·8获取历史数据{浮点数）表B．4是SU发给SM的命令信息，表B ·407是SM收到命令信息后，返回的响应信息。
+表8.406获取历史数据浮点数，命令
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LEND/2	2	1
+格式	SOI	VER	ADR	44H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LBNID：02H, COMMAND为1字节，由COMMAND TYPE组成。
+根据CON-MAND TYPE取值不同，解释如下：
+　—CONMAND TYPE=OOH：获取第一条历史数据；一0、岱ND TYPE=OIH：收到历史数据正确，要求上送下一条历史数据； —CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+表B．407获取历史数据浮点數》响应儐惠
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	44H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH：正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+DATATME为历史数据发生的时间，由月（lbyte)、日（化）、时（1b）、分( )b）、秒
+（1b）组成。
+　DATAF信息见表B ·387。
+
+	1 	3 2m5
+B· 10 ·2 ·9获取历史数据《定点数，表B · 8是SU发给SM的命令信息，表B ·409是SM收到命令信息后，返回的响应信息。
+B·408获取历史斂据定点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	I-ENIDn	2	1
+格式	SOI	VER	ADR	44H 	4BH 	LENGTH	COMMAND INFO	CHKSVM	EOI
+　注：LEND · 02H，COMMAND NFC)为1字节，由CONMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：一吒0 ND TYPE-OOH：获取第一条历史数据；
+—CONMAND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据； —CONMAND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+B· 9获取历史蠶据定点数，购应惠
+．．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	I-ENID/2	2	1
+	格式	SOI VER ADR 44H RIN LENGTH	CHKSUM EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATATYPE取值不同，解释如下：
+一
+DATATIME为历史数据发生的时间，由（1b）、日（1b）、时( )b）、分( )b）、秒
+（化）组成。
+　DATAI信息见表B ·387。
+B.10·2．10获取历史告警表B ·410是SU发给SM的命令信息，表B ·411是SM收到命令信息后，返回的响应信息。
+B·410获取历史告警命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	44H 	4CH	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMANDINFO为1字节，由COMMANDTYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE=OOH： 获取第一条历史告警；
+—COMMAND TYPE=01 H： 收到历史告警正确，要求上送下一条历史告警；	—COMMAND TYPE=02H： 接收历史告警错误，重发上一条历史告警。
+B．411获取历史告警嘛应儐
+．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+	格式	SOI VER ADR	44H	RIN LENGTH	CHKSUM EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTAIE组成。
+根据DATA 'PE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=OIH：发送最后一条历史数据。
+DATATME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒
+　（1b）组成。
+WARNSTATE信息见表B ·393。
+B.1 1风力发电设备通信协议
+B．1 1 · 1数据类型采用定点数传送时，表B．412给出了相关数据类型。
+ B·412定点数时数据类型
+序号	遥测内容	数据类型
+1	交流电压	无符号整型
+2	交流电流	无符号整型
+B.1 1 ·2风力发电设备通协议
+B.1 1 ·2 · 1获取系统模拟鬚化数据（浮点数》表B 3是SU发给SM的命令信息，表B ·414是SM收到命令信息后，返回的响应信息。
+表B·413风力发电设夤通协议命令倌惠
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1		1	2	LENIDQ	2	1
+格式	SOI 	VER	ADR	45H 	41H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND 02H，COMMAND NFC)为1字节，由COMMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下：
+—CONMAND GROUP =FFH：获取所有风机遥测数据；一吒O、岱伏ND GROUP IH：获取第1台风机遥测数据；一．O、ND GROUP 2H：获取第2台风机遥测数据；
+—CONMAND GROUP =nnH：获取第（十六进制）台风机遥测数据。 B，414风力发电设夤通倌怫议应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	
+格式	SOI	VER 	ADR	45H 	RIN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为风机遥测数据。
+根据CO、焦ND GROUP取值，DATAF返回信息：
+—COMMAND GROUP=FFH: DATAF亻訁息见表B ·4巧；
+—COMMAND GROUP=OIH．nnH: DATAF信息见表B．416。
+1363 2凹5
+表B·415风机邊瀏饢内客及传送序
+	内容
+	风机数量M 0字节）
+	第1台风机遥测数据
+	第2台风机遥测数据
+	
+M+l	第M台风机遥测数据
+单台风机遥测数据如表B．416。
+	1	表B ·416单台风机的遥瀏据内容及传送顺序
+	内容	D字节	DATAI字节
+	交流输出线/相电压AB/A	4	
+	交流输出线/相电压BC-IB	4	
+	交流输出线湘电压CMC	4	
+	交流输出电流A	4	
+	交流输出电流B	4	
+	交流输出电流C	4	
+	用户自定义遥测数量p	1	
+	用户自定义字节	4xp	
+B.11 ·2．2获取模拟量釁化后数据《定点數，表B．417是SU发给SM的命令信息，表B．418是SM收到命令信息后，返回的响应信息。
+B．417获取模拟饢化后皺据定点数，命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	L?NID/"2	2	1
+格式	SOI	VER	ADR 	45H	42H 	LENGTH	COMMAND INFO	CHOUM	EOI
+　注：LEND：02H, COMMAND INFO为1字节，由CONMAND GROUP组成。
+根据CONMAND GROUP取值不同，解释如下： o、伏ND GROUP =获取所有风机遥测数据；
+—COMMAND GROUP IH：获取第1台风机遥测数据；
+—COMMAND GROUP 2H：获取第2台风机遥测数据；
+一O、D GROUP：H：获取第”（十六进制）台风机遥测数据。 B．418获取拟釁化后数据定点數，购应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENIDf2	2	1
+格式	SOI	VER 	ADR	45H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和DATAI组成，DATA为风机遥测数据。
+根据CONMAND GROUP取值，DATATì?回信息：一．℃OMMAND GROUP=FFH: DATA亻訁，急见表B ·4巧；
+—COMMAND GROUP<)IH一”H：DATAI信息见表B ·416。
+127
+B.11．2．3获取风机供电系的开关输入状态表B ·419是SU发给SM的命令信息，表B ·420是SM收到命令信息后，返回的响应信息。
+　B·419获取凤机供电系统的开关输入状态命令惠
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	45H	43H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID：02H，COMMAND NFC)为1字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+—COMMAND GROUP =FFH ：获取所有风机运行状态；一一．℃OMMAND GROUP 1 H： 获取第1台风机运行状态；
+—COMMAND GROUP =02H： 获取第2台风机运行状态；
+—COMMAND GROUP H： 获取第（十六进制）台风彬13云行状态。
+　表B·420获取风机供电系统的开关输入状态应僖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	45H 	RTN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATA.INFO由DATAFLAG和RUNSTATE组成，RUNSTATE为风机运行状态。
+根据COMMAND GROUP取值，RUNSTATE返回信息：一一．℃OMMAND GROUP=FFH：RUNSTATE亻訁息见表B ·421；一℃OMMAND GROUP=OIH一H：RUNSTATE信息见表B·422。 B．421风机的运行状态及传送序
+序号	内容
+	风机数量M
+	风机1状态
+	风机2状态
+	
++ 1	风机M状态
+单台风机的运行状态见表B ·422。
+表B．422 单台风机的运行状态及传送顺序
+序号	内容	
+	风机运行状态	1
+	用户自定义状态数量	1
+	用户自定义	× 1
+状态字节描述：
+．H：开机；
+·．1 H： 关机；一80H-EFH:用户自定义。
+
+1 3 
+B· 11艺4遥控表B ·423是SU发给SM的命令信息，表B ·424是SM收到命令信息后，返回的响应信息。
+表B·423邊控命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDf2	2	1
+格式	SOI	VER	ADR	45H	45H 	LENGTH	COMMAND INFO	CHKSUM 	EOI
+　　注：LENID=04H, COMMAND INFO为2个字节，由CON-MAND GROUP和COMMAND TYPE组成，传送顺序为COMMAND GROUP, COMMAND TYPE0
+根据CONMAND GROUP取值不同，解释如下：
+—COMMAND GROUP =OIH:多个风机时，遥控风机1 ;单个风机时，遥控风机；一一℃O、ND GROUP 2H：多个风机时，遥控风机2；
+一吒O、ND GROUP =nnH:多个风机时，遥控风机（十六进制）。
+根据CONMAND TYPE取值不同，解释如下：一吒O、ND TYPE=IOH:遥控风机开；一吒O、伏ND TYPE= IFH：遥控风机关。
+B．424 控嘛应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-nIDD	2	1
+格式	SOI	VER	ADR	45H	RIN	LENGTH		CHKSUM	BOI
+注：LEND = OOHO
+B.1 125获取历史数据浮点，	表B．425是SU发给SM的命令信息，表B ·426是SM收到命令信息后，返回的响应信息。
+B·425获取历史数据{浮点数，命令償惠
+	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	
+格式	SOI	VER	ADR	45H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND · 04H, CObMAND NFC)为2字节，由COMMAND TYPE和COMMAND GROUP组成。
+根据CO、伏ND TYPE取值不同，解释如下：
+0、AND TYPE—OOH:获取第一条历史数据；
+—CONMAND 'PE IH：收到历史数据正确，要求上送下一条历史数据； —CONMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND GROUP取值不同，解释如下：
+—COMMAND GROUP：：获取所有风机的历史数据；
+　　一一．℃OMMAND GROUP = 01 H： 获取第1台风机的历史数据；一℃OMMAND GROUP 02H： 获取第2台风机的历史数据；
+一一．℃OMMAND GROUP H：获取第（十六进制）台风机的历史数据。
+129
+	1 	3
+序号	1	2	3	4	5	6	7	8	9
+字节数	，	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	45H	RIN 	LENGTH		CHKSUM	EOI
+裊B·4 6 获取历史蠶据浮点，嘛应儐
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组，或。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATAT化为历史数据发生的时间，由月（化）、日（化）、时( )b）、分（化）、秒( )b）组成。
+根据CO、伏ND GROUP取值，DATAF返回信息：
+—COMMAND GROUP=FFH：DATAF亻訁息见表B．427；
+　—COMMAND GROUP=01H—nnH: DATAF亻訁息见表B ·428。
+表B·427风机的历史数据内及传送鬏序
+序号	内容
+1	风机数量（1字节）
+0	第1台风机历史数据
+	第2台风机历史数据
+	
+M+l	第台风机历史数据
+单台风机的历史数据及传送顺序见表B ·428。
+表B·428单台风机的历史数据及传送序
+序号	内容			
+		DATAF字节		D Al．字节
+	交流输出线电压AB/A			
+	交流输出线湘电压BC/B			
+	交流输出线/相电压CA/C			
+	交流输出电流A			
+	交流输出电流B			
+	交流输出电流C			
+	用户自定义遥测数量p			
+	用户自定义	4		
+	风机状态		1	
+	用户自定义运行状态数		1	
+	用户自定义			
+B.11．2．6获取历史数据《定点數，表B ·429是SU发给SM的命令信息，表B ·430是SM收到命令信息后，返回的响应信息。
+1 3 
+B．429 获取历史数据{定点蠶，命令儐
+	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI 	VER	ADR	45H	4BH．	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID = (MH, COMMAND NFO为2字节，由COMMAND TYPE和COMMAND GROUP组成。
+根据CO、岱伏ND TYPE取值不同，解释如下：
+—CONMAND TYPE—OOH：获取第一条历史数据；
+—COMMAND TYPE=OIH：收到历史数据正确，要求上送下一条历史数据；
+—￡0bMAND TYPE-02H：接收历史数据错误，重发上一条历史数据。
+	根据CO 	D GROUP取值不同，解释如下：
+—COMMAND GROUP H：获取所有风机的历史数据； —COMMAND GROUP = 01 H： 获取第1台风机的历史数据；
+—COMMAND GROUP = 02H： 获取第2台风机的历史数据；
+—COMMAND GROUP：H：获取第（十六进制）台风机的历史数据。 B．4获取历史蠶据{定点数，应儐
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI 	VER 	ADR	45H 	RTN 	LENGTH	DATAINFO	?CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=O IH：发送最后一条历史数据。
+　　DATAT灬为历史数据发生的时间，由月（1b）、日（1b）、时( )b）、分( )b）、秒（1b）组成。
+根据CO、岱ND GROUP取值，DATA返回信息：
+—COMMAND GROUP=FFH: DATAI信息见表B ·427；
+—COMMAND GROUP=OIH一H：DATAI亻訁，息、见表B．428。
+B.12电池检测裝通信协议
+B· 12· 1数据类型
+　　蓄电池检测装置，也称电池监测仪，应能单独上送每组蓄电池监测数据及一次上送全部监测数据。采用定点数传送时，表B ·431给出了相关数据类型。
+
+B· 1定点时据类
+	遥测内容	数据类型
+	蓄电池单体电压	有符号整型
+	标示电池温度	有符号整型
+蓄电池组总电压	无符号整型
+舅 蓄电池充、放电电流	有符号整型（充电为正）
+安时量	无符号整型
+B.12 ·2电池检测裝。鬢通倍协议
+B.12 ·2．1获取模拟量饢化后数据浮点数）
+表B ·432是SU发给SM的命令信息，表B ·433是SM收到命令信息后，返回的响应信息。
+　B．432获取模拟鬚化后斂据{浮点数}命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H 	41H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, CON-MAND NFC)为1个字节，由CObMAND GROUP组成。
+根据CO、伏ND GROUP取值不同，解释如下：
+　—COMMAND GROUP：H：获取电池监测仪所有电池组遥测数据；一一．℃O、D GROUP：OIH：获取电池监测仪第1组电池遥测数据； —COMMAND GROUP：02H：获取电池监测仪第2组电池遥测数据；
+一一．℃OMMAND GROUP一一nnH:获取电池监测仪第”（十六进制）组电池遥测数据。
+　表B·4获取拟饢化后蠶据{浮点数，购应償
+序号	1		3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR 	46H 	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG'和DATAF组成，DATAF为蓄电池监测仪遥测内容。
+根据CONMAND GROUP取值，DATAF返回信息：
+—COMMAND GROUP—FFH：DATAF信息见表B．434；
+—COMMAND GROUP=01 H一H：DATAF亻訁，急见表B ·435。
+裊B．4电池邊鱟内客及传送鱖序
+	内容	备注
+	监测蓄电池组数M	1字节
+	第1组蓄电池遥测数据	
+	第2组蓄电池遥测数据	
+		
+材+1	第M组蓄电池遥测数据	
+单组蓄电池遥测量数据见表B ·435。
+　B·4摹组电池的饢内及传送序
+序 号	内容	DATAF字节	D Al．字节
+	电池数量m @ · 255只）		
+	蓄电池单体电压1		
+	蓄电池单体电压2		
+			
+na+ 1	蓄电池单体电压		
++2	标示温度数量（0一255只）		
++3	标示蓄电池温度1		
+	标示蓄电池温度2		
+			
++ +2	标示蓄电池温度“		2
++ +3	蓄电池组充、放电电流		2
+	蓄电池组总电压		
+m+ +5	蓄电池安时量		2
+m+巧	用户自定义遥测内容数量p		1
++ +7	用户自定义字节	4	
+B．12 ·2 ·2获取模拟化后数据定点数》表B．436是SU发给SM的命令信息，表B ·437是SM收到命令信息后，返回的响应信息。
+
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H 	42H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, CONMAND mFO为1个字节，由COMMAND GROUP组成。根据CONMAND GROUP取值不同，解释如下：
+—COMMAND GROUP H：获取电池监测仪所有电池组遥测数据；一一．℃OMMAND GROUP：01H：获取电池监测仪第1组电池遥测数据；
+—COMMAND GROUP= 02H：获取电池监测仪第2组电池遥数据；
+—COMMAND GROUP一一nnH:获取电池监测仪第nn（十六进制）组电池遥测数据。
+　表B· 7获取穫拟饢饢化后数据定点数，应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	46H 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAI组成，DATA为蓄电池监测仪遥测数据。
+根据CONMAND GROUP取值，DATA返回信息： —COMMAND GROUP=FFH: DATAI亻訁启、见表B ·434； —COMMAND GROUP=OIH · H：DATAI信息见表B ·435。
+B· 12·2·3获取告警状态表B ·438是SU发给SM的命令信息，表B．439是SM收到命令信息后，返回的响应信息。
+·
+ B．8获取告警状态命令儐惠
+序号		2	3	4	5	6	7		9
+字节数	1	1	1	1	1	2	LE皿2		1
+格式	SOI	VER	ADR	46H	44H 	LENGTH	COMMAND INFO		0
+　注：LENID=02H, CO、ND INFO为1个字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：
+—COMMAND GROUP = FFH ：获取电池监测仪所有电池组告警；
+．．．．℃OMMAND GROUP = 01 H： 获取电池监测仪第1组电池告警；
+—COMMAND GROUP 02H： 获取电池监测仪第2组电池告警；
+—COMMAND GROUP = H： 获取电池监测仪第nn（十六进制）组电池告警。
+ B·439获取告警状态响应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENIDD	2	1
+	格式SOI VER ADR 46H RI'N LENGTH	CHKSUM EOI
+　注：DATAINFO由DATA-FLAG和WARNSTATE组成，WARNSTATE为电池监测仪告警内容。 
+根据CO、，AND GROUP取值，WARNSTATE返回信息：
+—COMMAND GROUP=FFH: WARNSTATE亻訁启、见表B·婀0；
+—COMMAND GROUP=OIH一H：WARNSTATE信息见表B·婀1。
+ B· 0电池告警内容及传送鱖序
+	内容
+	监测蓄电池组数（1字节）
+	第1组蓄电池告警数据
+	第2组蓄电池告警数据
+	
+M+l	第M组蓄电池告警数据
+单组电池告警内容见表B 10
+窦B· 1组电池告警内及传送顬序
+序号	内容	
+	监测蓄电池数量（0一255只）	
+	蓄电池单体电压1	
+	蓄电池单体电压2	
+		
++ 1	蓄电池单体电压	
+	标示温度数量獼（0．255只）	
+78+3	标示温度1	
+	标示温度2	
+		
+丨+ +2	标示温度	
++ +3	蓄电池组充电电流	
+	蓄电池组总电压	
++ +5	用户自定义告警数纛	
+	用户自定义字节	
+告警字节描述： —OOH：正常；一刁IH：低于下限；
+02H：高于上限；一80H一EFH:用户自定义； —FOH:其他故障。
+B · 12．2．4获取系统參数{浮点数} 表B ·442是SU发给SM的命令信息，表B．3是SM收到命令信息后，返回的响应信息。
+　表B· 2获取系参数{浮点数，命令信息
+序号		2		4	5	6	7	8	9
+字节数				1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H 	46H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEMD=02H, COMMAND INFO为1个字节，由COMMAND GROUP组成。
+根据COMMAND GROUP取值不同，解释如下：一一．℃OMMAND GROUP：F：获取电池监测仪所有电池组参数； —COMMAND GROUP = 01 H： 获取电池监测仪第1组电池参数；一一．℃OMMAND GROUP = 02H： 获取电池监测仪第2组电池参数；
+一．一℃OMMAND GROUP =獼獼H ：获取电池监测仪第（十六进制）组电池参数。
+B· 3获取系统参{浮点数，倌息
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	46H 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DATAF为电池监测仪参数。
+根据COMMAND GROUP取值，DAT．返回信息：
+—COMMAND GROUP=FFH: DATAF亻訁、见表B ·444； —COMMAND GROUP=OIH、獼獼H：DATAF亻訁息见表B · 5。
+表B·4电池数及传送鱖
+序号	内容
+	监测蓄电池组数0字节）
+	第1组电池参数
+	第2组电池参数
+	
+M+l	第组电池参数
+单组电池参数内容见表B 5。
+．
+豪B· 5单组电池的参數内客及传送鱖序
+	内容	DATAF字节	DATA字节
+	单体电压上限		
+	单体电压下限		
+	温度上限		
+	温度下限		
+	充电电流上限		
+	总电压上限		
+	总电压下限		
+	用户自定义参数数量，		
+	用户自定义参数字节		
+B．12 ·2 ·5获取系统参数（定点數，表B · 6是SU发给SM的命令信息，表B · 7是SM收到命令信息后，返回的响应信息。
+裹B．6获取系统参数{定点，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H	47H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1个字节，由COMMAND GROUP组成。
+根据CONN-AND GROUP取值不同，解释如下：
+　—CONMAND GROUP = H：获取电池监测仪所有电池组参数； —CONMAND GROUP：01H：获取电池监测仪第1组电池参数；一℃ONMAND GROUP：02H：获取电池监测仪第2组电池参数；
+0、伏ND GROUP：”H：获取电池监测仪第”（十六进制）组电池参数。
+豪B · 7获取系统参数{定点蠶》嘛应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H	RTN 	LENGTH	DATAINFO	CHKSUM	BOI
+　注：DATAINFO由DATA]组成，DATAI为电池监测仪参数。
+根据CO、伏ND GROUP取值，DATAI返回信息：
+—COMMAND GROUP=FFH：DATA亻訁息见表B．444； —COMMAND GROUP=OI H一nnH：DATAI信息见表B · 5。
+B· 12 ·2 ·6设定系统参数（浮点斂，表B 8是SU发给SM的命令信息，表B ·450是SM收到命令信息后，返回的响应信息。
+表B· 8设定系统參数（浮点数》命令僖慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	46H	48H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　　注：COMMAND INFO为6字节，由COMMAND GROUP' TYPE和COMMAND DATAF 组成。
+　136
+
+．
+根据CONMAND GROUP取值不同，解释如下：
+—CONMAND GROUP = FFH：设定电池监测仪所有电池组参数；
+—CONMAND GROUP = 01H：设定电池监测仪第1组电池参数；
+—COMMAND GROUP 02H：设定电池监测仪第2组电池参数；
+—COMMAND GROUP = nnH：设定电池监测仪第（十六进制）组电池参数。
+COMMAND TYPE信息见表B · 9。
+表B· 9设定参数类型表
+	内容	COMMAND TYPE
+	单体电压上限	80H
+	单体电压下限	81H
+	温度上限	82H
+	温度下限	83H
+	充电电流上限	84H
+	总电压上限	85H
+	总电压下限	86H
+	用户自定义参数	COH一EFH
+ B·450 设定系统参数{浮点数，嘛应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR 	46H	RIN	LENGTH		CHKSUM	EOI
+　注：LENID=00H0
+B · 12 ·2 ·7设定系统参斂《定点数）表B ·451是SU发给SM的命令信息，表B ·452是SM收到命令信息后，返回的响应信息。
+表B·451设定系统参定点，命令憊
+．序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	I	I	2	LENID/2	2	
+格式	SOI	VER	ADR	46H	49H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　　注：LENID=08H, COMMAND INFO为4字节，由COMMAND GROUP, COMMAND TYPE和COMMAND DATAI 组成。
+根据CONMAND GROUP取值不同，解释如下：一吒O、ND GROUP：H：设定电池监测仪所有电池组参数；
+—CONMAND GROUP OIH:设定电池监测仪第1组电池参数；
+-￡ON'MAND GROUP 02H：设定电池监测仪第2组电池参数；
+—CONO'IAND GROUP = nnH:设定电池监测仪第nn（十六进制）组电池参数。
+CONMAND TYPE信息见表B · 9。
+．
+　表B ·452 设定系统参數{定点数，嘛应信息
+序号	1	2	3	4	．5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	46H	RIN	LENGTH		CHKSUM	EOI
+　注：LENID<)OH0
+B· 1228获取历史数据浮点数》	
+　表B ·453是SU发给SM的命令信息，表B ·454是SM收到命令信息后，返回的响应信息。
+表B．453获取历史数据（浮点命令信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H 	4 H 	LENGTH	CO、、ND INFO	CHKSUM	EOI
+　注：LENID=04H, COMMAND INFO为2字节，由CON-MAND TYPE和COMMAND ID组成。
+	根据CONMAND TYPE取值不同，解释如下：	
+—￡OMMAND TYPE=OOH：获取第一条历史数据；
+CONMAND TYPE=OIH：收到历史数据正确，要求上送下一条历史数据；一CO、焦亻A、卫'PE 2H：接收历史数据错误，重发上一条历史数据。
+根据CONMAND ID取值不同，解释如下：
+—COMMAND ID OIH:获取1#采集通道历史数据；一一℃OMMAND D= 02H：获取2#采集通道历史数据；
+　—COMMAND D一一”H：获取（十六进制）#采集通道历史数据。
+B．454获取历史据浮点数，应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	46H 	RTN 	LENGTH		CHKSUM	BOI
+　注：DATAINFO由DATATYPE, DATAFLAG,和DATAF组成， DATAF为采集通道历史数据。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据； —DATATYPE=OIH:发送最后一条历史数据。
+　DATAF信息见表B．455。
+　表B·455蓄电池监装鬣历史数据内客及传送序
+序号	内容	
+		DATAF	DATAI
+1	传送历史数据单元数量	1	
+2	历史数据单元		
+3	2#历史数据单元	9
+·	
+			
++1	M历史数据单元	9	7
+历史数据单元内容见表B ·456。
+　138
+．
+表B．456历史蠶据单元内及传送序
+	内容	
+			DATAI
+	月		
+	日		
+	．时		
+	分		
+	秒		
+	采集通道遥测数据		
+B · 12 ·2．9获取历史斂据{定点数》
+表B．457是SU发给SM的命令信息，表B ·458是SM收到命令信息后，返回的响应信息。
+B．457获取历史數据（定点数，命令
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID4)4H, COMMAND NFC)为2字节，由COMMAND TYPE和COMMAND ID组成。
+根据COMMAND TYPE取值不同，解释如下：一吒0、ND TYPE=OOH:获取第一条历史数据；
+-￡ONMAND TYPE=O IH：收到历史数据正确，要求上送下一条历史数据；一吒0、ND TYPE=02H:接收历史数据错误，重发上一条历史数据。
+根据CONMAND D取值不同，解释如下：
+一℃OMMAND D	01 H：获取1#采集通道历史数据
+一，℃OMMAND D	2H：获取2#采集通道历史数据；
+一一℃OMMAND一一H：获取（十六进制）#采集通道历史数据。
+表B·458获取历史蠶据定点数，购应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR 	46H 	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG,和DATAI组成， DATA为采集通道历史数据。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE—OOH:正常发送一条历史数据； —DATATYPE-OIH:发送最后一条历史数据。
+　 DATAI信息见表B ·455。
+B．12 ·2．10获取历史告警
+表B．459是SU发给SM的命令信息，表B ·460是SM收到命令信息后，返回的响应信息。
+
+B·459获取历史告警命令儐
+．宇．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	46H	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=04H, COMMAND NFC)为2字节，由COMMAND TYPE和COMMAND组成。
+根据TYPE取值不同，解释如下：
+0、囔AND TYPE-OOH：获取第一条历史告警；
+—CONMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警；
+—CONMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+根据CO、伏ND D取值不同，解释如下：
+一吒0、覆AND IDP：OIH:获取1#采集通道历史告警 —CONMAND ID 02H：获取2#采集通道历史告警；
+一O、伏ND IDP H：获取（十六进制）#采集通道历史告警。
+8.460获取历史告警应償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	46H	RIN 	LENGTH		CHKSUM	EOI
+　注：DATANFO由DATATYPE、DATAFLAG和WARNSTATE组成，WARNSTATE为告警。
+WARNSTATE信息见表B·461。
+　豪B· 1警电池监裝历史告警内及传送序
+	内容	
+	传送历史告警单元数量M	1
+	璐历史告警单元	'
+0
+	2历史告警单元	6
+		
++ 1	M拶历史告警单元	6
+历史告警单元内容见表B ·462。
+　 B·462历史告警摹元内客及传送駁序
+序号	内容
+	月
+	
+	时
+	分
+	
+	采集通道告警数据
+B.13分散空通协议
+B· 13· 1数据类型
+采用定点数传送时，表B 3给出了相关数据类型。
+2m5
+B．3 定点数时数据类型
+	遥测内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+	温度	有符号整型
+	湿度	无符号整型
+		无符号整型
+B.13·2分散空调通信协议	
+B．1321获取系统摸拟量化数据{浮点数）
+
+表B ·4是SU发给SM的命令信息，表B ·465是SM收到命令信息后，返回的响应信息。
+表B·4获取系穫拟饢化数据浮点数，命令
+			3	4		6	7	8	
+字节数	1		1	1		2	LENID/2	2	
+格式	SOI 	VER	ADR 	60H 	41H 	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+表B·4获取系拟化斂据浮点数，应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID12	2	1
+格式	SOI 	VER	ADR 	")H 	XIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为空调遥测内容。
+DAT·信息见表B ·4。
+B空内響及传送序
+	内容	D字节	DATAI字节
+	主机工作相电压ABIA	4	
+	主机工作线/相电压BC/B	4	
+	主机工作线湘电压CA/C	4	
+	主机工作电流A相	4	
+	主机工作电流B相	4	
+鼷	主机工作电流C相	4	
+	送风温度	4	
+	回风温度	4	
+	送风湿度	4	
+	回风湿度	4	
+	压缩机吸气压力	4	
+舅	压缩机排气压力	4	
+	用户自定义遥测数量p	1	
+	用户自定义字节	×4	
+B.13·2·2获、取系统模拟饢化数据定点斂，
+表B．467是SU发给SM的命令信息，表B 8是SM收到命令信息后，返回的响应信息。
+　B·467 获取系拟饢饢化蠶据{定点，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	I	1	1	1	1	2	LBMD/2	2	1
+格式	SOI	VER	ADR	60H	42H	LENGTH		CHKSUM	BOI
+注：LEND OOHO
+　B．468 获取系统模拟化數据定点数）响应倌
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-ENIDT2	2	1
+格式	SOI	VER	ADR	60H 	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAI组成，DATAI为空调遥测内容。
+DAT信息见表B ·4。
+B · 1323获取开关输入状态
+表B ·469是SU发给SM的命令信息，表B ·470是SM收到命令信息后，返回的响应信息。
+裊B·469获取开关翰入状态命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	60H	43H	LENGTH		CHKSUM	EOI
+　注：LENID：OOHO
+B．470获取开关输入状态应儐惠
+．亭．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	ú)H 	RIN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和成，RUNSTATE为空调运行状态。
+　RUNSTATE信息见表B·471。
+B．471 空调运行状态
+序号	内容	
+1	空调状态	1
+	用户自定义状态数量	1
+．	用户自定义字节	xl
+状态字节描述： —OOH：开机；一IH：关机；
+　—80H-EFH:用户自定义。
+B．13·2 ·4获取空调告警状态
+表B ·472是SU发给SM的命令信息，表B ·473是SM收到命令信息后，返回的响应信息。
+B·472获取空调告警状态命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	ff)H	44H	LENGTH		CHKSUM	EOI
+　注：LEND = OOH,
+　142
+
+	1 	3
+B·473获取空谰告警状态应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+	格式SOI VER	ADR 60H RTN LENGTH	CHKSUM EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为空调告警状态。 WARNSTATE信息见表B ·474。
+表B·474空调告警内容及传送顯序
+	内容	
+	主机工作线湘电压AB/A	
+	主机工作线湘电压BC-IB	
+	主机工作线/相电压CMC	
+	主机工作相电流A	
+	主机工作相电流B	
+	主机工作相电流C	
+	回风温度	
+	回风湿度	
+	过滤器	
+	压缩机	
+		
+	用户自定义告警数量	
+	用户自定义字节	
+告警字节描述： · H：正常；一刁IH：低于下限；
+02H：高于上限；一80H一EFH:用户自定义；
+(H)H:故障。
+B· 13．2．5遥控表B ·475是SU发给SM的命令信息，表B ·476是SM收到命令信息后，返回的响应信息。
+B．475控命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	")H 	45H 	I?NGT\	COMMAND INFO	CHKSUM	EOI
+　注：LENID4)2H, COMMAND INFO为1个字节，由COMMAND TYPE组成。
+根据CO、伏ND TYPE取值不同，解释如下：
+—COMMAND T、IP 10H：选择空调开机；
+—COMMAND TYPE—I FH：选择空调开机。
+裹B·476控应鏖
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	I	1	2	LENID/2	2	1
+格式	SOI		ADR	60H	RTN			CHKSUM	BOI
+注：LEND = OOHO
+3 
+B· 13 ·2 ·6获取參数浮点斂，
+表B ·477是SU发给SM的命令信息，表B．478是SM收到命令信息后，返回的响应信息。
+豪B．477 获取参斂{浮点蠶，命令儐鬈
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDf2	2	1
+格式	SOI	VER	ADR		46H 	LENGTH		CHKSUM	BOI
+　注：LENID = OOHO
+表B．478 获取参數{浮点數）应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	I	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	ff)H	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DATAF为空调参数。
+DAT．信息见表B ·479。
+表B．479空谰参数内及传送鱖序
+	内容	DATAF字节	DATAI字节
+	空调开机温度		2
+	空调关机温度		2
+	回风温度上限		2
+	回风温度下限		2
+	回风湿度上限		2
+	回风湿度下限		2
+	温度设定值		2
+	用户自定义参数数量，		1
+	用户自定义字节		
+B· 13 ·2 ·7获取参数《定点》
+表B ·480是SU发给SM的命令信息，表B ·481是SM收到命令信息后，返回的响应信息。
+表B·囀0 获取參蠶{定点数命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	I-ENID/"2	2	1
+格式	SOI	VER	ADR	60H	47H 	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B·481 获取参数{定点数，购应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	ff)H	XIN	LENGTH	DATAINFO	CHKSUM	BOI
+　注：DATAINFO由DATA组成，DATAI为空调参数。
+　DAT信息见表B ·479。
+B.13·2．8设定參數《浮点，
+表B ·482是SU发给SM的命令信息，表B．4是SM收到命令信息后，返回的响应信息。
+1 3 
+B.482 设定参蠶{浮点，命令償
+序号	1	2	3	4	5	6	7	8	
+字节数	1			1	1	2	LENID2	2	1
+格式	SOI	VER	ADR 	60H	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：OAH, COMMAND INFO由COMMAND TYPE和COMMAND DATAF组．成。
+COMMAND TYPE信息见表B ·483。
+表B．483空调参数类型表
+序号	内容	COMMAND TYPE
+	空调开机温度	80H
+	空调关机温度	81H
+	回风温度上限	82H
+	回风温度下限	83H
+	回风湿度上限	84H
+	回风湿度下限	85H
+	温度设定值	86H
+	用户自定义	COH一EFH
+B·4设定參数浮点》应償
+，字．号	1	2	3	4		6	7	8	9
+字节数	1		1	1		2	LEMD/2		1
+格式	SOI	VER	ADR	60H	RTN	LENGTH		CHKSUM	BOI
+　注：I-ENID = OOHO
+B.13 ·2·9设定參数{定点數，表B ·485是SU发给SM的命令信息，表B．486是SM收到命令信息后，返回的响应信息。
+豪B·4设定参数定点斂，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR 	")H	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND = H，COMMAND INFO由COMMAND TYPE和COMMAND DATA组成。
+COMMAND TYPE信息见表B ·483。
+表B．6设定參定点斂，应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR		RIN	LENGTH		CHKSUM	BOI
+注：LEND · OOHO
+B.13·2．10获取历史数据浮点斂，表B ·487是SU发给SM的命令信息，表B ·488是SM收到命令信息后，返回的响应信息。
+3
+ B· 7获取历史數据浮点蠶命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI 	VER	ADR	(f)H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND R?IFO为1字节，由CONMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：
+("ONOfAND TYPE-OOH:获取第一条历史数据；
+—COMMAND TYPE=OIH:收到历史数据正确，要求上送下一条历史数据；一℃OMMAND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+表B．4获取历史數据浮点皺响应償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	ADR	60H 	RTN 	LENGTH		CHKSUM	BOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIMB和DATAF组成，DATAF为空调历史数据。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE—OOH:正常发送一条历史数据；
+—DATATYPE-OIH:发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（化）、时（lbyte）、分（1b）、秒（1b）组成。
+　DATAF信息见表B ·489。
+B·囀9空历史數据内及传送序
+	内容			
+		DATAF字节		DATA字节
+	主机工作线/相电压AB/A			
+	主机工作相电压BC/B			
+	主机工作线湘电压CMC			
+	主机工作电流A相			
+	主机工作电流B相			
+	主机工作电流C相			
+	送风温度			
+	回风温度			
+	送风湿度			
+	回风湿度			
+	压缩机吸气压力			
+	压缩机排气压力			
+	用户自定义遥测数量p			
+	用户自定义字节	4		
+	空调状态		1	
+	用户自定义状态数量			
+	用户自定义字节			
+　146
+1363
+B· 13．2 · 1 1获取历史数据（定点）表B．4兕是SU发给SM的命令信息，表B ·491是SM收到命令信息后，返回的响应信息。
+B·4获取历史数据{定点数命令償息
+序号	1	2		4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR 	60H 	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEMD=02H, COMMAND下O为1字节，由CONMAND TYPE组成。
+根据CO、伏ND TYPE取值不同，解释如下：
+．一．℃OMMAND TYPE—OOH： 获取第一条历史数据；
+．O、，D TYPE=OIH: 收到历史数据正确，要求上送下一条历史数据； —COMMAND TYPE=02H ··接收历史数据错误，重发上一条历史数据。
+B．491获取历史数据定点数，响应倍
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER 	Al)R	60H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成，DATAI为空调历史数据。
+根据DATATYPE取值不同，解释如下： —DATATYPE-OOH：正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+DATATIN化为历史数局发生的时间，由月（1b）、日（1b）、时（1b）、分( )b）、秒（1b）
+
+组成。
+　DATAI信息见表B．489。
+B.13·2．12获取历史告警表B ·492是SU发给SM的命令信息，表B ·493是SM收到命令信息后，返回的响应信息。
+B·49获取历史告警命令倍
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	60H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	BOI
+　注：LENID=02H, COMMAND NFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE—OOH： 获取第一条历史告警；一一．℃OMMAND TYPE=01 H： 收到历史告警正确，要求上送下一条历史告警； —COMMAND TYPE—02H: 接收历史告警错误，重发上一条历史告警。
+ 3
+豪B 93 获取历史告警翦应償憊
+．序．号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	I.E?01'2	2	1
+格式	SOI	VER 	ADR		RIN 	LENGTH	DznAINFO	CHKSUM 	EOI
+　注：DATA-INFO由DATAI、(PE, DATAFLAG, DATATIME和WARNSTATE组成， WARNSTATE为空调历史告警。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史告警； —DATATYPE-OIH:发送最后一条历史告警。
+　　DATAT为历史告警发生或结束的时间，由月（1b）、日( )b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B·474。
+B，14集中空调通信协议
+　B．14· 1数据獒型
+采用定点数传送时，表B．494给出了相关数据类型。
+表B．4定点数对數据类型
+	遥测内容	数据类型
+	交流电压	无符号整型
+	交流电流	无符号整型
+		有符号整型
+	湿度	无符号整
+		无符号整型
+B · 14·2冷冻系统通协议
+B · 14·2 · 1获取系统模拟化数据浮点数）
+表B ·495是SU发给SM的命令信息，表B．496是SM收到命令信息后，返回的响应信息。
+B．495 获取系统拟饢化数据浮点，命令儈惠
+			3			6	7	8	
+			1			2		2	
+								CHKSUM	EOI
+注：LEND OOHO
+表B．496 获取系摸拟饢化数据{浮点数，嘛应儈息
+序号	1	2	．3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND12	2	EOI
+格式	SOI	VER 	ADR	61H 	RTN 	LENGTH		CHKSUM	
+　 注：DATAINFO由DATAFLAG和DATAF组成，DATAF为冷冻系统遥测内容。
+　DATAF信息见表B ·497。
+　，48
+
+3
+B·497冷冻系内響及传送豪序
+	内！容	D字节	D字节
+	冷冻机数鱟M	1	1
+	1号冷冻机遥测数据		
+	2号冷冻机遥测数据		
+			
+	号冷冻机遥测数据		
+	冷冻水泵数量		
+	1号冷冻水泵电流		
+	2号冷冻水泵电流		
+			
+	号冷冻水泵电流		
+	冷却水泵数量p		
+	1号冷却水泵电流		
+	2号冷却水泵电流		
+			
+	p号冷却水泵电流		2
+	用户自定义遥测数量		1
+	用户自定义字节	4	
+单个冷冻机传送内容见表B．498。
+B·498冷冻机内及传送序
+	内容	DATAF字节	D字节
+	冷冻水进水温度		
+	冷冻水出水度		，
+鼷	冷却水进水温度		，
+	冷却水出水温度		0
+	冷冻机工作电流		2
+B.1422获取系统模，拟饢鬚化斂据《定点數，
+表B ·4是SU发给SM的命令信息，表B ·500是SM收到命令信息后，返回的响应信息。
+B·4获取豪统拟化数据定点，命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR 	6 IH 	42H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+表B.500获取系统拟化数据{定点數}嘛应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR 	61H 	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATA组成，DATA为冷冻系统遥测内容。
+　DATAI信息见表B ·497。
+．
+B．1423获取系统开关输入状态
+	表B ·501是SU发给SM的命令信息，表B．502是SM收到命令信息后，返回的响应信息。	
+　B·501 获取系统开关翰入状态命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	61H	43H	LENGTH		CHKSUM	EOI
+　注：LENID=OOH0
+　表B·502 获取系统开关输入状态应信息
+序号		2	3	4	5	6	7	8	9
+字节数	1				1	2	LENID/2	2	1
+格式	SOI	VER	ADR	61H	RTN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和RUNSTATE组成，RUNSTATE为冷冻系统状态。
+RUNSTATE信息见表B·503。
+表B·503冷冻系统运行状态及传送顬序
+序号	内容	
+1	冷冻机数量M	1
+0
+～	1号冷冻机状态	
+一	2号冷冻机状态	1
+		
+M+l	M号冷冻机状态	
+M+2	冷冻水泵数量	
+M+3	1号冷冻水泵状态	
+	2号冷冻水泵状态	
+		
+	号冷冻水泵状态	
+	冷却水泵数量p	
+	1号冷却水泵状态	
+	2号冷却水泵状态	
+		
+M+N+P+3	p号冷却水泵状态	1
+	冷却塔风机数量0	
+	1号冷却塔风机状态	
++ +P+6	2号冷却塔风机状态	
+		
+	o号冷却塔风机状态	1
+	用户自定义状态字节p	1
+	用户自定义字节	pxl
+状态字节描述： —OOH:开机； IH：关机。
+YD丌
+B．14．2 ·4 80H · EFH:用户自定义。获取告警状态表B ·5是SU发给SM的命令信息，表B ·505是SM收到命令信息后，返回的响应信息。
+裊B.504获取告警状态命令償
+序号	1					6	7	8	
+字节数	1					2	LENIDT2	2	
+格式	SOI 	VER						CHKSUM	EOI
+　注：LENID：OOHO
+表B·505获取告警状态购应信
+序号	1	2		4	5	6	7	8	9
+字节数	1	1		1		2	LENID/2	2	1
+格式	SOI 	VER 	ADR				DATA-INFO	CHKSUM	EOI
+　注：DATDINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为冷冻系统告警状态。
+WARNSTATE信息见表B ·506。
+表B.506冷冻系统告警状态及传送序
+	内容	
+	冷冻机数量M	
+	1号冷冻机告警状态	
+	2号冷冻机告警状态	
+		
+M+l	号冷冻机告警状态	
+M+2	冷冻水泵数量N	
+材+3	1号冷冻水泵告警状态	
+	2号冷冻水泵告警状态	
+		
+	号冷冻水泵告警状态	
+	冷却水泵数量p	
+	1号冷却水泵告警状态	
+	2号冷却水泵告警状态	
+		
+M+N+P+3	p号冷却水泵告警状态	
+	冷却塔数量0
+1号冷却塔风机告警状态	
+		
+	1号冷却塔液位	
+M+N+P+7	2号冷却塔风机告警状态	
+M+N+P+8	2号冷却塔液位	
+		
+M+ +P+0	o号冷却塔风机告警状态	
+材+ +P+0+5	o号冷却塔液位	
+	用户自定义告警数量	
+	用户自定义字节	
+告警字节描述：
+　OOH:正；
+·
+　—-01H:低于下限；．．2H：高于上限；一80H一EFH:用户自定义；
+　—FOH:故障。
+B · 14艺5邊控表B · 507是SU发给SM的命令信息，表B ·508是SM收到命令信息后，返回的响应信息。
+表8·507控命令償慝
+序号		2	3	4	5	6	7	8	9
+字节数	1			1		2	LENID/2	2	1
+格式	SOI	VER	ADR	61H	45H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+注：I-ENID：04H, COMMAND INFO由COMMAND GROUP、COMMAND TYPE组成。根据CO、ND GROUP取值不同，解释如下： —-C0h'MAND GROUP-OOH:对全部设备遥控；一吒0、伏ND GROUP-01 H：对1号设备遥控；
+　一O、岱ND GROUP=nnH：对”（十六进制）号设备遥控。
+根据CO、岱伏ND TYPE取值不同，解释如下： —COMMAND TYPE=OOH： 遥开冷冻机；
+—COMMAND TYPE=FOH： 遥关冷冻机； —COMMAND TYPE=01 H： 遥开冷却水泵；一．．℃OMMAND TYPE=FI H： 遥关冷却水泵； —COMMAND TYPE=02H： 遥开冷冻水泵；
+　—COMMAND TYPE=F2H: 遥关冷冻水泵； —COMMAND TYPE=03H： 遥开冷却塔风机；一℃OMMAND TYPE=F3H: 遥关冷却塔风机。
+表B·508 邊控响应伯息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	61H	R[N	LENGTH		CHKSUM	EOI
+注：LEND OOHO
+B.14·2 ·6获取历史斂据（浮点数》表B．5的是SU发给SM的命令信息，表B引0是SM收到命令信息后，返回的响应信息。
+B．5获取历史据{浮点數，命令儐
+序号	1	2	3．	4	5	6	7	8	9
+字节数	1	1	1	1	1	2		2	1
+格式	SOI	VER	ADR	61H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENIIH2H, COMMAND INFO为1字节，由COMMAND TYPE组成。根据COMMAND TYPE取值不同，解释如下：
+YD丌
+一℃OMMAND TYPE—OOH： 获取第一条历史数据；一℃OMMAND TYPE=OIH: 收到历史数据正确，要求上送下一条历史数据；
+—COMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+表B·510获取历史皺据浮点数，应倍
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?	2	1
+格式	SOI	VER 	ADR 	61H 	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH：正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATATIME为历史数据发生的时间，由月( )b）、日( )b）、时（1b）、分（化）、秒（1b）组成。
+DATAF信息见表B ·497和表B ·503，传送时先传送表B ·497的内容，然后传送表B ·503的内容。
+B · 14 ·27获取历史數据{定点敵）表B ·511是SU发给SM的命令信息，表B ·512是SM收到命令信息后，返回的响应信息。
+ B·511获取历史数据{定点皺，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2		2	1
+格式	SOI	VER	ADR	61H	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEMD=02H, COMMAND NFC)为1字节，由COMMAND TYPE组成。
+根据CObMAND TYPE取值不同，解释如下：
+—CONMAND TYPE-OOH：获取第二条历史数据；
+-￡OMMAND TYPE-<)IH:收到历史数据正确，要求上送下一条历史数据； -￡ONM.AND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+裹B．512获取历史数据{定点数，嘛应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER 	ADR	61H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。根据DATATYPE取值不同，解释如下：
+　—DATATYPE—OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（化）、时（化）、分（1b）、秒（1b）组成。
+DATAI信息见表B ·497和表B ·503，传送时先传送表B ·497的内容，然后传送表B ·503的内容。
+B.14·2．8获取历史告警表B ·513是SU发给SM的命令信息，表B．514是SM收到命令信息后，返回的响应信息。
+巧3
+
+· 2 5
+B·513 获取历史告警命令倍
+序号	1	2		4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/"2	2	1
+格式	SOI 	VER	ADR 	61H 	4CH 	LENGTH		CHKSUM	BOI
+　注：LENID=02H, COMMAND NFO为1字节，由CON-MAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+0、囔AND TYPE—OOH： 获取第一条历史告警；
+—COMMAND TYPE=01 H： 收到历史告警正确，要求上送下一条历史告警； —CONMAND TYPE=02H： 接收历史告警错误，重发上一条历史告警。
+B．514获取历史告警购应償慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+榷，式	SOI 	VER 	ADR	61H	RTN 	LENGTH		CHKSUM	EOI
+0
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下： —DATATYPE-OOH:正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIME为历史告警发生或结束的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B.5060
+B· 14．3空调系通怫议
+B．14·3· 1获取系统模拟鬚饢化数据{浮点数》表B ·5巧是SU发给SM的命令信息，表B ·516是SM收到命令信息后，返回的响应信息。
+B·515 获取系拟鬚化数据浮点数，命令憊
+序号	1			4		6	7	8	
+字节数	1			1		2	LEMD/2	2	
+									
+注：LEND = OOHO
+B·516 获取系统拟釁化数据浮点蠶应
+序号	1	2	3	4	5	6	7	8	
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	62H 	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATA-FLAG和DATAF组成，DATAF为空调系统遥测内容。
+　DATAF信息见表B引7。
+·
+豪B·517 空系内及传送序
+	内容	D字节	DATAI字节
+	回风温度		2
+	回风湿度		2
+	送风温度		2
+	送风湿度		2
+	用户自定义遥测数量，		1
+	用户自定义字节	4	
+B.14 ·3·2获取系统模拟量化数据（定点数）
+表B ·518是SU发给SM的命令信息，表B ·519是SM收到命令信息后，返回的响应信息。
+表B．518 获取系统模拟量化数据{定点数命令償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+：格式	SOI	VER	ADR	62H	42H	LENGTH		CHKSUM	EOI
+注：LEMD = OOHO
+表B．519 获取系统模拟饢化数据定点数，应惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+．格式	SOI	VER	ADR	62H 	RTN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAI组成，DATAI为空调系统遥测内容。
+DATAI信息见表B ·517。
+B．14 · 3 ·3获取开关输入状态
+表B ·520是SU发给SM的命令信息，表B ·521是SM收到命令信息后，返回的响应信息。
+B．520获取开关翰入状态命令
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDD	2	1
+格式	SOI	VER	ADR	62H	43H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B·521 获取开关输入状态应
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格·式	SOI	VER	ADR	62H 	RTN	LENGTH		CHKSUM	EOI
+　注：DATA]NFO由DATAFLAG和RUNSTATE组成，RUNSTATE为空调系统运行状态。
+RC STA信息见表B．522。
+· 2 5
+豪B．5 空系統运行状态及传送序
+	内容	
+1	监测风机数量M	
+0	风机1状态	
+	风机2状态	
+		
+	风机状态	
++2	用户自定义状态数量	
++3	用户自定义字节	PX 1
+运行状态字节描述：
+　—OOH：开机；
+　—-01H:关机；
+　—80H-EFH:用户自定义。
+B．14·3．4获取告警状态
+表B．523是SU发给SM的命令信息，表B ·524是SM收到命令信息后，返回的响应信息。
+B，523获取告警状态命令
+序号	1		3	4	5	6	7	8	
+字节数	1		1	1	1	2	LENID/2	2	
+格式	SOI 	VER	ADR	62H	44H	LENGTH		CHKSUM	EOI
+　注：I-ENID = OOHO
+B·524获取告警状态应儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDf2	2	1
+EOI
+格式	SOK	VER	ADR	62H 	RIN	LENGTH		CHKSUM	
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为告警状态。
+WARNSTATE信息见表B·525。
+B．525风机告警状态及传送序 
+	内容	
+	监测风机数量	
+	风机1	
+	风机2	
+		
+M+l	风机	
+M+2	监测过滤器数量	
+M+3	过滤器1	
+	过滤器2	
+		
+M+ +2	过滤器	1
+M+ +3	用户自定义告警数量p	1
+	用户自定义字节	
+
+告警字节描述：
+
+，
+—OOH：正常；一80H-EFH:用户自定义；
+　—FOH:故障。
+B · 14 ·3 ·5遥控表B ·526是SU发给SM的命令信息，表B ·527是SM收到命令信息后，返回的响应信息。
+表B ·526遥控命令惠
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENII)/2	2	1
+格式	SOI	VER	ADR	62H	45H 	LENGTH	COMMANI) INFO	CHKSUM	EOI
+　注：LENID (MH, COMMAND INFO由COMMAND GROUP、COMMAND TYPE组成。
+根据COMMAND GROUP取值不同，解释如下： —COMMAND GROUP=OOH：对全部风机遥控；
+—COMMAND GROUP=01 H：对1号风机遥控；
+—CONMAND GROUP=nnH：对”（十六进制）号风机遥控。
+根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE=OOH：遥控风机关机； —CONMAND 'PE=0：遥控风机开机。
+裊B·527 控应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	62H	RIN	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+B．14 ·3．6获取历史数据（浮点数）表B ·528是SU发给SM的命令信息，表B ·529是SM收到命令信息后，返回的响应信息。
+裹B · 8获取历史數据（浮点，命令恼
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID?	2	1
+格式	SOI	VER	ADR	62H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由CONMAND TYPE组成。
+根据CONN-AND TYPE取值不同，解释如下：
+　—COMMAND TYPE—OOH： 获取第一条历史数据；一．一℃OMMAND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据； 0、(AND TYPE=02H: 接收历史数据错误，重发上一条历史数据。
+表B．529获取历史数据（浮点）响应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	I-ENID/2	2	1
+格式	SOI	VER 	ADR	62H 	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+巧7
+· 
+　根据DATATYPE取值不同，解释如下： —DATATYPE-OOH：正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+　DATATIME为历史数据发生的时间，由月（lbyte)、日（1b）、时（lbyte)、分（lbyte)、秒
+（1b）组成。
+　DATAF信息见表B · 530。
+表8530空调系统历史数据及传送顺序
+	内容			
+		DATAF字节			DATA字节
+1	回风温度				
+2	回风湿度				
+1
+一	送风温度				
+4	送风湿度				
+、
+一	用户自定义遥测数量p				
+．
+0	用户自定义字节	4			×2
+^
+'	监测风机数量			
+8	风机1状态			
+	风机2状态			
+				
+	风机状态		1	
+M+8	用户自定义状态数量		1	
+M+9	用户自定义字节			
+B．14 · 37获取历史参数定点数）表B ·531是SU发给SM的命令信息，表B．532是SM收到命令信息后，返回的响应信息。
+B·531获取历史参數定点皺命令償
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	62H	OH 	LENGTH		CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：一0、岱伏ND TYPE-OOH:获取第一条历史数据；
+—CONMAND TYPE=OIH：收到历史数据正确，要求上送下一条历史数据；一0、伏ND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+表B．532获取历史参数{定点数，响应慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LEMD/2	2	1
+格式	SOI	VER 	ADR	62H 	RI、	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH：正常发送一条历史数据；
+· —DATATYPE=OIH：发送最后一条历史数据。
+　　DATATME为历史数据发生的时间，由月（1b）、日（1b）、时（化e）、分（化e）、秒（化）组成。
+　DATAI信息见表B ·530。
+B.14．3·8获取历史告警
+表B ·533是SU发给SM的命令信息，表B ·534是SM收到命令信息后，返回的响应信息。
+表B·533获取历史告警命令慝
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	62H 	4CH	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND R?dFO为1字节，由COMMAND TYPE组成。
+根据CObMAND TYPE取值不同，解释如下：一一．℃OMMAND TYPE=OOH： 获取第一条历史告警；
+一℃OMMAND TYPE=OIH： 收到历史告警正确，要求上送下一条历史告警；一℃OMMAND TYPE=02H： 接收历史告警错误，重发上一条历史告警。
+表B·5获取历史告警命令儐
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	Al)R	62H	RIN 	LENGTH		CHKSUM	EOI
+　注：DATA-INFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE—OOH:正常发送一条历史告警； —DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIME为历史告警发生或结束的时间，由月( )b）、日（1b）、时（1b）、分（化）、秒（lbyte）组成。
+WARNSTATE信息见表B ·525。
+B · 14·4配电系统通倍协议
+B．14A1获取系统模拟饢量化数据（浮点数）
+表B ·535是SU发给SM的命令信息，表B ·536是SM收到命令信息后，返回的响应信息。
+B·535 获取系统拟鬚化斂据浮点命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	63H	41H	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+表B·5 获取系统模拟化数据浮点数，购应償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	I-ENID/2	2	1
+格式	SOI	VER	ADR	63H	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为配电系统遥测内容。
+159
+
+YD,?T 	·
+　DATAF信息见表B．537。
+B．537配电系統内客及传送序
+	内容	DATAF字节	DATA字节
+	输人线/相电压AB/A	4	
+	输人线/相电压BC/B	4	
+	输人线/相电压CA/C	4	
+	输人电流A	4	
+	输入电流B	4	
+	输人电流C	4	
+	用户自定义遥测数量p	1	
+	．用户自定义字节	px4	0
+B · 14．4．2取系统模拟量化据（定点数）
+　表B ·538是SU发给SM的命令信息，表B ·539是SM收到命令信息后，返回的响应信息。
+　表B．5取系统模拟饢化数据{定点斂，命令惠
+序号				4		6	7	8	
+字节数				1		2	LENID12	2	
+格式	SOI 	VER	ADR					CHKSUM	EOI
+　．注：LENID=OOH0
+　B．539取系摸拟饢饢化数据{定点數，应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDt2	2	1
+格式	SOI	VER	ADR	63H	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAMNFO由DATAFLAG和DATA为配电系统遥测内容。
+　DATAF信息见表B．537。
+B．14 ·4，3获取告警状态
+　表B ·540是SU发给SM的命令信息，表B．541是SM收到命令信息后，返回的响应信息。
+表B．0获取告警状态命令息
+，字号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	63H	44H	LENGTH		CHKSUM	EOI
+　注：LENID OOHO
+表B·541获取告警状态响应倌
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	I	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	63H	RIN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成， WARNSTATE为空调配电系统告警信息。
+WARNSTATE信息见表B·542。
+·
+B· 2配电 告警内及传送序
+	内容	
+	交流线/相电压AB/A	1
+	交流线/相电压BC/B	1
+	交流线/相电压CA/C	1
+	A相电流	
+	B相电流	1
+	c相电流	1
+	用户自定义告警数量p	1
+	用户自定义字节	PX 1
+告警字节描述： —OOH：正常；一IH：低于下限；一2H：高于上限；
+　—OH:缺相；
+一80H一EFH:用户自定义；
+　—FOH:故障。
+B.14 ·4·4获取系统参數《浮点数》
+表B ·543是SU发给SM的命令信息，表B．5是SM收到命令信息后，返回的响应信息。
+表B ·543 获取系统參斂{浮点数，命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	63H	46H 	LENGTH		CHKSUM	EOI
+　注：LENID=OOH0
+表B．544 获取系统参数（浮点数，响应惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	1
+格式	SOI	VER	Al)R	63H	RTN 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：COMMAND mFO由DATAF组成，DATAF为配电系统参数。
+　DATAF信息见表B ·545。
+表B·545配电系统参數及传送顺序
+	内容	DATAF字节	DATAI字节
+	交流线湘电压上限	4	0
+	交流线/相电压下限	4	0
+	交流电流上限	4	0
+	用户自定义参数数量	1	1
+	用户自定义字节	×4	×2
+B．14 ·4·5获取系统参数《定点斂》
+表B．546是SU发给SM的命令信息，表B ·547是SM收到命令信息后，返回的响应信息。
+　．
+B．6 获取 参数《 數 命令信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	63H	47H	LENGTH		CHKSUM	EOI
+　注：LENID=OOH。
+表B．547 获取系締参数{定点數》倍
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	63H	RIN	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：COMMAND INFO由DATAI组成，DATAI为配电系统参数。
+　DAT信息见表B · 5。
+B · 14 ·4 ·6设定系统参数（浮点数）表B．548是SU发给SM的命令信息，表B．550是SM收到命令信息后，返回的响应信息。
+表B．548设定系统參数{浮点）命令儐
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	63H 	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=OAH, COMMAND INFO由COMMAND TYPE和COMMAND DATAF组成。
+CONMAND TYPE信息见表B ·549。
+表B．549配电系统参数类型表
+序号	内容	COMMAND TYPE
+	交流线湘电压上限	80H
+	交流线/相电压下限	81H
+	交流电流上限	82H
+	用户自定义参数	COH一EFH
+表B．550 设定系统参数浮点數》响应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	63H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID=OOH。
+B· 14．4· 7设定系统参數{定点数》表B ·551是SU发给SM的命令信息，表B ·552是SM收到命令信息后，返回的响应信息。
+B·551设定系统參数{定点数）命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	63H 	49H	LENGTH	COMMAND INFO	，CHKSUM	EOI
+　注：LENID=06H, COMMAND INFO由COMMAND TYPE和COMMAND DATAI组成。
+COMMAND TYPE信息见表 549。
+　162
+
+．
+	B.552 设定 参数	数 应恿
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEMD/2	2	
+格式	SOI	VER	ADR	63H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID=00H0
+B．14．4 ·8获取历史数据（浮点数）表B．553是SU发给SM的命令信息，表B．554是SM收到命令信息后，返回的响应信息。
+表B．553获取历史数据浮点数，命令信息
+序号		2	3	4	5	6	7	8	9
+字节数		1	1	1		2	LENID/2	2	
+格式	SOI	VER	Al)R	63H 	4AH 	LENGTH	COMMANI) INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：
+　—COMMAND TYPE=OOH： 获取第一条历史数据；
+—COMMAND TYPE—01 H： 收到历史数据正确，要求上送下一条历史数据；一一．℃O、仆D TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+表B·554获取历史斂据{浮点斂，响应
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER 	ADR	63H 	RIN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATA-FLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+—DATATYPE-OOH:正常发送一条历史数据；
+—DATATYPE=OIH:发送最后一条历史数据。
+DATATME为历史数据发生的时间，由月( )b八日( )b）、时( )b）、分( )b，）、秒
+　（1b）组成。
+　DATAF亻訁息见表B ·537。
+B，14．4·9获取历史数据定点数》表B ·555是SU发给SM的命令信息，表B ·556是SM收到命令信息后，返回的响应信息。
+表B．555获取历史数据定点数，命令惠
+序号	1	2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LEND/2	2	
+格式	SOI	VER	ADR	63H 	4BH 	LENGTH	COMMAND INFO	CHKS UM	EOI
+　注：LENID4)2H, CONMAND INFO为1字节，由COMMAND TYPE组成。
+　根据CON-MAND TYPE取值不同，解释如下：
+
+一一．℃OMMAND TYPE—OOH： —COMMAND TYPE=OIH:
+　—COMMAND TYPE=02H：
+获取第一条历史数据；
+收到历史数据正确，要求上送下一条历史数据；接收历史数据错误，重发上一条历史数据。
+
+·
+表B·556 获取历史數据{ 數 应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID?	2	1
+格式	SOI	VER 	ADR	63H	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAI组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH：正发送一条历史数据；
+—DATATYPE=01 H：发送最后一条历史数据。
+DATATIME为历史数据发生的时间，由月( )b）、日（1b）、时（化）、分（lbyte）、秒
+（化）组成。
+　DATAI信息见表B．537。
+B．14．4 · 10获取历史告警表B．557是SU发给SM的命令信息，表B ·558是SM收到命令信息后，返回的响应信息。
+表B·557获取历史告警命令儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	Al)R	63H 	4CH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由CONMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：一0、伏ND TYPE-OOH：获取第一条历史告警；
+—CONMAND TYPE=OIH:收到历史告警正确，要求上送下一条历史告警； —CONMAND TYPE=02H：接收历史告警错误，重发上一条历史告警。
+表B·558获取历史告警响应
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	Al)R	63H	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下： —DATATYPE-OOH:正常发送一条历史告警；
+—DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIME为历史告警发生或结束的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒（1b）组成。
+WARNSTATE信息见表B．542。
+B.15环境部分通信议
+B · 15 · 1数据类型采用定点数传送时，表 559给出了相关数据类型。
+· 
+表B·559 定点蠶时數据类型
+序号	遥测内容	数据类型
+	温度	有符号整型
+2	湿度	无符号整型
+B.15．2环境部分通信协议
+B · 15．2 · 1获取系统模拟饢化數据{浮点数）
+表B．560是SU发给SM的命令信息，表B ·561是SM收到命令信息后，返回的响应信息。
+表B．560 获取系统模拟化据{浮点》命令倌息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1		1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	80H	41H	LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+B，561 获取系统模拟饢饢化数据{浮点数，购应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2		1
+格式	SOI	VER	ADR	80H	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为环境遥测量。
+DAT．信息见表B．562。
+B· 2环境部分邊瀏鱟
+	内容	DATAF字节	DATA字节
+1	温度传感器数量獼		
+0
+～	温度1		
+	温度2		
+			
++ 1	温度		
+灧+2	湿度传感器数量		
+灧+3	湿度1		
++4	湿度2		
+			
++ +2	湿度	4	
++ +3	用户自定义遥测内容数量	1	
++彪4	用户自定义	p × 4	p × 2
+B．15·2 ·2获取系统模拟量量化数据定点斂，
+
+表B · 563是SU发给SM的命令信息，表B ·5是SM收到命令信息后，返回的响应信息。
+表B·563获取系统模拟化数据{定点数，命令憊
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	80H	42H	LENGTH		CHKSUM	EOI
+注：LENII) = OOH,
+
+	、	．
+　表B ·564 获取系统模拟饢饢化数据{定点数，响应信
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	80H 	RTN 	LENGTH	DATAINFO	CHKS UM	EOI
+　注：DATAINFO由DATAFLAG和DATAI组成，DATA-I为环境遥测量。
+　DATAI?信息见表B．562。
+B.15．2 ·3获取环境告警状态
+　表B ·565是SU发给SM的命令信息，表B ·566是SM收到命令信息后，返回的响应信息。
+	表B·565 获取环境告警状态命令信息	
+序号		2	鼷		6	7	8	
+字节数	1	1			2	LENID/2	2	
+格式	SOI	VER			LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+表B．566 获取环境告警状态应息
+序号		2	罾	4	5	6	7	8	9
+字节数	1	1		1	1	2	LENID/2	2	1
+格式	SOI	VER		80H 	R、	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE告警内容。
+WA皿STA信息见表B ·567。
+表B·567环境告警状态内
+序号	内容
+	温度传感器告警内容
+2	湿度传感器告警内容
+3	烟雾传感器告警内容
+4	水浸传感器告警内容
+5	红外传感器告警内容
+6	门窗传感器告警内容
+7	玻璃破碎传感器内容
+8	用户自定义告警内容
+用户自定义告警内容见表B ·568。
+B．568用户自定义告警内響
+序号	内容	
+1	用户自定义告警数量，	1
+2	用户自定义字节	
+　某一类传感器告警内容见表 569。
+1
+．
+ 569一类传鱟告警状态内客
+	内容	
+	传感器数量	
+	传感器1	
+	传感器2	
+		
++ 1	传感器獼	
+告警字节描述： —OOH：正常；一IH：低于下限；一2H：高于上限；一4H：告警；
+一.5H：传感器断线；一80H一EFH:用户自定义；
+　—FOH:其他故障。
+B· 1524遥控表B · 570是SU发给SM的命令信息，表B ·571是SM收到命令信息后，返回的响应信息。
+B·570邊控命令償
+，字号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	80H	45H 	LENGTH	COMMAND INFO	．CHKSUM	EOI
+　注：LENID=(?H, COMMAND WFO为2个字节，由CONMAND GROUP, COMMAND TYPE组成。
+根据COMMAND GROUP取值不同，解释如下： —COMMAND GROUP=OOH：对全部门遥控；
+—COMMAND GROUP=OIH:对1号门遥控；
+—COMMAND GROUP=nnH:对nn（十六进制）号门遥控。
+根据CO、伏ND TYPE取值不同，解释如下：
+-￡ON'MAND TYPE=IOH:遥控门开；
+　—COMMAND TYPE= 1 FH：遥控门关。
+表B·571 遥控响应倌惠
+序号		2	3	4		6	7	8	9
+字节数		1	1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	80H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID：OOH0
+B．1525获取参数（浮点数）表B ·572是SU发给SM的命令信息，表B ·573是SM收到命令信息后，返回的响应信息。
+·
+表 572 获取数浮点数，命令倌息
+序号				4		6	7	8	
+字节数	1					2	LENII)/2	2	
+格式	SOI 	VER	ADR	80H	46H	LENGTH		CHKSUM	EOI
+　注：LENID：OOHO
+表B·573 获取参数浮点数，响应倌惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	80H	RTN	LENGTH		CHKSUM	EOI
+　注：DATA-INFO由DATAF组成，DATAF为参数。
+　DAT，信息见表B ·574。
+表B．574參敵内客及传送序
+	内容	D字节	DATAI字节
+	温度传感器数量		
+	温度传感器1上限		
+	温度传感器1下限		
+	温度传感器2上限		
+	温度传感器2下限		
+			
+× 2	温度传感器上限		
+× 2+1	温度传感器下限		
+m × 2+2	湿度传感器数量		
+m × 2+3	湿度传感器1上限		
+	湿度传感器1下限		
+× 2+5	湿度传感器2上限		
+× 2+6	湿度传感器2下限		
+			
+× 2+ × 2+ 1	湿度传感器上限	4	2
+× 2+獼× 2+2	湿度传感器下限	4	2
+× 2+ × 2+3	用户自定义参数数量	4	2
+× 2+ ×四	用户自定义	p × 4	× 2
+B · 15．2 ·6获取参数定点数，
+表B ·575是SU发给SM的命令信息，表B ·576是SM收到命令信息后，返回的响应信息。
+衮B ·575获取参数定点，命令僖
+序弓．	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	80H	47H	LENGTH		CHKSUM	EOI
+注：LEND：OOHO
+· 
+表 576 获取参数`定点数，应
+序号	I	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	80H	RTN	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATAF组成，DAT．为参数。 DATAF信息见表B · 574。
+B · 15 ·27设定参数（浮点数，表B．577是SU发给SM的命令信息，表B ·579是SM收到命令信息后，返回的响应信息。
+表B·577设定参数浮点数，命令伯患
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDf2	2	1
+格式	SOI	VER	ADR	80H	48H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LEND：OCH, COMMAND INFO由COMMAND GROUP、COMMAND TYPE和COMMAND DATAF组成。
+根据CO、覆AND GROUP取值不同，解释如下： —COMMAND GROUP=OOH：设置传感器1参数；
+—COMMAND GROUP=OIH：设置传感器2参数；
+一0、伏ND GROUP=nnH:设置传感器（十六进制）参数。
+COMMAND TYPE信息见表B ·578。
+ B·578设定参數类型表
+
+序号	内容	COMMAND TYPE
+	设置温度传感器参数上限	80H
+	设置温度传感器参数下限	81H
+	设置湿度传感器参数上限	82H
+	设置湿度传感器参数下限	83H
+	用户自定义	COH．EFH
+	
+表B·579设定参數（浮点數，儐僖
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	80H	RIN	LENGTH		CHKSUM	EOI
+　注：LENID：OOHO
+B· 1528设定参数《定点数）表B ·580是SU发给SM的命令信息，表B ·581是SM收到命令信息后，返回的响应信息。
+表B ·580设定參数定点數，命令信憊
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1		1	2	LENID/2	2	
+格式	SOI	VER	ADR	80H	49H	LENGTH	COMMAND INFO	CHKSUM	EOI
+注：LENID：08H，COMMAND INFO由COMMAND GROUP、COMMANI) TYPE和COMMAND DATA组．成。
+
+．
+根据C(:?MAND GROUP取值不同，解释如下：一℃0、ND GROUP=OOH：设置传感器1参数；一一℃O、ND GROUP=01 H：设置传感器2参数；
+—COMMAND GROUP=nnH:设置传感器（十六进制）参数。
+COMMAND TYPE信息见表B．578。
+表B ·581设定参{定点数》响应信息
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENII)/2	2	1
+格式	SOI	VER	ADR	80H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+B．15 ·2 · 9获取历史数据浮点斂》表B ·582是SU发给SM的命令信息，表B · 583是SM收到命令信息后，返回的响应信息。
+ B．582获取历史蠶据{浮点数，命令
+．宇号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	80H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由TYTE组成。
+根据CONN-AND TYPE取值不同，解释如下：
+—CONMAND TYPE-OOH：获取第一条历史数据；
+—CONMAND TYPE-OIH：收到历史数据正确，要求上送下一条历史数据；一0、伏ND TYPE=02H：接收历史数据错误，重发上一条历史数据。
+表B·583获取历史据{浮点数，响应儐
+．序号·	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LEND/2	2	1
+格式	SOI	VER 	ADR	80H 	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATAF组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH:正常发送一条历史数据；
+—DATATYPE—OIH:发送最后一条历史数据。
+DATATME为历史数据发生的时间，由月（1b）、日（1b）、时（lbyte)、分（1b）、秒
+　（1b）组成。
+DAT．亻訁息见表B．562。
+B· 15．2．10获取历史数据定点斂）表B ·5是SU发给SM的命令信息，表B ·585是SM收到命令信息后，返回的响应信息。
+· 
+ B·5 获取历史数据{定点斂，命令
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	Al)R	80H	4BH 	LENGTH	COMMAND INFO	CHKS UM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据CONMAND TYPE取值不同，解释如下：
+—COMMAND TYPE=OOH： 获取第一条历史数据；一一．℃O、覆、(AND TYPE=01 H： 收到历史数据正确，要求上送下一条历史数据；
+—COMMAND TYPE=02H： 接收历史数据错误，重发上一条历史数据。
+表B．585获取历史数据（定点数，响应儐息
+，序．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI 	VER 	ADR	80H 	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和DATA组成。
+根据DATATYPE取值不同，解释如下：
+　—DATATYPE=OOH:正常发送一条历史数据；
+—DATATYPE=OIH：发送最后一条历史数据。
+DATATIME为历史数据发生的时间，由月（1b）、日（1b）、时（1b）、分（1b）、秒
+　（化e）组成。
+DATAI信息见表B ·562。
+B · 1521 1获取历史告警表B ·586是SU发给SM的命令信息，表B ·587是SM收到命令信息后，返回的响应信息。
+表B ·586获取历史告警命令倍慝
+．宇．号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENII)/2	2	1
+格式	SOI	VER	ADR	80H 	4CH 	LENGTH	COMMAND NFC)	CHKSUM	EOI
+　注：LENID=02H, COMMAND INFO为1字节，由COMMAND TYPE组成。
+根据COMMAND TYPE取值不同，解释如下：一一．℃OMMAND TYPE—OOH： 获取第一条历史告警；
+—COMMAND TYPE=01 H： 收到历史告警正确，要求上送下一条历史告警；
+—COMMAND TYPE=02H： 接收历史告警错误，重发上一条历史告警。
+表B ·587获取历史告警响应倍惠
+序号	1	2	3	4	5	6	7	8	9
+字节数			1	1		2	LENII)/2	2	1
+格式	SOI	VER 	ADR	80H	RTN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG, DATATIME和WARNSTATE组成。
+根据DATATYPE取值不同，解释如下：
+　．
+—DATATYPE-OOH：正常发送一条历史告警； —DATATYPE=OIH:发送最后一条历史告警。
+　　DATATIME为历史告警发生或结束的时间，由月（化）、日（1b）、时（1b）、分（化e）、秒（1b）组成。
+WARNSTATE信息见表B．567。
+　B．16通用采集器通信协议
+B．16．1说明
+　　通用采集器用于监测无智能接口的高压配电、低压配电、相控整流器、柴油发电机、直流一直流变换器、逆变器、空调等非智能电源设备（蓄电池组的监测应采用专用的蓄电池监测装置) 0 采用定点数时传送值与实际值量化关系遵循智能设备协议的相应规定。
+　B．16 ·2通用采集器通信协议
+B.16．2 · 1获取模拟化數据《浮点數）
+表B ·588是SU发给SM的命令信息，表B．589是SM收到命令信息后，返回的响应信息。
+表B·588获取模拟饢化数据(浮点，命令
+序号		2	3	4	5	6	7	8	9
+字节数	1		1	1		2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	41H	LENGTH		CHKSUM	EOI
+注：LENTD=OOH0
+表B·589获取拟饢化斂据{浮点数，响应儐
+序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H 	RIN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATAF组成，DATAF为所有模拟通道内容。
+　DATAF信息见表B.5900
+ 表B·590摸拟通遭输入内客及传送顺序
+	内容	DATAF字节	DATAI字节
+	模拟量输入通道数量		1
+	模拟量输．恿道1		0
+	模拟量输人通道2		^
+			
+M+l	模拟量输．人通道M	4	2
+未使用的模拟量输人通道传送十六进制值20H。
+　　　　　　　　　　　　　　　　　　　　　　“	" 示例：采用定点数传输时，未使用的模拟量输入通道传送 20H，20H，20H，20H B，16 ·2 ·2获取模拟量量化据（定点數》
+表B·591是SU发给SM的命令信息，表B ·592是SM收到命令信息后，返回的响应信息。
+
+　表B．591获取拟量化数据定点数，命令儐鏖
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1		1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	90H	42H	LENGTH		CHKSUM	EC)I
+注：LENII) = OOHO
+　表B．592获取模拟饢化数据{定点数，响应倌息
+．序．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI 	VER	ADR	90H 	RTN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和DATA-I组成，DATA为所有模拟通道内容。
+　DATAI信息见表B．5兕。
+B.16 ·2 ·3获取开关状态
+表B ·593是SU发给SM的命令信息，表B ·594是SM收到命令信息后，返回的响应信息。
+表B·593获取开关状态命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI 	VER	ADR	90H	43H	LENGTH		CHKSUM	EOI
+　注：LENID：OOHO
+表B ·594获取开关状态响应
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/"2	2	1
+格式	SOI	VER	ADR	90H 	RTN	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATANFO由DATA-FLAG和RUNSTATE组成，RI-INSTATE为开关量输，恿道的状态。
+RL STAT亻訁息见表B．595。
+　B．595开关量输入通遭状态及传送序
+	内容	
+	开关量输丿恿遭数量M	
+	开关量输人通道1	
+	开关量输，恿道2	
+		
+M+l	开关量输入通道	
+开关量输入通道描述：
+　—OOH：低电平；一IH：高电平；
+　—80H-EFH:用户自定义。
+　注：未使用的开关量输人通道传送字节为十六进制值20H。
+B.16．2．4获取告警状态
+表B ·5％是SU发给SM的命令信息，表B · 597是SM收到命令信息后，返回的响应信息。
+8.596获取告警状态命令
+序号	1	2	3	4	5	6	7	8	9
+字节数	1				1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	44H	LENGTH		CHKSUM	EOI
+注：LEND = OOHO
+表B·597获取告警状态响应信息
+序号		2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LEMD/2	2	
+格式	SOI	VER	Al)R	90H	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAFLAG和WARNSTATE组成，WARNSTATE为告警状态。
+WARNSTATE亻訁息见表B．598。
+B．598告警状态及传送鱖序
+	内容	
+	模拟量输人通遭数量M	
+	模拟量输人通遭1	
+	模拟量输丸恿道2	
+		
++ 1	模拟量输入通道M	
+M+2	开关量输，恿道数量	
+M+3	开关量输人通道1	
+	开关量输人通道2	
+		
+M+ +2	开关量输．恿道	
+告警字节描述：
+00H：正常；一IH：低于下限；一2H：高于上限；一80H、EFH：用户自定义；
+　—FOH:故障。
+B · 16 ·2．5遥控表B · 599是SU发给SM的命令信息，表B．是SM收到命令信息后，返回的响应信息。
+裊B·5邊控命令償慝
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	45H 	LENGTH	CO、仆A D INFO	CHKSUM	EOI
+　　注：LEMD=06H, COMMAND INFO为3个字节，由COMMAND GROUP、COMMAND TYPE和COMMAND TIME 组成。
+CONMAND GROUP为开关量输出通道号。
+根据CONMAND TYPE取值不同，解释如下： —COMMAND TYPE=IOH：输出恒低电平；一O、ND TYPE=IIH:输出恒高电平；一o、伏ND TYPE=12H:输出高电平脉冲；
+'
+—COMMAND P 13H：输出低电平脉冲；
+—COMMAND TYPE=COH · EFH:用户自定义。
+CONMAND T化取值OIH一FFH,以10（毫秒）作为基准的时间脉冲值，对应时间10一2550ms，仅对于遥控输出脉冲有效，对于遥控输出高、低电平无效。
+裹B.600邊控应僖息
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1		1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+B · 16 ·2．6获取参数{浮点數，表B · 601是SU发给SM的命令信息，表B ·602是SM收到命令信息后，返回的响应信息。
+表B·601获取参数浮点数，命令息
+，号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	46H	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID：04H, COMMAND INFO由COMMAND GROUP与COMMAND TYPE组成。
+　根据CONMAND TYPE取值不同，解释如下： —CONMAND TYPE-OOH:获取通道配置参数； —COMMAND TYPE=OIH:获取通道配置表。
+CONMAND GROL为获取参数的通道号。
+裹B.602获取參数浮点，应儐
+．字．号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H 	RTN	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATAF组成。
+根据COMMAND TYPE取值，DATAF返回信息：
+　　—COMMAND TYPE=OOH时，DATAF返回通道配置参数。通道分为模拟通道和开关通道，模拟通道参数见表B.603，开关量通道参数见表B · 6；
+—CONMAND TYPE=OIH时，DATAF返回通道配置表，见表B.6050
+表B．603模拟通道参数及传送顺序
+序号	内容	DATAF字节	DATAI字节
+1	状态字节		
+0	采样值1		
+1
+一	实际值1		
+4	采样值2		
+、
+一	实际值2		
+	实际值告警上限		
+～
+'	实际值告警下限		
+8	用户自定义参数数量p		
+0
+"	用户自定义字节	4	
+175
+　表B ·603中的状态字节描述：
+—OIH：使用；一20H：未用。
+表B．604开关通道参数及传送序
+序号	内容	
+1	状态字节	1
+0	用户自定义参数数量p	
+1
+·	用户自定义字节	PX 1
+　表B ·604中的状态字节描述：
+—IOH: 开关量输人DI,低电平告警； —11H: 开关量输人DI,高电平告警；一12H： 开关量输出DO; 一13H： 开关量输入DI；一80H-EFH：用户自定义；
+．一20H： 未用。
+B·605 遭配鬢及传送顬序
+	内容	
+	通道号	
+	通道性质	
+	设备地址	
+	设备类型	
+	监测内容代码	
+	监测内容序号	
+表B．605各项解释如下：
+一通道号：为分类编址的通道序号；
+　　一通道性质：模拟输入通道（11H），开关输入通道（21H），开关输出通道（22H），暂不考虑模拟量输出；
+一监测设备类型：同智能设备的；
+　　一监测内容代码：为被监测对象（信号）的分类代码，例如：被监测的内容是温度（49H）还是湿度 (4AH)，参见附录0
+一监测内容序号：对同一设备、同一地址的多个相同监测内容的序号。
+　示例：对于同一直流屏中的多个分路电流，由监测内容序号区分。
+　B．16，2 · 7获取参数{定点數）
+表B ·606是SU发给SM的命令信息，表B ·607是SM收到命令信息后，返回的响应信息。
+表B．606获取参数{定点数，命令償
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID/2	2	
+格式	SOI	VER	ADR	90H	47H 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：I-ENID：(MH, COMMAND INFO由COMMAND GROUP与COMMAND TYPE组成。
+
+2m5
+根据CONMAND TYPE取值不同，解释如下：
+—CONMAND TYPE=OOH；获取通道配置参数； —COMMAND TYPE=O IH：获取通道配置表。 COMMAND GRO为获取参数的通道号。
+表B．607获取參數{定点數，响应信息
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1		1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	RTN	LENGTH	DATATdF()	CHKSUM	EOI
+　注：DATAINFO由DATAI组成。
+根据COMMAND TYPE取值，DATAI返回信息：
+　　—COMMAND TYPE—OOH时，DATAI返回通道配置参数。通道分为模拟通道和开关通道，模拟通道参数见表B 3，开关量通道参数见表B ·6；一℃O、岱ND TYPE=OIH时，DATAI返回通道配置表，见表B ·605。
+B．16 · 2．8设参数（浮点表B ·608是SU发给SM的命令信息，表B．是SM收到命令信息后，返回的响应信息。
+表B．608设鬣参{浮点，命令儐
+序号	I	2	3	4	5	6	7	8	9
+字节数	1	1		1	1	2	LEMD/2	2	1
+格式	SOI	VER	ADR	90H	48H	LENGTH	COMMAND INFO	CHKSUM 	EOI
+　注：CORM-AND NFC)由COMMAND GROUP（1字节）、COMMAND TYPE 0字节）和COMMAND DATAF组成。根据CO、伏ND TYPE取值不同，解释如下：
+　　—CONMAND TYPE=OOH:设置通道配置参数，设置模拟通道，COMMAND DATAF信息见表B.603, 设置开关量通道，CONMAND DATAF信息见表B ·6；
+—COM/AND TYPE=OIH:设置通道配置表，CONMAND DATAF亻訁息见表B ·605。
+表B·6设賢參数《浮点斂，喲应償惠
+序号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1		2	LENIDf2	2	1
+格式	SOI	VER	ADR	90H	RTN	LENGTH		CHKSUM	EOI
+　注：LENID = OOHO
+B· 16·2．9设置参数（定点數，表B ·610是SU发给SM的命令信息，表B ·611是SM收到命令信息后，返回的响应信息。
+ B．610设鬣参数{定点數，命令儐
+序号		2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LEND/2	2	1
+格式	SOI	VER	ADR	90H	49H	LENGTH	COMMAND INFO	CHKSUM	BOI
+　注：DIN由CO、GRO（1字节）、（1字节）和CON DDAT组成。
+根据CO、ND TYPE取值不同，解释如下：
+　　一O、伏ND TYPE=OOH：设置通道配置参数，设置模拟通道，COMMAND DATA信息见表B .603，设置开关量通道，CONMAND DATA信息见表B.604;
+—COMMAND TYPE=OIH:设置通道配置表，CONMAND DATAI信息见表B ·605。
+B．611设鬢参{定点数》应
+序．号	1	2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER	ADR	90H	RTN	LENGTH		CHKSUM	EOI
+注：LENII) = OOHO
+B· 16 ·2 · 10获取历史斂据浮点数，表B ·612是SU发给SM的命令信息，表B．613是SM收到命令信息后，返回的响应信息。
+表B·612获取历史数据`浮点数，命令儐惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1		1		1	2	LEND	2	1
+格式	SOI	VER	ADR	90H 	4AH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=04H, COMMAND为2字节，由COMMAND TYPE和COMMAND ID组成。
+根据CO、伏ND TYPE取值不同，解释如下： 
+—COMMAND TYPE= IOH： 获取第一条模拟输入历史数据命令；一一．℃OMMAND TYPE= I l H： 收到模拟输人历史数据正确，要求上送下一条模拟输人历史数据；一℃OMMAND TYPE= 12H： 接收模拟输人历史数据错误，重发上一条模拟输人历史数据；一一．℃OMMAND TYPE=20H： 获取第一条开关输人历史数据命令；
+．一．℃0、亻AND TYPE=21 H： 收到开关输人历史数据正确，要求上送下一条开关输人历史数据；一一℃OMMAND 'IYPE=22H： 接收开关输人历史数据错误，重发上一条开关输人历史数据。
+根据COMMAND 'PE取值不同，解释如下：	一℃0、ND D IH：获取1#采集通道历史数据；
+—001vMAND ID 2H：获取2#采集通道历史数据；
+—￡0hMAND D = H：获取#（十六进制）采集通道历史数据。
+表B·613获取历史数据{浮点数}响应倌惠
+序号		2	3	4	5	6	7	8	9
+字节数		1	1	1	1	2	LENID/2	2	1
+格式	SOI	VER 	ADR	90H 	RTN 	LENGTH		CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG,和DATAF组成。
+根据DATATYPE取值不同，解释如下： —DATATYPE-OOH:正常发送一条历史数据； —DATATYPE=O IH：发送最后一条历史数据。
+DATAF信息见表B ·614。
+	YD,?T 	· 
+表B．614通用采集器历史数据内客及传送序
+序号	内容
+	传送历史数据单元数量M
+	1 #历史数据单元
+	2#历史数据单元
+	
+M+l	M#历史数据单元
+　　表B．614中历史数据单元分模拟输入和开关输人。模拟输人历史数据单元内容见表B ·6巧，开关输人历史数据单元内容见表B · 616。
+表B．615模拟输入历史数据单元内容及传送顺序
+
+序号	内容	
+		DATAF	DATAI
+1	月		
+0	日		
+1
+一	时		
+4	分		
+·
+，			
+	模拟采集通道历史数据		
+	
+B·616开关输入历史數据单元内客及传送序
+序号	内容	
+1	月	
+0		
+	时	
+4	分	
+、
+一	秒	
+'0	开关采集通道历史数据	
+B · 1621 1获取历史数据《定点數}
+表B ·617是SU发给SM的命令信息，表B ·618是SM收到命令信息后，返回的响应信息。
+表B·617获取历史据{定点数，命令惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENIDT2	2	1
+格式	SOI	VER	ADR	90H	4BH 	LENGTH	COMMAND INFO	CHKSUM	EOI
+　注：LENID=04H, COMMAND INTO为2字节，由COMMAND TYPE和COMMAND ID组成。
+根据CO、(AND TYPE取值不同，解释如下：
+
+　一一．℃OMMAND TYPE= 1 OH：一一．℃0、焦AND TYPE= 1 1 H： —COMMAND TYPE= 12H：
+—COMMAND TYPE=20H： —COMMAND TYPE=21 H：一一．℃0、岱LAND TYPE=22H：获取第一条模拟输人历史数据命令；
+收到模拟输人历史数据正确，要求上送下一条模拟输人历史数据；接收模拟输人历史数据错误，重发上一条模拟输人历史数据；获取第一条开关输入历史数据命令；
+收到开关输人历史数据正确，要求上送下一条开关输人历史数据；接收开关输人历史数据错误，重发上一条开关输人历史数据。
+179
+
+·
+根据CO、LAND TYPE取值不同，解释如下：
+一℃OMMAND ID =OIH: 获取1 #采集通道历史数据； —COMMAND D 2H： 获取2#采集通道历史数据；
+一．一℃OMMAND D = H： 获取”#（十六进制）采集通道历史数据。
+表B．618获取历史数据定点，响应信息
+序号	1	2	3	4	5	6	7	8	9
+字节数		1		1	1	2	LEMD/2	2	1
+格式	SOI	VER 	ADR	90H 	RTN 	LENGTH	DATA-INFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG,和DATA组成。
+根据DATATYPE取值不同，．解释如下：
+—DATATYPE—OOH：正常发送一条历史数据； —DATATYPE=OIH：发送最后一条历史数据。
+DATAI信息见表B ·614。
+　B· 16 ·2．12获取历史告警
+表B ·619是SU发给SM的命令信息，表B ·620是SM收到命令信息后，返回的响应信息。
+表B·619获取历史告警命令儈惠
+序号	1	2	3	4	5	6	7	8	9
+字节数	1	1	1	1	1	2	LENID?	2	1
+格式	SOI	VER	ADR 	90H 	4CH 	LENGTH	COMMAND INFO	一CHKSUM	EOI
+　注：LEMD=04H, COMMANDINTO为2字节，由00、岱IA、℃ TYPE和CO、岱fANDID组成。
+根据CO、焦ND TYPE取值不同，解释如下：
+—COMMAND TYPE=IOH: 获取第一条模拟输人历史告警命令；
+—COMMAND TYPE= 11 H： 收到模拟输人历史告警正确，要求上送下一条模拟输入历史告警；
+COMMAND TYPE=12H: 接收模拟输人历史告警错误，重发上一条模拟输人历史告警；
+—COMMAND TYPE=20H: 获取第一条开关输人历史告警命令；
+—COMMAND TYPE=21 H： 收到开关输人历史告警正确，要求上送下一条开关输人历史告警；
+—COMMAND TYPE=22H： 接收开关输入历史告警错误，重发上一条开关输人历史告警。
+ 根据CONMAND 'PE取值不同，解释如下：一0、仆ND D IH：获取1#采集通道历史告警； —CONMAND ID 2H：获取2#采集通道历史告警；
+一0、伏ND D：H：获取#（十六进制）采集通道历史告警。
+表B·620获取历史告警购应儐
+序号	1	2	3	4	5	6	7	8	9
+字节数	1			1	1	2	LEND/2	2	
+格式	SOI 	VER 	ADR	90H	RIN 	LENGTH	DATAINFO	CHKSUM	EOI
+　注：DATAINFO由DATATYPE, DATAFLAG,和WARNSTATE组成。
+	YDIT 	· 
+　根据DATATYPE取值不同，解释如下：
+—DATATYPE=OOH:正常发送一条历史告警；	—DATATYPE=OIH:发送最后一条历史告警。
+WARNSTATE信息见表B·621。
+表B．621通用采集历史告警内客及传送顯序
+	内容
+	传送历史告警单元数量M
+2	1#历史告警单元
+1
+～	2#历史告警单元
+	
+M+l	#历史告警单元
+　　表B ·621中历史告警单元分模拟输人和开关输人。模拟输人历史告警单元内容见表B ·622，开关输人历史告警单元内容见表B ·623。
+表B．622 模拟输入历史告警单元内容及传送顯序
+	内容	
+1	月	
+2	日	
+3	时	
+4	分	
+5	秒	
+·
+0	模拟采集通道告警数据	
+B·623 开关翰入历史告警单元内客及传送序
+序号	内容	
+1	月	1
+2		1
+	时	1
+4	分	1
+5	秒	1
+6	开关采集通道告警数据	1
+　．
+　附录C （规范性附录监测内客代鴯
+监测内容代码中OOH-IFH为用户自定义，其余未用代码预留。
+表C.I模拟鱟代码表
+遥测内容	代码	遥测内容	代码	遥测内容	代码
+A相交流输人电压	20H	B相交流输人电压	21H	c相交流输人电压	22H
+相交流输入电压	23H	BC相交流输入电压	24H	CA相交流输人电压	25H
+A相交流输人电流	26H	B相交流输人电流	27H	c相交流输人电流	28H
+A相交流输出电压	29H	B相交流输出电压	2AH	c相交流输出电压	2BH
+相交流输出电压	2CH	BC相交流输出电压	2DH	CA相交流输出电压	2EH
+A相交流输出电流	2FH	B相交流输出电流	30H	c相交流输出电流	31 H
+直流输人电压	32H	直流输人电流	33H	直流输出电压	34H
+直流输出电流	35H	功率因数	36H	功率	37H
+输人频率	38H	输出频率	39H	转速	3AH
+水温	3BH	缸温	3CH	润滑油油压	3DH
+润滑油油温	3EH	启动电池电压	3FH	控制电池电压	40H
+排气温度	41H	进气温度	42H	蓄电池温度	43H
+蓄电池单体电压	44H	蓄电池总电压	45H	总负载电流	46H
+蓄电池充、放电电流	47H	分路电流	48H	环境温度	49H
+环境湿度	4AH	空调送风温度	4BH	空调回风温度	4CH
+空调送风湿度	4DH	空调回风湿度	4EH	空调压缩机吸气压力	4FH
+空调压缩机排气压力	50H	冷冻水进水温度	51H	冷冻水出水温度	52H
+冷却水进水温度	53H	冷却水出水温度	54H	冷冻机工作电流	55H
+冷冻水泵工作电流	56H	冷却水泵工作电流	57H	贮能电压	58H
+控制电压	59H	燃油油位	5AH		
+C.2开关代码表
+内容	代码	内容	代码	内容	代码
+熔丝	20H	开关	21H	过流跳闸	22H
+速断跳闸	23H	接地跳闸	24H	失压跳闸	25H
+变压器温度	26H	瓦斯	27H	直流操作柜充电机	28H
+工作状态	29H	工作方式		自动转换开关状态	2BH
+主备用	2CH	启动失败	2DH	润滑油油压	2EH
+燃油油位	2FH	市电	30H	过载	31 H
+UPS整流器故障	32H	UPS逆变器故障	33H	UPS旁路故障	34H
+UPS同步/不同步	35H	s/旁路供电	36H	故正常	37H
+水温	38H	空调过滤器	39H	空调风机	3AH
+空调压缩机	3BH	空调冷冻机状态	3CH	空调冷却水泵状态	3DH
+空调冷冻水泵状态	3EH	空调冷却水塔液位	3FH	烟感	40H
+	41H	湿度	42H	水浸	43H
+	YD/T 	．
+　表C.2 {续）
+内容		内容		内容	代码
+玻璃破碎				窗	46H
+频率	47H	转速	48H	启动电池电压	49H
+控制电池电压	4AH	直流电压	4BH	直流电流	4CH
+交流电压	4DH	交流电流	4EH	缸温	
+　C.3遥控代码表
+内容	代码	内容	代码	内	容	代码
+开关分合闸	20H	开/关	21H		换	22H
+主备机组	23H	紧急停车	24H		充	25H
+
+183

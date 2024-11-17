@@ -8,7 +8,13 @@ public class ModbusException extends Exception {
         this.exceptionCode = exceptionCode;
     }
 
+     /**
+     * 获取异常代码
+     * 
+     * @return 异常代码
+     */
     public int getExceptionCode() {
         return exceptionCode;
     }
+
 }
